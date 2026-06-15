@@ -47,11 +47,11 @@ GitHub organization.
 
 Install the following before working on this project:
 
-| Tool | Notes |
-|---|---|
-| [Node.js](https://nodejs.org/) | v22 (LTS) — matches the version used in CI |
-| npm | bundled with Node.js |
-| Git | for version control |
+| Tool                                  | Notes                                                                   |
+| ------------------------------------- | ----------------------------------------------------------------------- |
+| [Node.js](https://nodejs.org/)        | v22 (LTS) — matches the version used in CI                              |
+| npm                                   | bundled with Node.js                                                    |
+| Git                                   | for version control                                                     |
 | [pre-commit](https://pre-commit.com/) | `pip install pre-commit` — runs the local quality gates described below |
 
 ## Getting started
@@ -113,13 +113,13 @@ Tests are colocated with the source files they cover (e.g.
 
 ## Branching strategy
 
-| Branch | Purpose |
-|---|---|
-| `main` | Production-ready code only (default branch). No direct pushes. |
-| `development` | Integration branch. All feature/fix branches target this. No direct pushes. |
-| `feature/<short-description>` | New features, branched from `development` |
-| `fix/<short-description>` | Bug fixes, branched from `development` |
-| `chore/<short-description>` | Tooling, config, docs, dependency updates |
+| Branch                        | Purpose                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------- |
+| `main`                        | Production-ready code only (default branch). No direct pushes.              |
+| `development`                 | Integration branch. All feature/fix branches target this. No direct pushes. |
+| `feature/<short-description>` | New features, branched from `development`                                   |
+| `fix/<short-description>`     | Bug fixes, branched from `development`                                      |
+| `chore/<short-description>`   | Tooling, config, docs, dependency updates                                   |
 
 Examples: `feature/driver-onboarding-review`,
 `fix/ledger-totals-rounding`, `chore/upgrade-next`.
@@ -135,16 +135,16 @@ commits are rejected.
 
 Format: `<type>: <short description>`
 
-| Type | Use for |
-|---|---|
-| `feat` | a new feature |
-| `fix` | a bug fix |
-| `test` | adding or updating tests |
+| Type       | Use for                                                 |
+| ---------- | ------------------------------------------------------- |
+| `feat`     | a new feature                                           |
+| `fix`      | a bug fix                                               |
+| `test`     | adding or updating tests                                |
 | `refactor` | code change that neither fixes a bug nor adds a feature |
-| `docs` | documentation only |
-| `style` | formatting only, no code logic change |
-| `chore` | tooling, config, dependencies, CI |
-| `perf` | performance improvements |
+| `docs`     | documentation only                                      |
+| `style`    | formatting only, no code logic change                   |
+| `chore`    | tooling, config, dependencies, CI                       |
+| `perf`     | performance improvements                                |
 
 Examples:
 
@@ -177,14 +177,14 @@ non-negotiable and are enforced by tooling wherever possible:
 
 ### What runs, and when
 
-| Stage | Hook | Command |
-|---|---|---|
-| `git commit` | `prettier-format` | `prettier --check .` on the project |
-| `git commit` | `eslint` | `npm run lint` |
-| `git commit` (message) | `conventional-pre-commit` | validates commit message format |
-| `git push` | `jest-coverage` | `npm run test:coverage` (fails below 99.99%) |
-| GitHub Actions (push/PR) | `web-ci.yml` | lint, format check, and coverage gate run again remotely |
-| GitHub Actions (PR) | `pr-gatekeeper.yml` | lint/format + review-count check (see below) |
+| Stage                    | Hook                      | Command                                                  |
+| ------------------------ | ------------------------- | -------------------------------------------------------- |
+| `git commit`             | `prettier-format`         | `prettier --check .` on the project                      |
+| `git commit`             | `eslint`                  | `npm run lint`                                           |
+| `git commit` (message)   | `conventional-pre-commit` | validates commit message format                          |
+| `git push`               | `jest-coverage`           | `npm run test:coverage` (fails below 99.99%)             |
+| GitHub Actions (push/PR) | `web-ci.yml`              | lint, format check, and coverage gate run again remotely |
+| GitHub Actions (PR)      | `pr-gatekeeper.yml`       | lint/format + review-count check (see below)             |
 
 ## Running tests & coverage
 
