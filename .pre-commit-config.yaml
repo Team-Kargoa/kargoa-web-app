@@ -1,0 +1,28 @@
+repos:
+  - repo: local
+    hooks:
+      - id: prettier-format
+        name: Prettier Format Check
+        entry: npx prettier --check .
+        language: system
+        pass_filenames: false
+
+      - id: eslint
+        name: ESLint
+        entry: npm run lint
+        language: system
+        pass_filenames: false
+
+      - id: jest-coverage
+        name: Jest Tests (with coverage gate)
+        entry: npm run test:coverage
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.2.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
