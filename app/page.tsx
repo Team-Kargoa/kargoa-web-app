@@ -3,10 +3,10 @@ const WELCOME_MESSAGE =
   'Manage driver onboarding, fleet verification, financial ledgers, ' +
   'and disputes.';
 
-export default function HomePage(): JSX.Element {
+export default function HomePage() {
   return (
     <main>
-      <h1>{TITLE}</h1>
+      <h1 className="text-3xl font-bold text-primary">{TITLE}</h1>
       <p>{WELCOME_MESSAGE}</p>
     </main>
   );
