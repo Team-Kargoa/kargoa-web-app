@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+:root {
+  /* Primary */
+  --color-primary: #895100;
+  --color-primary-foreground: #ffffff;
+  --color-primary-container: #ff9f1c;
+  --color-primary-container-foreground: #683c00;
+
+  /* Secondary */
+  --color-secondary: #4059aa;
+  --color-secondary-foreground: #ffffff;
+  --color-secondary-container: #8fa7fe;
+  --color-secondary-container-foreground: #1d3989;
+
+  /* Tertiary */
+  --color-tertiary: #006686;
+  --color-tertiary-foreground: #ffffff;
+  --color-tertiary-container: #00c3fd;
+  --color-tertiary-container-foreground: #004d66;
+
+  /* Surface */
+  --color-surface: #fff8f4;
+  --color-surface-dim: #e8d7ca;
+  --color-surface-bright: #fff8f4;
+  --color-surface-low: #fff1e7;
+  --color-surface-container: #fcebdd;
+  --color-surface-high: #f6e5d7;
+  --color-surface-highest: #f0e0d2;
+
+  /* Background */
+  --color-background-light: #f8fafc;
+  --color-background-dark: #0f172a;
+
+  /* Text */
+  --color-text-primary-light: #0f172a;
+  --color-text-secondary-light: #64748b;
+  --color-text-primary-dark: #f8fafc;
+  --color-text-secondary-dark: #94a3b8;
+
+  /* Border */
+  --color-border-light: #e2e8f0;
+  --color-border-dark: #334155;
+
+  /* Success & Error */
+  --color-success: #10b981;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+
+  /* Outline */
+  --color-outline: #877462;
+  --color-outline-variant: #dac2ae;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* Fonts */
+  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
