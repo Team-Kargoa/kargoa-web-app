@@ -52,7 +52,7 @@ export default function HomePage() {
 
             <p className="text-gray-600 text-lg max-w-3xl mx-auto">
               Finding trusted transporters, tracking shipments, and managing
-              deliveries shouldn't be difficult.
+              deliveries shouldn&apos;t be difficult.
             </p>
           </div>
 
