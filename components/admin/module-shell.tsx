@@ -83,35 +83,39 @@ const modules: Record<
 };
 
 export function ModuleShell({ section }: { section: string }) {
-  const module = modules[section];
-  if (!module) return null;
+  const currentModule = modules[section];
+
+  if (!currentModule) return null;
+
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            {module.title}
+            {currentModule.title}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {module.description}
+            {currentModule.description}
           </p>
         </div>
         <Button>
           <Plus />
-          {module.action}
+          {currentModule.action}
         </Button>
       </div>
+
       <Card className="min-h-80">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Construction className="size-4 text-primary" />
-            {module.title} workspace
+            {currentModule.title} workspace
           </CardTitle>
           <CardDescription>
             This route is connected to the admin shell. Its complete management
             workflow is the next implementation step.
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <Button variant="outline" asChild>
             <Link href="/admin">
