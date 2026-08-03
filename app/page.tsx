@@ -7,7 +7,7 @@ const WELCOME_MESSAGE =
 
 export default function HomePage() {
   return (
-    <main className="bg-white">
+    <main className="bg-background text-text-primary">
       {/* hero */}
       <section
         className="
@@ -22,20 +22,20 @@ export default function HomePage() {
         "
       >
         <div className="max-w-5xl mx-auto px-6 pt-28 text-center md:mt-30 ">
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-black leading-none mb-6">
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-text-primary leading-none mb-6">
             {TITLE}
           </h1>
 
-          <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-600 leading-relaxed mb-8">
+          <p className="max-w-3xl mx-auto text-lg md:text-xl text-text-secondary leading-relaxed mb-8">
             {WELCOME_MESSAGE}
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="px-8 py-4 rounded-full bg-black text-white font-semibold hover:opacity-90 transition">
+            <button className="px-8 py-4 rounded-full bg-primary text-primary-foreground font-semibold hover:opacity-90 transition">
               Request Transport
             </button>
 
-            <button className="px-8 py-4 rounded-full border border-black text-black font-semibold hover:bg-black hover:text-white transition">
+            <button className="px-8 py-4 rounded-full border border-primary text-primary font-semibold hover:bg-primary hover:text-primary-foreground transition">
               Become A Driver
             </button>
           </div>
@@ -46,19 +46,21 @@ export default function HomePage() {
       <section className="py-28 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-text-primary">
               Logistics In Cameroon Is Still Too Complicated
             </h2>
 
-            <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+            <p className="text-text-secondary text-lg max-w-3xl mx-auto">
               Finding trusted transporters, tracking shipments, and managing
               deliveries shouldn&apos;t be difficult.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-12">
-            <div className="bg-red-50 rounded-3xl p-8">
-              <h3 className="text-2xl font-bold mb-6">Current Challenges</h3>
+            <div className="bg-error-container rounded-3xl p-8">
+              <h3 className="text-2xl font-bold mb-6 text-text-primary">
+                Current Challenges
+              </h3>
 
               <ul className="space-y-4 text-lg">
                 <li>&#10060; Finding reliable transporters takes time</li>
@@ -68,10 +70,12 @@ export default function HomePage() {
               </ul>
             </div>
 
-            <div className="bg-green-50 rounded-3xl p-8">
-              <h3 className="text-2xl font-bold mb-6">Kargoa Changes That</h3>
+            <div className="bg-primary-container rounded-3xl p-8">
+              <h3 className="text-2xl font-bold mb-6 text-text-primary">
+                Kargoa Changes That
+              </h3>
 
-              <p className="text-lg text-gray-700 leading-relaxed">
+              <p className="text-lg text-primary-container-foreground leading-relaxed">
                 Kargoa connects individuals, drivers, and companies into one
                 digital platform where deliveries can be booked, tracked, and
                 managed from start to finish.
@@ -82,24 +86,26 @@ export default function HomePage() {
       </section>
 
       {/* how it works */}
-      <section className="py-28 bg-gray-50 px-6">
+      <section className="py-28 bg-surface px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-text-primary">
               How Kargoa Works
             </h2>
 
-            <p className="text-gray-600 text-lg">
+            <p className="text-lg text-text-secondary leading-relaxed">
               Move cargo in four simple steps.
             </p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
-            <div className="bg-white p-8 rounded-3xl shadow-sm">
+            <div className="bg-white rounded-3xl p-8">
               <div className="text-4xl mb-4">
                 <Package size={24} color="#b45309" fill="#fde68a" />
               </div>
-              <h3 className="font-bold text-xl mb-3">Request Shipment</h3>
+              <h3 className="font-bold text-xl mb-3 text-text-primary">
+                Request Shipment
+              </h3>
               <p className="text-gray-600">
                 Enter pickup and delivery details.
               </p>
@@ -188,7 +194,7 @@ export default function HomePage() {
       </section>
 
       {/* call to action */}
-      <section className="bg-black text-white py-28 px-6">
+      <section className="bg-text-primary  text-white py-28 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-5xl font-bold mb-6">Ready To Move Smarter?</h2>
 
@@ -197,7 +203,7 @@ export default function HomePage() {
             across Cameroon.
           </p>
 
-          <button className="bg-white text-black px-8 py-4 rounded-full font-semibold">
+          <button className="bg-primary text-surface px-8 py-4 rounded-full font-semibold">
             Get Started
           </button>
         </div>
