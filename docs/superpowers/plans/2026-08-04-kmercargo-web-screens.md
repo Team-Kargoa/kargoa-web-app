@@ -208,6 +208,14 @@ describe('formatXaf', () => {
   it('renders zero without a sign', () => {
     expect(formatXaf(0)).toBe('0 XAF');
   });
+
+  it('renders an em dash for an empty amount', () => {
+    expect(formatXaf('')).toBe('—');
+  });
+
+  it('renders an em dash rather than NaN for invalid input', () => {
+    expect(formatXaf(undefined as unknown as number)).toBe('—');
+  });
 });
 
 describe('formatPhone', () => {
@@ -236,7 +244,9 @@ const XAF_FORMATTER = new Intl.NumberFormat('en-US', {
 const CAMEROON_E164 = /^\+237([62])(\d{2})(\d{2})(\d{2})(\d{2})$/;
 
 export function formatXaf(amount: number | string): string {
-  return `${XAF_FORMATTER.format(Number(amount))} XAF`;
+  const value = Number(amount);
+  if (!Number.isFinite(value) || amount === '') return '—';
+  return `${XAF_FORMATTER.format(value)} XAF`;
 }
 
 export function formatPhone(e164: string): string {
