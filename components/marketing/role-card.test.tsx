@@ -48,6 +48,20 @@ it('applies the tertiary tone accent to the call to action', () => {
   );
 });
 
+it('applies the secondary tone as a solid container swatch on the icon wrap', () => {
+  const { container } = render(<RoleCard {...props} tone="secondary" />);
+  const icon = container.querySelector('svg');
+  expect(icon).toHaveClass('text-secondary-container-foreground');
+  expect(icon?.parentElement).toHaveClass('bg-secondary-container');
+});
+
+it('applies the tertiary tone as a solid container swatch on the icon wrap', () => {
+  const { container } = render(<RoleCard {...props} tone="tertiary" />);
+  const icon = container.querySelector('svg');
+  expect(icon).toHaveClass('text-tertiary-container-foreground');
+  expect(icon?.parentElement).toHaveClass('bg-tertiary-container');
+});
+
 it('renders a benefit list when provided', () => {
   render(
     <RoleCard

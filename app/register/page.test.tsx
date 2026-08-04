@@ -29,4 +29,12 @@ describe('partner registration hub', () => {
     expect(screen.getByText('TRUCKS ACTIVE')).toBeInTheDocument();
     expect(screen.getByText('500+')).toBeInTheDocument();
   });
+
+  it('renders its own footer', () => {
+    render(<RegisterPage />);
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Terms of Service' }),
+    ).toHaveAttribute('href', '/terms');
+  });
 });
