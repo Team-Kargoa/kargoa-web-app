@@ -352,9 +352,15 @@ type RoleCardProps = {
   description: string;
   ctaLabel: string;
   ctaHref: string;
-  tone: 'dark' | 'amber';
+  tone: 'light' | 'amber';
 };
+```
 
+`tone: 'light'` is the Admin Portal card — white surface, dark CTA button.
+`tone: 'amber'` is the Fleet Partner card — `bg-primary-container` surface,
+`bg-on-primary-container` CTA button.
+
+```tsx
 type ValuePropProps = {
   icon: LucideIcon;
   tone: 'success' | 'primary' | 'secondary';
@@ -399,8 +405,8 @@ it('links the call to action', () => {
   );
 });
 
-it('applies the dark tone when asked', () => {
-  const { container } = render(<RoleCard {...props} tone="dark" />);
+it('applies the light tone when asked', () => {
+  const { container } = render(<RoleCard {...props} tone="light" />);
   expect(container.firstChild).toHaveClass('bg-white');
 });
 ```
