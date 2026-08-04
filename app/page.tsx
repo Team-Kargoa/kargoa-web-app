@@ -22,7 +22,7 @@ const ROLE_CARDS: RoleCardProps[] = [
     description:
       'Manage global shipments, track fleet performance, and resolve logistical bottlenecks in real-time.',
     ctaLabel: 'Access Dashboard',
-    ctaHref: '/auth',
+    ctaHref: '/signin',
     tone: 'light',
   },
   {
@@ -129,8 +129,14 @@ export default function HomePage() {
               >
                 Get Started Now
               </Link>
+              {/*
+                The design draws "View Network Map" as a secondary button in
+                this panel, but no network-map screen exists in the plan's
+                route table. Point it at /register alongside the primary
+                button, since role selection is what this panel is for.
+              */}
               <Link
-                href="/network-map"
+                href="/register"
                 className="h-14 md:px-8 border border-border-dark text-white font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
               >
                 View Network Map
