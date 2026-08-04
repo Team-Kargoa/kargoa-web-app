@@ -1,18 +1,29 @@
 import { render, screen } from '@testing-library/react';
-
 import Navbar from './Navbar';
 
 describe('Navbar', () => {
-  it('renders the brand and navigation links', () => {
+  it('renders the brand', () => {
     render(<Navbar />);
+    expect(screen.getByText('KmerCargo')).toBeInTheDocument();
+  });
 
-    expect(screen.getByText('KARGOA')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'How It Works' })).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Features' })).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Drivers' })).toBeVisible();
-    expect(screen.getByRole('link', { name: 'FAQ' })).toBeVisible();
-    expect(
-      screen.getByRole('button', { name: 'Download App' }),
-    ).toBeInTheDocument();
+  it.each([
+    ['Registration', '/register'],
+    ['Support', '/support'],
+    ['Help', '/help'],
+  ])('links %s to %s', (label, href) => {
+    render(<Navbar />);
+    expect(screen.getByRole('link', { name: label })).toHaveAttribute(
+      'href',
+      href,
+    );
+  });
+
+  it('renders the primary call to action', () => {
+    render(<Navbar />);
+    expect(screen.getByRole('link', { name: 'Get Started' })).toHaveAttribute(
+      'href',
+      '/register',
+    );
   });
 });
