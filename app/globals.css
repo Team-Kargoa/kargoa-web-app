@@ -60,6 +60,12 @@
   --color-outline: #877462;
   --color-outline-variant: #dac2ae;
 
+  /* Additional Design Tokens */
+  --color-bg-dark: #0f172a;
+  --color-on-primary-container: #683c00;
+  --color-success-momo: #10b981;
+  --color-border-dark: #334155;
+
   /* Radius */
   --radius-sm: 0.25rem;
   --radius: 0.5rem;
