@@ -33,3 +33,34 @@ it('applies the light tone when asked', () => {
   const { container } = render(<RoleCard {...props} tone="light" />);
   expect(container.firstChild).toHaveClass('bg-white');
 });
+
+it('applies the secondary tone accent to the call to action', () => {
+  render(<RoleCard {...props} tone="secondary" />);
+  expect(screen.getByRole('link', { name: /Join the Fleet/ })).toHaveClass(
+    'bg-secondary',
+  );
+});
+
+it('applies the tertiary tone accent to the call to action', () => {
+  render(<RoleCard {...props} tone="tertiary" />);
+  expect(screen.getByRole('link', { name: /Join the Fleet/ })).toHaveClass(
+    'bg-tertiary',
+  );
+});
+
+it('renders a benefit list when provided', () => {
+  render(
+    <RoleCard
+      {...props}
+      benefits={['Multi-vehicle fleet dashboard', 'Fuel consumption analytics']}
+    />,
+  );
+  expect(screen.getByRole('list')).toBeInTheDocument();
+  expect(screen.getByText('Multi-vehicle fleet dashboard')).toBeInTheDocument();
+  expect(screen.getByText('Fuel consumption analytics')).toBeInTheDocument();
+});
+
+it('omits the benefit list when not provided', () => {
+  render(<RoleCard {...props} />);
+  expect(screen.queryByRole('list')).not.toBeInTheDocument();
+});
