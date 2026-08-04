@@ -1,0 +1,478 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>KmerCargo Admin - Team Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#fff1e7",
+                    "on-secondary-fixed": "#00164e",
+                    "primary-fixed-dim": "#ffb86b",
+                    "tertiary-fixed-dim": "#70d2ff",
+                    "on-secondary-fixed-variant": "#264191",
+                    "inverse-primary": "#ffb86b",
+                    "surface-container": "#fcebdd",
+                    "secondary-fixed-dim": "#b6c4ff",
+                    "on-primary": "#ffffff",
+                    "secondary": "#4059aa",
+                    "inverse-on-surface": "#ffeee0",
+                    "surface-dim": "#e8d7ca",
+                    "text-primary-light": "#0F172A",
+                    "surface-bright": "#fff8f4",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#dce1ff",
+                    "border-dark": "#334155",
+                    "on-primary-container": "#683c00",
+                    "success-momo": "#10B981",
+                    "outline-variant": "#dac2ae",
+                    "surface-container-high": "#f6e5d7",
+                    "primary-fixed": "#ffdcbc",
+                    "text-primary-dark": "#F8FAFC",
+                    "on-primary-fixed": "#2c1700",
+                    "bg-light": "#F8FAFC",
+                    "on-primary-fixed-variant": "#683d00",
+                    "surface-tint": "#895100",
+                    "tertiary-fixed": "#c0e8ff",
+                    "surface": "#fff8f4",
+                    "tertiary": "#006686",
+                    "background": "#fff8f4",
+                    "surface-container-highest": "#f0e0d2",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#004d66",
+                    "on-background": "#221a12",
+                    "inverse-surface": "#382f25",
+                    "secondary-container": "#8fa7fe",
+                    "border-light": "#E2E8F0",
+                    "on-tertiary-fixed-variant": "#004d66",
+                    "on-secondary-container": "#1d3989",
+                    "bg-dark": "#0F172A",
+                    "surface-variant": "#f0e0d2",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#895100",
+                    "text-secondary-dark": "#94A3B8",
+                    "on-tertiary-fixed": "#001e2b",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#00c3fd",
+                    "on-surface-variant": "#544434",
+                    "on-surface": "#221a12",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#877462",
+                    "primary-container": "#ff9f1c",
+                    "error": "#ba1a1a",
+                    "text-secondary-light": "#64748B"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "margin-desktop": "32px",
+                    "base": "8px",
+                    "touch-target-min": "56px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "data-display": ["JetBrains Mono"],
+                    "button": ["Inter"],
+                    "body-md": ["Inter"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "h2-mobile": ["Plus Jakarta Sans"],
+                    "data-label": ["JetBrains Mono"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #fff8f4;
+            color: #221a12;
+            -webkit-font-smoothing: antialiased;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #fcebdd;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dac2ae;
+            border-radius: 3px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md overflow-x-hidden">
+<!-- Top Navigation Anchor -->
+<header class="w-full top-0 sticky z-50 bg-surface-container border-b border-outline-variant flex justify-between items-center h-touch-target-min px-margin-desktop w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">local_shipping</span>
+<h1 class="font-h1 text-h1-mobile font-bold text-primary">KmerCargo Admin</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-4">
+<button class="font-button text-button text-primary font-bold px-4 py-2 hover:bg-surface-variant transition-colors cursor-pointer rounded-lg">Overview</button>
+<button class="font-button text-button text-primary font-bold px-4 py-2 bg-primary-container text-on-primary-container cursor-pointer rounded-lg">Team Management</button>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold border-2 border-white shadow-sm overflow-hidden">
+<img alt="Admin User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a Cameroonian business executive in a high-tech logistics control room. The lighting is crisp and modern with amber and slate blue accents reflecting the KmerCargo brand colors. The executive has a confident expression, symbolizing trust and reliability. The visual style is sharp, corporate, and clean with a shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs95CTld5rs-eTIqvKCyDwtQZMYpZChMXZnmWWCJ5vLwzuZJ8E5B_4f8Y6o69TuEY70klbcSj_SMZHSCf8orRcEiMCaqUhAgthLT9ciwSqBG2P0PRZAFrIn96WGXWNWodX98kX27zvTkpppMR1x37AK8spsvpA6JDJOgBF0zRGkzm3qr__H2chXHXs7kyRk3-kKNKeFEE8wtHhJJvu3zRxc_jz6KjA8M6WLhu9ymLG8468uK9DfbW1D-dHPppmM3XRM5O9bel5nCw">
+</div>
+</div>
+</header>
+<div class="flex min-h-[calc(100vh-56px)]">
+<!-- Sidebar Navigation Anchor -->
+<aside class="h-full w-64 sticky left-0 top-[56px] border-r border-outline-variant bg-surface hidden md:flex flex-col py-margin-desktop">
+<div class="px-6 mb-8">
+<h2 class="font-h2 text-h2 text-on-surface">Logistics Management</h2>
+</div>
+<nav class="flex flex-col gap-1">
+<div class="flex items-center gap-base p-4 cursor-pointer text-on-surface-variant mx-2 rounded-lg hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</div>
+<div class="flex items-center gap-base p-4 cursor-pointer text-on-surface-variant mx-2 rounded-lg hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-body-md text-body-md">Fleet Approvals</span>
+</div>
+<div class="flex items-center gap-base p-4 cursor-pointer text-on-surface-variant mx-2 rounded-lg hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md text-body-md">Driver Verification</span>
+</div>
+<div class="flex items-center gap-base p-4 cursor-pointer bg-secondary-container text-on-secondary-container font-bold mx-2 rounded-lg">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-body-md text-body-md">Team Members</span>
+</div>
+<div class="flex items-center gap-base p-4 cursor-pointer text-on-surface-variant mx-2 rounded-lg hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body-md text-body-md">Financial Oversight</span>
+</div>
+<div class="mt-auto">
+<div class="flex items-center gap-base p-4 cursor-pointer text-on-surface-variant mx-2 rounded-lg hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</div>
+</div>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop bg-background">
+<div class="max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+<div>
+<h2 class="font-h1 text-h1-mobile md:text-h1 text-on-surface mb-2">Team Members</h2>
+<p class="font-body-md text-text-secondary-light">Manage administrative access and permissions for the KmerCargo ecosystem.</p>
+</div>
+<button class="h-touch-target-min px-8 bg-primary-container text-on-primary-container font-button text-button rounded-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg">
+<span class="material-symbols-outlined">person_add</span>
+                        Add New Admin
+                    </button>
+</div>
+<!-- Bento Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<p class="font-data-label text-data-label text-text-secondary-light uppercase mb-2">Total Admins</p>
+<h3 class="font-h1 text-h1 text-primary">24</h3>
+<div class="mt-4 flex items-center text-success-momo text-body-sm font-bold">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                            +2 this month
+                        </div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<p class="font-data-label text-data-label text-text-secondary-light uppercase mb-2">Super Admins</p>
+<h3 class="font-h1 text-h1 text-secondary">4</h3>
+<div class="mt-4 text-text-secondary-light text-body-sm">Restricted Access</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
+<p class="font-data-label text-data-label text-text-secondary-light uppercase mb-2">Active Now</p>
+<h3 class="font-h1 text-h1 text-success-momo">18</h3>
+<div class="mt-4 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-success-momo animate-pulse"></span>
+<span class="text-text-secondary-light text-body-sm">System Healthy</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant overflow-hidden relative">
+<div class="absolute inset-0 opacity-10">
+
+</div>
+<p class="font-data-label text-data-label text-text-secondary-light uppercase mb-2">Region Focus</p>
+<h3 class="font-h1 text-h1 text-on-surface">Littoral</h3>
+<div class="mt-4 text-text-secondary-light text-body-sm">Douala HQ Priority</div>
+</div>
+</div>
+<!-- Search & Filters -->
+<div class="bg-surface-container-low p-4 rounded-t-xl border-x border-t border-outline-variant flex flex-col md:flex-row gap-4">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 h-12 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent font-body-md outline-none" placeholder="Search by name, email or role..." type="text">
+</div>
+<div class="flex gap-2">
+<button class="px-4 h-12 bg-white border border-outline-variant rounded-lg font-button text-on-surface-variant flex items-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+                            Filters
+                        </button>
+<button class="px-4 h-12 bg-white border border-outline-variant rounded-lg font-button text-on-surface-variant flex items-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">download</span>
+                            Export
+                        </button>
+</div>
+</div>
+<!-- Data Table -->
+<div class="bg-white border border-outline-variant rounded-b-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse min-w-[800px]">
+<thead>
+<tr class="bg-surface-container-highest border-b border-outline-variant">
+<th class="px-6 py-4 font-data-label text-data-label text-on-surface-variant uppercase">Admin Name</th>
+<th class="px-6 py-4 font-data-label text-data-label text-on-surface-variant uppercase">Role</th>
+<th class="px-6 py-4 font-data-label text-data-label text-on-surface-variant uppercase">Last Active</th>
+<th class="px-6 py-4 font-data-label text-data-label text-on-surface-variant uppercase">Status</th>
+<th class="px-6 py-4 font-data-label text-data-label text-on-surface-variant uppercase text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Admin Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center font-bold text-primary">JN</div>
+<div>
+<div class="font-body-md font-bold text-on-surface">Jean Ngassam</div>
+<div class="text-body-sm text-text-secondary-light">j.ngassam@kmercargo.cm</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-data-label text-[10px] uppercase tracking-wider">Super Admin</span>
+</td>
+<td class="px-6 py-4 font-data-display text-data-display text-on-surface-variant">2 mins ago</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-success-momo"></span>
+<span class="font-body-sm text-on-surface">Active</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-primary transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-lg text-error transition-colors" title="Remove">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Admin Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-on-surface-variant">ME</div>
+<div>
+<div class="font-body-md font-bold text-on-surface">Marie Eto'o</div>
+<div class="text-body-sm text-text-secondary-light">m.etoo@kmercargo.cm</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant font-data-label text-[10px] uppercase tracking-wider">Admin</span>
+</td>
+<td class="px-6 py-4 font-data-display text-data-display text-on-surface-variant">1 hour ago</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-success-momo"></span>
+<span class="font-body-sm text-on-surface">Active</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Admin Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center font-bold text-on-surface-variant">PK</div>
+<div>
+<div class="font-body-md font-bold text-on-surface">Pierre Kamdem</div>
+<div class="text-body-sm text-text-secondary-light">p.kamdem@kmercargo.cm</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant font-data-label text-[10px] uppercase tracking-wider">Admin</span>
+</td>
+<td class="px-6 py-4 font-data-display text-data-display text-on-surface-variant">Yesterday</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-body-sm text-on-surface">Inactive</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Admin Row 4 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-secondary-container/20 flex items-center justify-center font-bold text-secondary">ST</div>
+<div>
+<div class="font-body-md font-bold text-on-surface">Samuel Tagne</div>
+<div class="text-body-sm text-text-secondary-light">s.tagne@kmercargo.cm</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-data-label text-[10px] uppercase tracking-wider">Super Admin</span>
+</td>
+<td class="px-6 py-4 font-data-display text-data-display text-on-surface-variant">3 days ago</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-success-momo"></span>
+<span class="font-body-sm text-on-surface">Active</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error-container rounded-lg text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 border-t border-outline-variant bg-surface-container flex items-center justify-between">
+<span class="text-body-sm text-on-surface-variant">Showing 4 of 24 members</span>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-white transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-white transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Actionable Card for Management Policy -->
+<div class="mt-10 bg-inverse-surface text-inverse-on-surface p-8 rounded-2xl flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+<div class="absolute right-0 top-0 w-64 h-64 opacity-20 pointer-events-none">
+
+</div>
+<div class="flex-1 z-10">
+<h4 class="font-h2 text-h2-mobile md:text-h2 mb-4">Security Protocol Update</h4>
+<p class="font-body-lg text-body-lg opacity-80 max-w-2xl">All administrative accounts now require Mandatory 2-Factor Authentication via Cameroonian phone numbers. Ensure all team members have updated their profiles before the end of the month.</p>
+<div class="mt-6 flex gap-4">
+<button class="px-6 py-3 bg-primary-container text-on-primary-container rounded-lg font-button">Review Policy</button>
+<button class="px-6 py-3 border border-outline-variant rounded-lg font-button hover:bg-white/10">Dismiss</button>
+</div>
+</div>
+<div class="w-full md:w-1/3 z-10">
+<div class="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
+<h5 class="font-data-label text-data-label uppercase mb-4 text-primary-fixed">Audit Readiness</h5>
+<div class="flex justify-between items-center mb-2">
+<span class="text-body-sm">Compliance Score</span>
+<span class="font-bold text-success-momo">92%</span>
+</div>
+<div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+<div class="bg-success-momo h-full w-[92%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button for Mobile -->
+<button class="md:hidden fixed right-6 bottom-6 w-16 h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-50">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<script>
+        // Micro-interactions for table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(4px)';
+                row.style.transition = 'transform 0.2s ease-out';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary');
+        });
+    </script>
+</body></html>

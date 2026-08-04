@@ -1,0 +1,300 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Fleet Owner Onboarding - Vehicle Registration</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "bg-light": "#F8FAFC",
+                    "bg-dark": "#0F172A",
+                    "secondary-fixed": "#dce1ff",
+                    "secondary": "#4059aa",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#ffdcbc",
+                    "surface-tint": "#895100",
+                    "primary": "#895100",
+                    "on-tertiary-fixed": "#001e2b",
+                    "secondary-fixed-dim": "#b6c4ff",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-variant": "#f0e0d2",
+                    "border-dark": "#334155",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#fff8f4",
+                    "secondary-container": "#8fa7fe",
+                    "inverse-surface": "#382f25",
+                    "surface-container": "#fcebdd",
+                    "surface-container-low": "#fff1e7",
+                    "on-background": "#221a12",
+                    "inverse-primary": "#ffb86b",
+                    "tertiary-fixed": "#c0e8ff",
+                    "inverse-on-surface": "#ffeee0",
+                    "border-light": "#E2E8F0",
+                    "on-primary-fixed-variant": "#683d00",
+                    "success-momo": "#10B981",
+                    "primary-container": "#ff9f1c",
+                    "outline": "#877462",
+                    "text-primary-dark": "#F8FAFC",
+                    "on-tertiary-fixed-variant": "#004d66",
+                    "text-primary-light": "#0F172A",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#fff8f4",
+                    "surface-dim": "#e8d7ca",
+                    "on-secondary-container": "#1d3989",
+                    "tertiary-fixed-dim": "#70d2ff",
+                    "on-surface": "#221a12",
+                    "on-secondary-fixed": "#00164e",
+                    "surface-container-highest": "#f0e0d2",
+                    "on-surface-variant": "#544434",
+                    "tertiary": "#006686",
+                    "outline-variant": "#dac2ae",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#2c1700",
+                    "tertiary-container": "#00c3fd",
+                    "text-secondary-dark": "#94A3B8",
+                    "text-secondary-light": "#64748B",
+                    "primary-fixed-dim": "#ffb86b",
+                    "on-tertiary-container": "#004d66",
+                    "on-primary-container": "#683c00",
+                    "background": "#fff8f4",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#264191",
+                    "surface-container-high": "#f6e5d7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "touch-target-min": "56px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "margin-desktop": "32px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "h2": ["Plus Jakarta Sans"],
+                    "h2-mobile": ["Plus Jakarta Sans"],
+                    "data-display": ["JetBrains Mono"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "button": ["Inter"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "data-label": ["JetBrains Mono"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .step-active { width: 100%; transition: width 0.8s ease-in-out; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); }
+        input:focus, select:focus { outline: none; border-color: #895100; box-shadow: 0 0 0 2px rgba(137, 81, 0, 0.1); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-bg-light font-body-md text-text-primary-light min-h-screen flex flex-col">
+<!-- Top Navigation Anchor -->
+<header class="flex items-center px-margin-mobile h-touch-target-min w-full z-50 bg-bg-dark border-b border-border-dark fixed top-0">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">arrow_back</span>
+<h1 class="font-h2-mobile text-h2-mobile font-bold text-primary-container">KmerCargo</h1>
+</div>
+<div class="ml-auto">
+<span class="font-data-label text-text-secondary-dark tracking-widest">FLEET_ONBOARDING</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-24 px-4 md:px-8 max-w-2xl mx-auto w-full">
+<!-- Progress Header -->
+<section class="mb-8">
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="font-data-label text-primary uppercase block mb-1">Step 3 of 3</span>
+<h2 class="font-h1-mobile text-h1-mobile text-text-primary-light">Vehicle Registration</h2>
+</div>
+<div class="text-right">
+<span class="font-data-display text-success-momo">100% Ready</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container step-active"></div>
+</div>
+</section>
+<!-- Dynamic Form Section -->
+<form class="space-y-6" id="vehicleForm">
+<!-- Vehicle Entry Card -->
+<div class="glass-card border border-border-light rounded-xl p-6 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2">
+<span class="bg-surface-container text-on-surface-variant font-data-label px-2 py-1 rounded">VEHICLE_01</span>
+</div>
+<div class="space-y-6 pt-4">
+<!-- License Plate -->
+<div class="grid gap-2">
+<label class="font-button text-text-secondary-light" for="plate_1">License Plate Number</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary-light">directions_car</span>
+<input class="w-full h-touch-target-min pl-12 pr-4 bg-white border-2 border-border-light rounded-lg font-data-display uppercase" id="plate_1" name="plate_1" placeholder="LT-XXX-XX" required="" type="text">
+</div>
+<p class="text-[12px] text-text-secondary-light italic">Format: Region Code - Numbers - Letters (e.g., LT-123-AA)</p>
+</div>
+<!-- Category Selection -->
+<div class="grid gap-2">
+<label class="font-button text-text-secondary-light">Vehicle Category</label>
+<div class="grid grid-cols-3 gap-3">
+<label class="cursor-pointer">
+<input checked="" class="peer hidden" name="category_1" type="radio" value="mini">
+<div class="flex flex-col items-center justify-center p-4 border-2 border-border-light rounded-xl peer-checked:border-primary-container peer-checked:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-3xl mb-1">delivery_dining</span>
+<span class="font-data-label">MINI</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer hidden" name="category_1" type="radio" value="standard">
+<div class="flex flex-col items-center justify-center p-4 border-2 border-border-light rounded-xl peer-checked:border-primary-container peer-checked:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-3xl mb-1">local_shipping</span>
+<span class="font-data-label">STD</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer hidden" name="category_1" type="radio" value="large">
+<div class="flex flex-col items-center justify-center p-4 border-2 border-border-light rounded-xl peer-checked:border-primary-container peer-checked:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-3xl mb-1">rv_hookup</span>
+<span class="font-data-label">LARGE</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Document Upload -->
+<div class="grid gap-2">
+<label class="font-button text-text-secondary-light">Insurance Document (PDF/JPG)</label>
+<div class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border-light rounded-xl hover:border-primary-container hover:bg-surface-container-lowest transition-colors cursor-pointer overflow-hidden">
+<input accept=".pdf,.jpg,.jpeg" class="absolute inset-0 opacity-0 cursor-pointer" type="file">
+<div class="text-center">
+<span class="material-symbols-outlined text-4xl text-text-secondary-light group-hover:text-primary-container mb-2">cloud_upload</span>
+<p class="font-body-sm text-text-secondary-light">Click to upload or drag &amp; drop</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento-style Helper Box -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="font-body-sm text-on-surface-variant">Vehicle details must match the physical registration document for Yaoundé regulatory compliance.</p>
+</div>
+<button class="w-full h-touch-target-min flex items-center justify-center gap-2 border-2 border-primary text-primary font-button rounded-xl hover:bg-primary/5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined">add_circle</span>
+                    Add Another Vehicle
+                </button>
+</div>
+<!-- Action Area -->
+<div class="pt-8">
+<button class="w-full h-touch-target-min bg-primary-container text-on-primary-container font-button text-lg rounded-xl shadow-lg hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2" type="submit">
+                    Finish Setup
+                    <span class="material-symbols-outlined">check_circle</span>
+</button>
+<p class="text-center mt-4 text-text-secondary-light font-body-sm">
+                    By finishing, you agree to our <a class="text-primary underline" href="#">Fleet Terms of Service</a>.
+                </p>
+</div>
+</form>
+<!-- Decorative Logistics Illustration Placeholder -->
+<div class="mt-16 opacity-30 pointer-events-none">
+<img class="w-full h-32 object-cover rounded-full grayscale" data-alt="A professional top-down photography of a modern logistics warehouse in Yaoundé, Cameroon. The image shows organized shipping containers and high-contrast yellow safety markings on the dark grey floor. Sunlight beams through high windows creating dramatic highlights. The overall aesthetic is clean, industrial, and highly efficient, matching a premium corporate utility design system with a professional light-mode atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArCN4ZekCs3t4NmDsathGs6z5RSR9bIuE0G1Hq0bfQ7RJEx0c064xpY2_ORRlnYdvDgEnFtPyOr08t0A4tGg1j2OmN_iKf-I0KteZLsQ4vlnf4br_3cVDHTCt8PKO82a0pRbG2cK-5VQ18TwtJgr0pgcUgtScnMLZhttBu8W2FmHgoi_nhl_RWqOC2B-gwzwk9jR1c_YSCza41IlRriNAmRkS2IoCwuc-3RyUV0kFP6LjuvQff_DjNN7w5B7ysFzTGpDWYX9N53qA">
+</div>
+</main>
+<!-- Bottom Navigation Anchor (Registration Active) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 h-20 pb-safe bg-bg-dark border-t border-border-dark">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-2 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assignment_ind</span>
+<span class="font-body-sm text-body-sm">Registration</span>
+</a>
+<a class="flex flex-col items-center justify-center text-text-secondary-dark px-4 py-2 hover:bg-surface-variant/20 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-body-sm text-body-sm">Support</span>
+</a>
+<a class="flex flex-col items-center justify-center text-text-secondary-dark px-4 py-2 hover:bg-surface-variant/20 active:scale-98 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-body-sm text-body-sm">Help</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for form submission
+        document.getElementById('vehicleForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Validating...';
+            btn.classList.add('opacity-80', 'pointer-events-none');
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Registration Complete';
+                btn.classList.replace('bg-primary-container', 'bg-success-momo');
+                btn.classList.replace('text-on-primary-container', 'text-white');
+                
+                // Add success effect
+                confettiEffect();
+            }, 1500);
+        });
+
+        function confettiEffect() {
+            console.log("Onboarding Success Triggered");
+            // Optional: Add simple visual feedback logic here
+        }
+
+        // Handle file upload visual feedback
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function(e) {
+                const fileName = e.target.files[0]?.name;
+                const container = this.parentElement;
+                if (fileName) {
+                    container.classList.add('border-success-momo', 'bg-success-momo/5');
+                    container.querySelector('p').textContent = `Uploaded: ${fileName}`;
+                    container.querySelector('span').textContent = 'verified';
+                    container.querySelector('span').classList.add('text-success-momo');
+                }
+            });
+        });
+    </script>
+</body></html>
