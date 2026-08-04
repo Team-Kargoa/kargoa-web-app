@@ -5,7 +5,9 @@ const XAF_FORMATTER = new Intl.NumberFormat('en-US', {
 const CAMEROON_E164 = /^\+237([62])(\d{2})(\d{2})(\d{2})(\d{2})$/;
 
 export function formatXaf(amount: number | string): string {
-  return `${XAF_FORMATTER.format(Number(amount))} XAF`;
+  if (amount === '' || !Number.isFinite(Number(amount))) return '—';
+  const num = Number(amount);
+  return `${XAF_FORMATTER.format(num)} XAF`;
 }
 
 export function formatPhone(e164: string): string {

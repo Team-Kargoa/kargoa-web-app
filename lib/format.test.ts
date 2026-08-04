@@ -12,6 +12,14 @@ describe('formatXaf', () => {
   it('renders zero without a sign', () => {
     expect(formatXaf(0)).toBe('0 XAF');
   });
+
+  it('guards against empty string input', () => {
+    expect(formatXaf('')).toBe('—');
+  });
+
+  it('guards against undefined input', () => {
+    expect(formatXaf(undefined as unknown as number)).toBe('—');
+  });
 });
 
 describe('formatPhone', () => {
