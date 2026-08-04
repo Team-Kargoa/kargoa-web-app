@@ -36,4 +36,20 @@ describe('landing page', () => {
       screen.getByRole('link', { name: 'Get Started Now' }),
     ).toBeInTheDocument();
   });
+
+  it('sends every call to action to its intended destination', () => {
+    render(<HomePage />);
+    expect(
+      screen.getByRole('link', { name: /Access Dashboard/ }),
+    ).toHaveAttribute('href', '/signin');
+    expect(
+      screen.getByRole('link', { name: /Join the Fleet/ }),
+    ).toHaveAttribute('href', '/register/fleet');
+    expect(
+      screen.getByRole('link', { name: 'Get Started Now' }),
+    ).toHaveAttribute('href', '/register');
+    expect(
+      screen.getByRole('link', { name: 'View Network Map' }),
+    ).toHaveAttribute('href', '#role-selection');
+  });
 });

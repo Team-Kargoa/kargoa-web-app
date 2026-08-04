@@ -130,13 +130,13 @@ export default function HomePage() {
                 Get Started Now
               </Link>
               {/*
-                The design draws "View Network Map" as a secondary button in
-                this panel, but no network-map screen exists in the plan's
-                route table. Point it at /register alongside the primary
-                button, since role selection is what this panel is for.
+                The design defines no network-map screen, so this button
+                scrolls to role selection (the design's own fallback
+                pattern — code.html uses the same #role-selection anchor
+                for its "Join the Fleet" button) until one exists.
               */}
               <Link
-                href="/register"
+                href="#role-selection"
                 className="h-14 md:px-8 border border-border-dark text-white font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
               >
                 View Network Map
