@@ -12,9 +12,8 @@ describe('partner registration hub', () => {
   });
 
   it.each([
-    ['I am a Fleet Owner', 'Register Fleet', '/register/fleet'],
     ['I am an Admin', 'Request Admin Access', '/signin'],
-    ['I am a Corporate Client', 'Open Business Account', '/register/business'],
+    ['I am a Fleet Owner', 'Register Fleet', '/register/fleet'],
   ])('offers the %s path', (title, cta, href) => {
     render(<RegisterPage />);
     expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();
@@ -22,6 +21,19 @@ describe('partner registration hub', () => {
       'href',
       href,
     );
+  });
+
+  it('renders exactly the two role cards and drops Corporate Client', () => {
+    render(<RegisterPage />);
+    expect(
+      screen.getAllByRole('heading', { level: 3 }),
+    ).toHaveLength(2);
+    expect(
+      screen.queryByRole('heading', { name: 'I am a Corporate Client' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: /Open Business Account/ }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows the network statistics', () => {
