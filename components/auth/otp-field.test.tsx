@@ -34,6 +34,7 @@ it('does not advance focus past the last box', () => {
   render(<OtpField name="code" />);
   const boxes = getBoxes();
 
+  boxes[5].focus();
   fireEvent.change(boxes[5], { target: { value: '9' } });
 
   expect(boxes[5]).toHaveFocus();
@@ -54,15 +55,13 @@ it('does not move focus back on Backspace when the current box still has a value
   render(<OtpField name="code" />);
   const boxes = getBoxes();
 
-  fireEvent.change(boxes[0], { target: { value: '1' } });
-  fireEvent.change(boxes[1], { target: { value: '2' } });
-  boxes[2].focus();
-  fireEvent.change(boxes[2], { target: { value: '3' } });
-  // box 2 now holds '3', pressing Backspace on box 3 (still holding its own
-  // value from this same keystroke's change) should not jump focus back.
-  fireEvent.keyDown(boxes[2], { key: 'Backspace' });
+  fireEvent.change(boxes[1], { target: { value: '5' } });
+  // Typing auto-advanced focus to box 2; move back to the still-filled box 1
+  // to simulate a user pressing Backspace there before the value is cleared.
+  boxes[1].focus();
+  fireEvent.keyDown(boxes[1], { key: 'Backspace' });
 
-  expect(boxes[2]).toHaveFocus();
+  expect(boxes[1]).toHaveFocus();
 });
 
 it('joins six typed digits into the hidden input value', () => {
