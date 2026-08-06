@@ -104,6 +104,35 @@ describe('FleetDriversPage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('renders the vehicle table column headers in the design’s uppercase, matching CATEGORY/ASSIGNED DRIVER/STATUS/ACTION', async () => {
+    render(await FleetDriversPage());
+    fireEvent.click(screen.getByRole('tab', { name: /vehicles/i }));
+
+    expect(
+      screen.getByRole('columnheader', { name: 'VEHICLE INFO' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'CATEGORY' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'ASSIGNED DRIVER' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'STATUS' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'ACTION' }),
+    ).toBeInTheDocument();
+  });
+
+  it('wraps the vehicle table in a horizontal-scroll container on narrow viewports', async () => {
+    const { container } = render(await FleetDriversPage());
+    fireEvent.click(screen.getByRole('tab', { name: /vehicles/i }));
+
+    const table = container.querySelector('table');
+    expect(table?.parentElement).toHaveClass('overflow-x-auto');
+  });
+
   it('switches back to driver cards when the Drivers tab is re-selected', async () => {
     render(await FleetDriversPage());
     fireEvent.click(screen.getByRole('tab', { name: /vehicles/i }));
