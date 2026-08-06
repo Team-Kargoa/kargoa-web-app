@@ -154,7 +154,7 @@ describe('confirmOtp', () => {
     expect(mockedRedirect).toHaveBeenCalledWith('/admin');
   });
 
-  it('redirects everyone else to /', async () => {
+  it('does not create a session and returns a plain-language error for a customer account', async () => {
     const tokens = {
       access_token: 'a',
       refresh_token: 'r',
@@ -163,11 +163,29 @@ describe('confirmOtp', () => {
     mockedVerifyOtp.mockResolvedValue(tokens);
     const formData = makeFormData();
 
-    await expect(confirmOtp(initialState, formData)).rejects.toThrow(
-      'REDIRECT:/',
-    );
+    await expect(confirmOtp(initialState, formData)).resolves.toEqual({
+      error:
+        'This number is registered as a customer account. The web portal is for fleet owners and administrators — please use the KmerCargo mobile app.',
+    });
+    expect(mockedCreateSession).not.toHaveBeenCalled();
+    expect(mockedRedirect).not.toHaveBeenCalled();
+  });
 
-    expect(mockedRedirect).toHaveBeenCalledWith('/');
+  it('does not create a session and names the driver role for a driver account', async () => {
+    const tokens = {
+      access_token: 'a',
+      refresh_token: 'r',
+      user: makeUser('driver'),
+    };
+    mockedVerifyOtp.mockResolvedValue(tokens);
+    const formData = makeFormData();
+
+    await expect(confirmOtp(initialState, formData)).resolves.toEqual({
+      error:
+        'This number is registered as a driver account. The web portal is for fleet owners and administrators — please use the KmerCargo mobile app.',
+    });
+    expect(mockedCreateSession).not.toHaveBeenCalled();
+    expect(mockedRedirect).not.toHaveBeenCalled();
   });
 
   it('returns the ApiError message on failure without creating a session', async () => {
