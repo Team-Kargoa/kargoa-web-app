@@ -8,9 +8,15 @@ const okResponse = (data: unknown) =>
   } as Response);
 
 describe('apiRequest', () => {
+  const originalApiUrl = process.env.NEXT_PUBLIC_API_URL;
+
   beforeEach(() => {
     process.env.NEXT_PUBLIC_API_URL = 'http://api.test/api/v1';
     global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    process.env.NEXT_PUBLIC_API_URL = originalApiUrl;
   });
 
   it('unwraps the envelope and returns data', async () => {
@@ -56,7 +62,17 @@ describe('apiRequest', () => {
     expect(init.headers.Authorization).toBeUndefined();
   });
 
-  it('throws ApiError carrying the backend message on an HTTP error', async () => {
+  it('resolves with undefined on a 204 No Content', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      status: 204,
+      json: () => Promise.reject(new Error('Unexpected end of JSON input')),
+    } as unknown as Response);
+
+    await expect(apiRequest('/auth/logout')).resolves.toBeUndefined();
+  });
+
+  it('throws ApiError carrying the backend message and status on an HTTP error', async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: false,
       status: 429,
@@ -68,12 +84,13 @@ describe('apiRequest', () => {
         }),
     } as Response);
 
-    await expect(apiRequest('/auth/otp/request')).rejects.toThrow(
-      new ApiError('Too many OTP requests.', 429),
-    );
+    await expect(apiRequest('/auth/otp/request')).rejects.toMatchObject({
+      message: 'Too many OTP requests.',
+      status: 429,
+    });
   });
 
-  it('throws ApiError when the envelope reports an error on a 200', async () => {
+  it('throws an ApiError instance carrying the status when the envelope reports an error on a 200', async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
       status: 200,
@@ -81,9 +98,15 @@ describe('apiRequest', () => {
         Promise.resolve({ status: 'error', data: {}, message: 'Invalid OTP.' }),
     } as Response);
 
-    await expect(apiRequest('/auth/otp/verify')).rejects.toThrow(
-      'Invalid OTP.',
-    );
+    let caught: unknown;
+    try {
+      await apiRequest('/auth/otp/verify');
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(caught).toBeInstanceOf(ApiError);
+    expect(caught).toMatchObject({ message: 'Invalid OTP.', status: 200 });
   });
 
   it('falls back to a generic message when the body is not JSON', async () => {
@@ -96,5 +119,29 @@ describe('apiRequest', () => {
     await expect(apiRequest('/auth/profile')).rejects.toThrow(
       'Request failed with status 500',
     );
+  });
+
+  it('falls back to a generic message when the error envelope omits one', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({ status: 'error', data: {} }),
+    } as unknown as Response);
+
+    await expect(apiRequest('/auth/profile')).rejects.toMatchObject({
+      message: 'Request failed',
+      status: 500,
+    });
+  });
+
+  it('wraps a network failure in an ApiError with status 0', async () => {
+    (global.fetch as jest.Mock).mockRejectedValue(
+      new TypeError('Failed to fetch'),
+    );
+
+    await expect(apiRequest('/auth/profile')).rejects.toMatchObject({
+      message: 'Unable to reach the server. Check your connection.',
+      status: 0,
+    });
   });
 });
