@@ -182,100 +182,105 @@ export function DriverVehicleManager({
         </section>
       ) : (
         <section className="bg-surface border border-border rounded-xl overflow-hidden shadow-sm">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-surface-high border-b border-border">
-                <th
-                  scope="col"
-                  className="p-4 font-mono text-xs text-text-secondary"
-                >
-                  Vehicle Info
-                </th>
-                <th
-                  scope="col"
-                  className="p-4 font-mono text-xs text-text-secondary"
-                >
-                  Category
-                </th>
-                <th
-                  scope="col"
-                  className="p-4 font-mono text-xs text-text-secondary"
-                >
-                  Assigned Driver
-                </th>
-                <th
-                  scope="col"
-                  className="p-4 font-mono text-xs text-text-secondary"
-                >
-                  Status
-                </th>
-                <th
-                  scope="col"
-                  className="p-4 font-mono text-xs text-text-secondary text-right"
-                >
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {vehicles.map((vehicle) => {
-                const meta = VEHICLE_STATUS_META[vehicle.status];
-                return (
-                  <tr
-                    key={vehicle.id}
-                    className="hover:bg-surface-container transition-colors"
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-surface-high border-b border-border">
+                  <th
+                    scope="col"
+                    className="p-4 font-mono text-xs text-text-secondary"
                   >
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          aria-hidden="true"
-                          className="w-10 h-10 rounded bg-primary-container/20 flex items-center justify-center"
-                        >
-                          <Truck className="h-5 w-5 text-primary" />
+                    VEHICLE INFO
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 font-mono text-xs text-text-secondary"
+                  >
+                    CATEGORY
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 font-mono text-xs text-text-secondary"
+                  >
+                    ASSIGNED DRIVER
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 font-mono text-xs text-text-secondary"
+                  >
+                    STATUS
+                  </th>
+                  <th
+                    scope="col"
+                    className="p-4 font-mono text-xs text-text-secondary text-right"
+                  >
+                    ACTION
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {vehicles.map((vehicle) => {
+                  const meta = VEHICLE_STATUS_META[vehicle.status];
+                  return (
+                    <tr
+                      key={vehicle.id}
+                      className="hover:bg-surface-container transition-colors"
+                    >
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div
+                            aria-hidden="true"
+                            className="w-10 h-10 rounded bg-primary-container/20 flex items-center justify-center"
+                          >
+                            <Truck className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-mono font-bold text-text-primary">
+                              {vehicle.plate}
+                            </p>
+                            <p className="text-sm text-text-secondary">
+                              {vehicle.model}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-mono font-bold text-text-primary">
-                            {vehicle.plate}
-                          </p>
-                          <p className="text-sm text-text-secondary">
-                            {vehicle.model}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-sm bg-surface-container text-text-secondary px-2 py-1 rounded">
-                        {vehicle.category}
-                      </span>
-                    </td>
-                    <td className="p-4 text-sm text-text-primary">
-                      {vehicle.assignedDriverName ?? (
-                        <span className="italic text-text-secondary">
-                          Unassigned
+                      </td>
+                      <td className="p-4">
+                        <span className="text-sm bg-surface-container text-text-secondary px-2 py-1 rounded">
+                          {vehicle.category}
                         </span>
-                      )}
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`text-xs border px-2 py-1 rounded ${meta.className}`}
-                      >
-                        {meta.label}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <button
-                        type="button"
-                        aria-label={`More actions for ${vehicle.plate}`}
-                        className="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors"
-                      >
-                        <MoreVertical aria-hidden="true" className="h-5 w-5" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="p-4 text-sm text-text-primary">
+                        {vehicle.assignedDriverName ?? (
+                          <span className="italic text-text-secondary">
+                            Unassigned
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`text-xs border px-2 py-1 rounded ${meta.className}`}
+                        >
+                          {meta.label}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        <button
+                          type="button"
+                          aria-label={`More actions for ${vehicle.plate}`}
+                          className="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors"
+                        >
+                          <MoreVertical
+                            aria-hidden="true"
+                            className="h-5 w-5"
+                          />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
 
