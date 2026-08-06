@@ -133,9 +133,11 @@ export function VehicleSetupForm({ categories }: VehicleSetupFormProps) {
             </button>
             <p className="text-center mt-4 text-text-secondary text-sm">
               By finishing, you agree to our{' '}
-              <a href="/terms" className="text-primary underline">
+              {/* /terms doesn't exist yet — non-interactive text rather than
+                  a dead link, until that route ships. */}
+              <span className="text-primary underline">
                 Fleet Terms of Service
-              </a>
+              </span>
               .
             </p>
           </div>

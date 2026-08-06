@@ -234,9 +234,11 @@ export function BusinessInfoForm() {
               I certify that all information provided is accurate according to
               Cameroon&apos;s Ministry of Transport regulations and
               KmerCargo&apos;s{' '}
-              <a href="/terms" className="text-primary-container underline">
+              {/* /terms doesn't exist yet — non-interactive text rather than
+                  a dead link, until that route ships. */}
+              <span className="text-primary-container underline">
                 Terms of Service
-              </a>
+              </span>
               .
             </label>
           </div>
