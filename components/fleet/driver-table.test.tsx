@@ -62,6 +62,13 @@ describe('DriverTable', () => {
     expect(screen.getByText('OU-445-BB')).toHaveClass('font-mono');
   });
 
+  it('renders a two-letter avatar initial per driver, consistent with the pending-verifications avatars', () => {
+    render(<DriverTable drivers={DRIVERS} />);
+    expect(screen.getByText('JN')).toBeInTheDocument();
+    expect(screen.getByText('SE')).toBeInTheDocument();
+    expect(screen.getByText('MT')).toBeInTheDocument();
+  });
+
   it('renders the on-trip status label', () => {
     render(<DriverTable drivers={DRIVERS} />);
     expect(screen.getByText('On-Trip')).toBeInTheDocument();
