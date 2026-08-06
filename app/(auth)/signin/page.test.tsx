@@ -49,6 +49,13 @@ describe('SignInPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the support info bar below the card', () => {
+    render(<SignInPage />);
+    expect(screen.getByText('System Online')).toBeInTheDocument();
+    expect(screen.getByText('v4.2.0')).toBeInTheDocument();
+    expect(screen.getByText('Yaoundé HQ')).toBeInTheDocument();
+  });
+
   it('renders the Request Admin Access link with a real destination', () => {
     render(<SignInPage />);
     expect(
