@@ -173,13 +173,17 @@ export default function FleetRegistrationPage() {
                   Login if you already have an account
                 </Link>
               </p>
-              <div className="flex gap-6 opacity-60">
+              <div className="flex flex-wrap justify-center gap-4 opacity-60">
                 {TRUST_ICONS.map(({ icon: Icon, label }) => (
-                  <Icon
-                    key={label}
-                    aria-hidden="true"
-                    className="h-5 w-5 text-text-secondary"
-                  />
+                  <div key={label} className="flex items-center gap-1.5">
+                    <Icon
+                      aria-hidden="true"
+                      className="h-5 w-5 text-text-secondary"
+                    />
+                    <span className="font-mono text-[10px] text-text-secondary">
+                      {label}
+                    </span>
+                  </div>
                 ))}
               </div>
             </div>
