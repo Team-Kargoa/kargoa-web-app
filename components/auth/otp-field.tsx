@@ -1,0 +1,85 @@
+'use client';
+
+import {
+  useId,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from 'react';
+
+const CODE_LENGTH = 6;
+
+export type OtpFieldProps = {
+  /** Form field name the joined 6-digit code is submitted under. */
+  name: string;
+  label?: string;
+};
+
+/**
+ * Six single-character boxes that behave like one field: typing a digit
+ * advances focus, Backspace on an empty box moves focus back, and the
+ * combined code is mirrored into a single hidden input under `name` so the
+ * server action reads it as one plain `code` value from FormData.
+ */
+export function OtpField({ name, label = 'Verification code' }: OtpFieldProps) {
+  const [digits, setDigits] = useState<string[]>(() =>
+    Array(CODE_LENGTH).fill(''),
+  );
+  const boxRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const legendId = useId();
+
+  function handleChange(index: number, event: ChangeEvent<HTMLInputElement>) {
+    const digit = event.target.value.replace(/\D/g, '').slice(-1);
+
+    setDigits((prev) => {
+      const next = [...prev];
+      next[index] = digit;
+      return next;
+    });
+
+    if (digit && index < CODE_LENGTH - 1) {
+      boxRefs.current[index + 1]?.focus();
+    }
+  }
+
+  function handleKeyDown(index: number, event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Backspace' && digits[index] === '' && index > 0) {
+      boxRefs.current[index - 1]?.focus();
+    }
+  }
+
+  function handleFocus(event: { target: HTMLInputElement }) {
+    event.target.select();
+  }
+
+  return (
+    <fieldset aria-labelledby={legendId} className="border-0 p-0 m-0">
+      <legend id={legendId} className="font-sans text-sm font-medium text-text-primary mb-2">
+        {label}
+      </legend>
+      <div className="flex items-center gap-2">
+        {digits.map((digit, index) => (
+          <input
+            key={index}
+            ref={(el) => {
+              boxRefs.current[index] = el;
+            }}
+            aria-label={`Digit ${index + 1} of ${CODE_LENGTH}`}
+            type="text"
+            inputMode="numeric"
+            pattern="\d*"
+            maxLength={1}
+            autoComplete="one-time-code"
+            value={digit}
+            onChange={(event) => handleChange(index, event)}
+            onKeyDown={(event) => handleKeyDown(index, event)}
+            onFocus={handleFocus}
+            className="w-12 h-14 md:w-14 md:h-16 text-center font-mono text-2xl rounded-xl border-2 border-border bg-surface text-text-primary transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-container/30"
+          />
+        ))}
+      </div>
+      <input type="hidden" name={name} value={digits.join('')} readOnly />
+    </fieldset>
+  );
+}
