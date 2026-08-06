@@ -14,6 +14,7 @@ import type {
   SettlementTransactionStatus,
 } from '@/lib/api/payments';
 import { formatXaf } from '@/lib/format';
+import { StatCard } from './stat-card';
 
 export type RevenueBreakdownProps = {
   summary: RevenueSummary;
@@ -49,6 +50,10 @@ export function RevenueBreakdown({
       </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Hand-rolled, not StatCard: this hero card has no equivalent for
+            its action buttons (Withdraw/History), its description
+            paragraph, or its 2/3-width span — StatCard has no slot for
+            any of those. */}
         <div className="lg:col-span-2 relative overflow-hidden rounded-xl bg-primary text-primary-foreground p-8 flex flex-col justify-between min-h-[280px] shadow-xl">
           <div>
             <div className="flex justify-between items-start gap-4">
@@ -89,20 +94,11 @@ export function RevenueBreakdown({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-high p-8 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <span className="font-sans text-text-secondary font-bold">
-                This Month&apos;s Gross
-              </span>
-              <TrendingUp aria-hidden="true" className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-mono text-3xl text-text-primary">
-                {formatXaf(summary.monthGross)}
-              </span>
-            </div>
-          </div>
+        <StatCard
+          label="This Month's Gross"
+          value={formatXaf(summary.monthGross)}
+          icon={TrendingUp}
+        >
           <div className="space-y-4 mt-8">
             <div className="flex justify-between items-center text-sm">
               <span className="text-text-secondary">
@@ -125,7 +121,7 @@ export function RevenueBreakdown({
               </span>
             </div>
           </div>
-        </div>
+        </StatCard>
       </div>
 
       <div className="flex flex-col gap-6">

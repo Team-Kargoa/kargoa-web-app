@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { TrendingUp, type LucideIcon } from 'lucide-react';
 
 export type StatCardTone = 'neutral' | 'gradient' | 'danger';
@@ -21,6 +22,9 @@ export type StatCardProps = {
   badge?: string;
   avatars?: StatCardAvatar[];
   footnote?: string;
+  /** Escape hatch for a card's extra content that has no dedicated prop
+   * (e.g. a breakdown of secondary figures), rendered after the footnote. */
+  children?: ReactNode;
 };
 
 const CARD_TONE_CLASSES: Record<StatCardTone, string> = {
@@ -67,6 +71,7 @@ export function StatCard({
   badge,
   avatars,
   footnote,
+  children,
 }: StatCardProps) {
   return (
     <div className={CARD_TONE_CLASSES[tone]}>
@@ -145,6 +150,8 @@ export function StatCard({
       {footnote && (
         <p className="mt-2 text-xs text-text-secondary">{footnote}</p>
       )}
+
+      {children}
     </div>
   );
 }
