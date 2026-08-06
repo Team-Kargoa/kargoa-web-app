@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Fragment,
   useId,
   useRef,
   useState,
@@ -14,6 +15,12 @@ export type OtpFieldProps = {
   /** Form field name the joined 6-digit code is submitted under. */
   name: string;
   label?: string;
+  /**
+   * Zero-based box index after which to render a decorative divider (e.g.
+   * `2` renders it between box 3 and box 4). Purely a screen-assembly
+   * concern — omitted by default so existing callers are unaffected.
+   */
+  dividerAfterIndex?: number;
 };
 
 /**
@@ -22,7 +29,11 @@ export type OtpFieldProps = {
  * combined code is mirrored into a single hidden input under `name` so the
  * server action reads it as one plain `code` value from FormData.
  */
-export function OtpField({ name, label = 'Verification code' }: OtpFieldProps) {
+export function OtpField({
+  name,
+  label = 'Verification code',
+  dividerAfterIndex,
+}: OtpFieldProps) {
   const [digits, setDigits] = useState<string[]>(() =>
     Array(CODE_LENGTH).fill(''),
   );
@@ -70,23 +81,31 @@ export function OtpField({ name, label = 'Verification code' }: OtpFieldProps) {
       </legend>
       <div className="flex items-center gap-2">
         {digits.map((digit, index) => (
-          <input
-            key={index}
-            ref={(el) => {
-              boxRefs.current[index] = el;
-            }}
-            aria-label={`Digit ${index + 1} of ${CODE_LENGTH}`}
-            type="text"
-            inputMode="numeric"
-            pattern="\d*"
-            maxLength={1}
-            autoComplete="one-time-code"
-            value={digit}
-            onChange={(event) => handleChange(index, event)}
-            onKeyDown={(event) => handleKeyDown(index, event)}
-            onFocus={handleFocus}
-            className="w-12 h-14 md:w-14 md:h-16 text-center font-mono text-2xl rounded-xl border-2 border-border bg-surface text-text-primary transition-all focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/30"
-          />
+          <Fragment key={index}>
+            <input
+              ref={(el) => {
+                boxRefs.current[index] = el;
+              }}
+              aria-label={`Digit ${index + 1} of ${CODE_LENGTH}`}
+              type="text"
+              inputMode="numeric"
+              pattern="\d*"
+              maxLength={1}
+              autoComplete="one-time-code"
+              value={digit}
+              onChange={(event) => handleChange(index, event)}
+              onKeyDown={(event) => handleKeyDown(index, event)}
+              onFocus={handleFocus}
+              className="w-12 h-14 md:w-14 md:h-16 text-center font-mono text-2xl rounded-xl border-2 border-border bg-surface text-text-primary transition-all focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/30"
+            />
+            {dividerAfterIndex === index && (
+              <span
+                data-testid="otp-divider"
+                aria-hidden="true"
+                className="w-2 h-[2px] bg-border rounded-full"
+              />
+            )}
+          </Fragment>
         ))}
       </div>
       <input type="hidden" name={name} value={digits.join('')} readOnly />
