@@ -29,6 +29,15 @@ const STATUS_META: Record<
 const TABLE_HEAD_CLASS =
   'px-6 py-4 font-mono text-text-secondary uppercase text-xs font-bold';
 
+/** Two-letter avatar fallback (first + last name initial), consistent with
+ * the pending-verifications avatar stack (e.g. "JD", "SM", "AA"). */
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const first = parts[0]?.charAt(0) ?? '';
+  const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : '';
+  return `${first}${last}`.toUpperCase();
+}
+
 export function DriverTable({ drivers }: DriverTableProps) {
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden shadow-sm">
@@ -78,7 +87,7 @@ export function DriverTable({ drivers }: DriverTableProps) {
                         aria-hidden="true"
                         className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-bold text-text-secondary shrink-0"
                       >
-                        {driver.name.charAt(0)}
+                        {getInitials(driver.name)}
                       </div>
                       <div>
                         <p className="font-bold text-text-primary">
