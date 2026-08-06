@@ -64,4 +64,20 @@ describe('SiteChrome', () => {
 
     expect(screen.getByRole('banner')).toBeInTheDocument();
   });
+
+  it.each(['/fleet', '/fleet/drivers', '/fleet/revenue'])(
+    'renders only the page content on the fleet owner route %s, which supplies its own navigation',
+    (pathname) => {
+      mockUsePathname.mockReturnValue(pathname);
+
+      render(
+        <SiteChrome>
+          <p>fleet content</p>
+        </SiteChrome>,
+      );
+
+      expect(screen.queryByRole('banner')).not.toBeInTheDocument();
+      expect(screen.getByText('fleet content')).toBeInTheDocument();
+    },
+  );
 });

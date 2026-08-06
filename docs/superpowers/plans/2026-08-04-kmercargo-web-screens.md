@@ -1254,16 +1254,32 @@ Every other type below is declared and exported by the module that owns it —
 export function getCategories(): Promise<VehicleCategory[]>;
 
 // onboarding.ts — live
+// CORRECTED 2026-08-06 against the running server with a real driver token.
+// The shapes originally written here were invented and did not exist on the
+// backend. A full end-to-end POST /onboarding/driver was verified live.
+export type DocumentType =
+  | 'license'
+  | 'national_id'
+  | 'live_selfie'
+  | 'vehicle_registration'
+  | 'dispute_evidence';
+export type FileType = 'image/jpeg' | 'image/png' | 'application/pdf';
+
 export type DriverSubmission = {
-  licence_number: string;
-  national_id: string;
-  vehicle_category_id: string;
-  plate_number: string;
+  license_document: string; // object_url from getUploadUrl
+  national_id_document: string;
+  live_selfie: string;
+  vehicle: {
+    plate_number: string; // max 20 chars
+    registration_doc: string;
+    category_id: string; // UUID of an active VehicleCategory
+  };
 };
 export function getUploadUrl(
   token: string,
-  documentType: string,
-): Promise<{ upload_url: string; file_key: string }>;
+  documentType: DocumentType,
+  fileType: FileType,
+): Promise<{ upload_url: string; object_url: string }>;
 export function submitDriver(
   token: string,
   payload: DriverSubmission,

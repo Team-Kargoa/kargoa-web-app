@@ -5,7 +5,13 @@ import Navbar from '@/components/Navbar';
 
 // Routes that render their own dedicated header (or none, by design) and
 // so must not also receive the marketing pill navbar.
-const CHROMELESS_ROUTES = ['/admin', '/signin', '/register/fleet', '/verify'];
+const CHROMELESS_ROUTES = [
+  '/admin',
+  '/signin',
+  '/register/fleet',
+  '/verify',
+  '/fleet',
+];
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
