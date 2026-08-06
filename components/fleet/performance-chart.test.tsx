@@ -5,12 +5,23 @@ import type { FleetPerformanceDay } from '@/lib/api/fleet';
 // recharts does not render in jsdom — it measures itself via ResizeObserver.
 // Reduce it to pass-through containers so we only assert what our own
 // component renders (day labels, peak highlight), not recharts internals.
+// BarChart's `data` prop is captured into a `data-chart-data` attribute
+// (JSON-stringified) so tests can assert the exact series that actually
+// reaches the chart, not just the parallel label row.
 jest.mock('recharts', () => ({
   ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),
-  BarChart: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
+  BarChart: ({
+    children,
+    data,
+  }: {
+    children: React.ReactNode;
+    data: unknown;
+  }) => (
+    <div data-testid="bar-chart" data-chart-data={JSON.stringify(data)}>
+      {children}
+    </div>
   ),
   Bar: () => null,
   Cell: () => null,
@@ -37,6 +48,13 @@ describe('PerformanceChart', () => {
     expect(
       screen.getByText('Weekly revenue trends across all active routes'),
     ).toBeInTheDocument();
+  });
+
+  it('passes the exact data series through to the underlying BarChart', () => {
+    render(<PerformanceChart data={DATA} />);
+    const chart = screen.getByTestId('bar-chart');
+    const receivedData = JSON.parse(chart.getAttribute('data-chart-data') ?? 'null');
+    expect(receivedData).toEqual(DATA);
   });
 
   it('renders all seven day labels Mon–Sun', () => {
