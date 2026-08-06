@@ -70,6 +70,13 @@ describe('FleetRegistrationPage', () => {
     ).toHaveAttribute('href', '/signin');
   });
 
+  it('renders a visible text label beside each trust icon', () => {
+    render(<FleetRegistrationPage />);
+    expect(screen.getByText('Secure Payment')).toBeVisible();
+    expect(screen.getByText('Real-time Tracking')).toBeVisible();
+    expect(screen.getByText('Compliance Verified')).toBeVisible();
+  });
+
   it('renders its own footer with real link destinations', () => {
     render(<FleetRegistrationPage />);
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
