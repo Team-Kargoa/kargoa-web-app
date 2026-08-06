@@ -1,5 +1,4 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useRouter } from 'next/navigation';
 import VerifyPage from './page';
 import { confirmOtp, sendOtp } from '../actions';
 
@@ -7,11 +6,9 @@ jest.mock('../actions', () => ({
   confirmOtp: jest.fn(),
   sendOtp: jest.fn(),
 }));
-jest.mock('next/navigation', () => ({ useRouter: jest.fn() }));
 
 const mockedConfirmOtp = confirmOtp as jest.Mock;
 const mockedSendOtp = sendOtp as jest.Mock;
-const mockBack = jest.fn();
 
 function fillAllBoxes(value = '482915') {
   const boxes = screen.getAllByRole('textbox');
@@ -22,7 +19,6 @@ function fillAllBoxes(value = '482915') {
 
 beforeEach(() => {
   jest.clearAllMocks();
-  (useRouter as jest.Mock).mockReturnValue({ back: mockBack });
   mockedConfirmOtp.mockResolvedValue({ error: null });
   mockedSendOtp.mockResolvedValue({ error: null });
 });
@@ -49,17 +45,12 @@ describe('VerifyPage', () => {
     expect(screen.getByText('+237 6 XX XX XX 67')).toBeInTheDocument();
   });
 
-  it('renders a back button', async () => {
+  it('renders a back-to-home link pointing at the landing page', async () => {
     await renderVerify({ phone: '+237691234567', purpose: 'login' });
-    expect(
-      screen.getByRole('button', { name: /go back/i }),
-    ).toBeInTheDocument();
-  });
-
-  it('navigates back when the back button is clicked', async () => {
-    await renderVerify({ phone: '+237691234567', purpose: 'login' });
-    fireEvent.click(screen.getByRole('button', { name: /go back/i }));
-    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('link', { name: /back to home/i })).toHaveAttribute(
+      'href',
+      '/',
+    );
   });
 
   it('renders the verify submit button and the dash divider', async () => {

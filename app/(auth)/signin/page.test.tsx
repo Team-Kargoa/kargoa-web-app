@@ -56,6 +56,14 @@ describe('SignInPage', () => {
     expect(screen.getByText('Yaoundé HQ')).toBeInTheDocument();
   });
 
+  it('renders a back-to-home link pointing at the landing page', () => {
+    render(<SignInPage />);
+    expect(screen.getByRole('link', { name: /back to home/i })).toHaveAttribute(
+      'href',
+      '/',
+    );
+  });
+
   it('renders the Request Admin Access link with a real destination', () => {
     render(<SignInPage />);
     expect(

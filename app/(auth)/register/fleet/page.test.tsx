@@ -61,6 +61,14 @@ describe('FleetRegistrationPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders a back-to-home link pointing at the landing page', () => {
+    render(<FleetRegistrationPage />);
+    expect(screen.getByRole('link', { name: /back to home/i })).toHaveAttribute(
+      'href',
+      '/',
+    );
+  });
+
   it('renders the login link for existing accounts with a real destination', () => {
     render(<FleetRegistrationPage />);
     expect(
