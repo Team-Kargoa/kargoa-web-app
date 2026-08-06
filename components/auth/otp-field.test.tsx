@@ -118,3 +118,26 @@ it('keeps each box independent when they are filled out of order', () => {
   expect(boxes[1]).toHaveValue('4');
   expect(boxes[2]).toHaveValue('7');
 });
+
+it('renders no divider by default', () => {
+  const { container } = render(<OtpField name="code" />);
+  expect(container.querySelector('[data-testid="otp-divider"]')).toBeNull();
+});
+
+it('renders a decorative divider between the given box index and the next one', () => {
+  const { container } = render(<OtpField name="code" dividerAfterIndex={2} />);
+  const boxes = getBoxes();
+  const divider = container.querySelector('[data-testid="otp-divider"]');
+
+  expect(divider).not.toBeNull();
+  expect(divider).toHaveAttribute('aria-hidden', 'true');
+  // Divider must sit in the DOM strictly between box 3 (index 2) and box 4 (index 3).
+  expect(
+    boxes[2].compareDocumentPosition(divider as Node) &
+      Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
+  expect(
+    boxes[3].compareDocumentPosition(divider as Node) &
+      Node.DOCUMENT_POSITION_PRECEDING,
+  ).toBeTruthy();
+});
