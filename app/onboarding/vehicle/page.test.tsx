@@ -61,9 +61,7 @@ describe('OnboardingVehiclePage', () => {
 
   it('renders one category option per live vehicle category, none of the design’s hardcoded MINI/STD/LARGE trio', async () => {
     render(await OnboardingVehiclePage());
-    expect(
-      screen.getByRole('radio', { name: /pickup/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /pickup/i })).toBeInTheDocument();
     expect(
       screen.getByRole('radio', { name: /mini truck/i }),
     ).toBeInTheDocument();
@@ -76,14 +74,32 @@ describe('OnboardingVehiclePage', () => {
     expect(screen.queryByText('MINI')).not.toBeInTheDocument();
   });
 
-  it('renders the insurance document upload control', async () => {
+  it('renders the insurance document upload control and reflects a selected file', async () => {
     render(await OnboardingVehiclePage());
     expect(
       screen.getByText('Insurance Document (PDF/JPG)'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText('Upload insurance document for vehicle 1'),
-    ).toBeInTheDocument();
+
+    const input = screen.getByLabelText(
+      'Upload insurance document for vehicle 1',
+    );
+    expect(input).toBeInTheDocument();
+    const file = new File(['x'], 'insurance.pdf', { type: 'application/pdf' });
+    fireEvent.change(input, { target: { files: [file] } });
+    expect(screen.getByText('insurance.pdf')).toBeInTheDocument();
+  });
+
+  it('switches the selected vehicle category when another option is chosen', async () => {
+    render(await OnboardingVehiclePage());
+    const pickup = screen.getByRole('radio', { name: /pickup/i });
+    const largeTruck = screen.getByRole('radio', { name: /large truck/i });
+    expect(pickup).toBeChecked();
+    expect(largeTruck).not.toBeChecked();
+
+    fireEvent.click(largeTruck);
+
+    expect(largeTruck).toBeChecked();
+    expect(pickup).not.toBeChecked();
   });
 
   it('adds another vehicle entry card when Add Another Vehicle is clicked', async () => {
@@ -120,6 +136,9 @@ describe('OnboardingVehiclePage', () => {
 
   it('navigates to the fleet dashboard on Finish Setup', async () => {
     render(await OnboardingVehiclePage());
+    fireEvent.change(screen.getByLabelText('License Plate Number'), {
+      target: { value: 'LT-123-AA' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /finish setup/i }));
     expect(mockPush).toHaveBeenCalledWith('/fleet');
   });
