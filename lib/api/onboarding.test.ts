@@ -16,9 +16,9 @@ describe('getUploadUrl', () => {
     const result = { upload_url: 'https://cdn.example/put', file_key: 'k-1' };
     mockedRequest.mockResolvedValue(result);
 
-    await expect(
-      getUploadUrl('jwt-abc', 'drivers_licence'),
-    ).resolves.toBe(result);
+    await expect(getUploadUrl('jwt-abc', 'drivers_licence')).resolves.toBe(
+      result,
+    );
 
     expect(mockedRequest).toHaveBeenCalledWith('/onboarding/upload-url', {
       method: 'POST',
