@@ -17,10 +17,18 @@ function errorMessage(error: unknown): string {
   return GENERIC_ERROR;
 }
 
-function redirectTarget(role: Role): string {
-  if (role === 'fleet_owner') return '/fleet';
-  if (role === 'admin') return '/admin';
-  return '/';
+type PortalRole = Extract<Role, 'fleet_owner' | 'admin'>;
+
+function isPortalRole(role: Role): role is PortalRole {
+  return role === 'fleet_owner' || role === 'admin';
+}
+
+function redirectTarget(role: PortalRole): string {
+  return role === 'fleet_owner' ? '/fleet' : '/admin';
+}
+
+function unsupportedRoleError(role: Role): string {
+  return `This number is registered as a ${role} account. The web portal is for fleet owners and administrators — please use the KmerCargo mobile app.`;
 }
 
 export async function sendOtp(
@@ -70,6 +78,11 @@ export async function confirmOtp(
     return { error: errorMessage(error) };
   }
 
+  const userRole = tokens.user.role;
+  if (!isPortalRole(userRole)) {
+    return { error: unsupportedRoleError(userRole) };
+  }
+
   await createSession(tokens);
-  redirect(redirectTarget(tokens.user.role));
+  redirect(redirectTarget(userRole));
 }
