@@ -94,34 +94,19 @@ export function RevenueBreakdown({
           </div>
         </div>
 
+        {/* Composed entirely from StatCard's existing typed props — no
+            children escape hatch. The bar rides `progress` (netPayoutPercent
+            of 100) and the trip-volume line rides `trend`. Commission has no
+            dedicated prop, so it's folded into `footnote` as one combined
+            string rather than the original two-column row. */}
         <StatCard
           label="This Month's Gross"
           value={formatXaf(summary.monthGross)}
           icon={TrendingUp}
-        >
-          <div className="space-y-4 mt-8">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-text-secondary">
-                Fleet Commission ({summary.commissionRatePercent}%)
-              </span>
-              <span className="font-mono text-error">
-                {formatXaf(summary.commissionAmount)}
-              </span>
-            </div>
-            <div className="w-full bg-outline-variant h-2 rounded-full overflow-hidden">
-              <div
-                className="bg-primary h-full"
-                style={{ width: `${summary.netPayoutPercent}%` }}
-              />
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-text-secondary">Trip Volume</span>
-              <span className="font-mono text-success-momo">
-                {summary.tripVolumeTrend}
-              </span>
-            </div>
-          </div>
-        </StatCard>
+          progress={{ current: summary.netPayoutPercent, max: 100 }}
+          trend={summary.tripVolumeTrend}
+          footnote={`Fleet Commission (${summary.commissionRatePercent}%): ${formatXaf(summary.commissionAmount)}`}
+        />
       </div>
 
       <div className="flex flex-col gap-6">
