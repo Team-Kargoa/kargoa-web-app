@@ -1,19 +1,40 @@
 import { apiRequest } from './client';
 
+// Verified live against the running backend (2026-08-06) with a real
+// driver token. The two ChoiceFields on POST /onboarding/upload-url
+// reject anything outside these exact sets.
+export type DocumentType =
+  | 'license'
+  | 'national_id'
+  | 'live_selfie'
+  | 'vehicle_registration'
+  | 'dispute_evidence';
+
+export type FileType = 'image/jpeg' | 'image/png' | 'application/pdf';
+
+// Verified live against the running backend (2026-08-06): the real
+// DriverSubmissionSerializer body is nested. Document fields are the
+// object_url strings returned by the upload-url call, not licence
+// numbers, and vehicle fields sit under a nested `vehicle` object.
 export type DriverSubmission = {
-  licence_number: string;
-  national_id: string;
-  vehicle_category_id: string;
-  plate_number: string;
+  license_document: string;
+  national_id_document: string;
+  live_selfie: string;
+  vehicle: {
+    plate_number: string;
+    registration_doc: string;
+    category_id: string;
+  };
 };
 
 export function getUploadUrl(
   token: string,
-  documentType: string,
-): Promise<{ upload_url: string; file_key: string }> {
+  documentType: DocumentType,
+  fileType: FileType,
+): Promise<{ upload_url: string; object_url: string }> {
   return apiRequest('/onboarding/upload-url', {
     method: 'POST',
-    body: { document_type: documentType },
+    body: { document_type: documentType, file_type: fileType },
     token,
   });
 }
