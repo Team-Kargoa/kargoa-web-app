@@ -36,10 +36,7 @@ export async function apiRequest<T>(
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
   } catch {
-    throw new ApiError(
-      'Unable to reach the server. Check your connection.',
-      0,
-    );
+    throw new ApiError('Unable to reach the server. Check your connection.', 0);
   }
 
   const envelope = await response
