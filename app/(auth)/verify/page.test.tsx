@@ -147,4 +147,17 @@ describe('VerifyPage', () => {
     expect(formData.get('phone_number')).toBe('');
     expect(formData.get('purpose')).toBe('login');
   });
+
+  it('falls back to login purpose when the query string carries an unrecognised value', async () => {
+    await renderVerify({
+      phone: '+237691234567',
+      purpose: 'not-a-real-purpose',
+    });
+    fillAllBoxes('482915');
+    fireEvent.click(screen.getByRole('button', { name: /verify & continue/i }));
+
+    await waitFor(() => expect(mockedConfirmOtp).toHaveBeenCalledTimes(1));
+    const [, formData] = mockedConfirmOtp.mock.calls[0];
+    expect(formData.get('purpose')).toBe('login');
+  });
 });
