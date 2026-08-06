@@ -63,6 +63,22 @@ describe('verifyOtp', () => {
       }),
     );
   });
+
+  it('omits the role key entirely when not registering', async () => {
+    // toHaveBeenCalledWith uses toEqual semantics, which treat a missing key
+    // and an explicit `role: undefined` as equal — so this asserts the key
+    // set directly to actually bind to the "omit, don't send undefined" rule.
+    mockedRequest.mockResolvedValue({});
+    await verifyOtp({
+      phoneNumber: '+237691234567',
+      code: '482931',
+      purpose: 'login',
+    });
+    const [, options] = mockedRequest.mock.calls[0];
+    const body = (options as { body: Record<string, unknown> }).body;
+    expect(Object.keys(body)).not.toContain('role');
+    expect(Object.prototype.hasOwnProperty.call(body, 'role')).toBe(false);
+  });
 });
 
 describe('getProfile', () => {
