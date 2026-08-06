@@ -10,7 +10,7 @@ export type RoleCardProps = {
   benefits?: string[];
   ctaLabel: string;
   ctaHref: string;
-  tone: 'light' | 'amber' | 'primary' | 'secondary' | 'tertiary';
+  tone: 'light' | 'amber' | 'primary' | 'secondary';
 };
 
 type ToneClasses = {
@@ -72,14 +72,6 @@ const TONE_CLASSES: Record<RoleCardProps['tone'], ToneClasses> = {
     icon: 'text-secondary-container-foreground',
     cta: 'w-full h-14 bg-secondary text-secondary-foreground font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform',
     benefitIcon: 'text-secondary',
-  },
-  tertiary: {
-    ...NEUTRAL_CARD_BASE,
-    iconWrap:
-      'w-12 h-12 bg-tertiary-container rounded-lg flex items-center justify-center',
-    icon: 'text-tertiary-container-foreground',
-    cta: 'w-full h-14 bg-tertiary text-tertiary-foreground font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform',
-    benefitIcon: 'text-tertiary',
   },
 };
 

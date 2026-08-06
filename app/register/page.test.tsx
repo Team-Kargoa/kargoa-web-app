@@ -25,9 +25,7 @@ describe('partner registration hub', () => {
 
   it('renders exactly the two role cards and drops Corporate Client', () => {
     render(<RegisterPage />);
-    expect(
-      screen.getAllByRole('heading', { level: 3 }),
-    ).toHaveLength(2);
+    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(2);
     expect(
       screen.queryByRole('heading', { name: 'I am a Corporate Client' }),
     ).not.toBeInTheDocument();

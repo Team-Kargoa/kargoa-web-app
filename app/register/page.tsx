@@ -1,24 +1,9 @@
 import Image from 'next/image';
-import { Truck, ShieldCheck, Building2 } from 'lucide-react';
+import { Truck, ShieldCheck } from 'lucide-react';
 import { RoleCard, type RoleCardProps } from '@/components/marketing/role-card';
 import Footer from '@/components/Footer';
 
 const ROLE_CARDS: RoleCardProps[] = [
-  {
-    eyebrow: '',
-    icon: Truck,
-    title: 'I am a Fleet Owner',
-    description:
-      'Manage multiple trucks across Cameroon with real-time tracking, automated dispatching, and optimized route planning.',
-    benefits: [
-      'Multi-vehicle fleet dashboard',
-      'Fuel consumption analytics',
-      'Guaranteed payment cycles',
-    ],
-    ctaLabel: 'Register Fleet',
-    ctaHref: '/register/fleet',
-    tone: 'primary',
-  },
   {
     eyebrow: '',
     icon: ShieldCheck,
@@ -36,18 +21,18 @@ const ROLE_CARDS: RoleCardProps[] = [
   },
   {
     eyebrow: '',
-    icon: Building2,
-    title: 'I am a Corporate Client',
+    icon: Truck,
+    title: 'I am a Fleet Owner',
     description:
-      'Move bulk cargo with precision. Get transparent pricing, instant invoicing, and priority shipping for your business.',
+      'Manage multiple trucks across Cameroon with real-time tracking, automated dispatching, and optimized route planning.',
     benefits: [
-      'Bulk shipping discounts',
-      'Tax-compliant digital receipts',
-      'Dedicated account manager',
+      'Multi-vehicle fleet dashboard',
+      'Fuel consumption analytics',
+      'Guaranteed payment cycles',
     ],
-    ctaLabel: 'Open Business Account',
-    ctaHref: '/register/business',
-    tone: 'tertiary',
+    ctaLabel: 'Register Fleet',
+    ctaHref: '/register/fleet',
+    tone: 'primary',
   },
 ];
 
@@ -88,7 +73,7 @@ export default function RegisterPage() {
 
         {/* Path selection */}
         <section className="px-4 md:px-8 -mt-12 relative z-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-6xl mx-auto">
             {ROLE_CARDS.map((card) => (
               <RoleCard key={card.title} {...card} />
             ))}
