@@ -123,15 +123,17 @@ describe('OnboardingVehiclePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the Finish Setup action and the Fleet Terms of Service link', async () => {
+  it('renders the Finish Setup action and the non-linked Fleet Terms of Service text', async () => {
     render(await OnboardingVehiclePage());
     expect(
       screen.getByRole('button', { name: /finish setup/i }),
     ).toBeInTheDocument();
-    const link = screen.getByRole('link', {
-      name: 'Fleet Terms of Service',
-    });
-    expect(link).toHaveAttribute('href', '/terms');
+    // /terms doesn't exist yet, so it must not be a real link (dead-href
+    // regression guard — see task-3.3 fix-round-1).
+    expect(screen.getByText('Fleet Terms of Service')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Fleet Terms of Service' }),
+    ).not.toBeInTheDocument();
   });
 
   it('navigates to the fleet dashboard on Finish Setup', async () => {

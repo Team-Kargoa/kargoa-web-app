@@ -139,8 +139,12 @@ describe('OnboardingBusinessPage', () => {
     expect(checkbox).toBeInTheDocument();
     expect(checkbox).not.toBeChecked();
 
-    const link = screen.getByRole('link', { name: 'Terms of Service' });
-    expect(link).toHaveAttribute('href', '/terms');
+    // /terms doesn't exist yet, so it must not be a real link (dead-href
+    // regression guard — see task-3.3 fix-round-1).
+    expect(screen.getByText('Terms of Service')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Terms of Service' }),
+    ).not.toBeInTheDocument();
 
     fireEvent.click(checkbox);
     expect(checkbox).toBeChecked();
