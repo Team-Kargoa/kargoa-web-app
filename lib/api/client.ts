@@ -28,11 +28,19 @@ export async function apiRequest<T>(
   };
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(`${BASE_URL()}${path}`, {
-    method,
-    headers,
-    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${BASE_URL()}${path}`, {
+      method,
+      headers,
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    });
+  } catch {
+    throw new ApiError(
+      'Unable to reach the server. Check your connection.',
+      0,
+    );
+  }
 
   const envelope = await response
     .json()
@@ -40,6 +48,11 @@ export async function apiRequest<T>(
     .catch(() => null);
 
   if (!envelope) {
+    // No body (e.g. 204 No Content) is a success if the request succeeded;
+    // an unparsable body on a failed request is a generic HTTP failure.
+    if (response.ok) {
+      return undefined as T;
+    }
     throw new ApiError(
       `Request failed with status ${response.status}`,
       response.status,
@@ -47,7 +60,7 @@ export async function apiRequest<T>(
   }
 
   if (!response.ok || envelope.status === 'error') {
-    throw new ApiError(envelope.message, response.status);
+    throw new ApiError(envelope.message ?? 'Request failed', response.status);
   }
 
   return envelope.data;
