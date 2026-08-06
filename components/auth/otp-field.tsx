@@ -38,6 +38,10 @@ export function OtpField({ name, label = 'Verification code' }: OtpFieldProps) {
       return next;
     });
 
+    // The `index < CODE_LENGTH - 1` guard documents intent (don't advance
+    // past the last box) but is defensively redundant: boxRefs.current[6]
+    // is undefined for a 6-element array, so the optional-chained .focus()
+    // below already no-ops at the boundary with or without this check.
     if (digit && index < CODE_LENGTH - 1) {
       boxRefs.current[index + 1]?.focus();
     }
@@ -81,7 +85,7 @@ export function OtpField({ name, label = 'Verification code' }: OtpFieldProps) {
             onChange={(event) => handleChange(index, event)}
             onKeyDown={(event) => handleKeyDown(index, event)}
             onFocus={handleFocus}
-            className="w-12 h-14 md:w-14 md:h-16 text-center font-mono text-2xl rounded-xl border-2 border-border bg-surface text-text-primary transition-all focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-container/30"
+            className="w-12 h-14 md:w-14 md:h-16 text-center font-mono text-2xl rounded-xl border-2 border-border bg-surface text-text-primary transition-all focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/30"
           />
         ))}
       </div>
