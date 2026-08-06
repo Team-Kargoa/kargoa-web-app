@@ -69,6 +69,15 @@ describe('FleetRevenuePage', () => {
     expect(screen.getByText('+12% vs last mo.')).toBeInTheDocument();
   });
 
+  it("renders this month's gross card through the shared StatCard component", async () => {
+    render(await FleetRevenuePage());
+    // Pins the fix-round-1 refactor: this card now goes through StatCard
+    // rather than hand-rolled markup, so it inherits StatCard's label
+    // treatment (uppercase, tracking-wider) instead of its old plain-case
+    // styling.
+    expect(screen.getByText("This Month's Gross")).toHaveClass('uppercase');
+  });
+
   it('renders the Settlement Breakdown table with driver, trip id, status and amounts', async () => {
     render(await FleetRevenuePage());
     expect(
