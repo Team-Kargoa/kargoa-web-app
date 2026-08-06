@@ -79,10 +79,6 @@ it('joins six typed digits into the hidden input value', () => {
 
 it('labels each box for screen reader users', () => {
   render(<OtpField name="code" />);
-  expect(
-    screen.getByLabelText(/digit 1 of 6/i),
-  ).toBeInTheDocument();
-  expect(
-    screen.getByLabelText(/digit 6 of 6/i),
-  ).toBeInTheDocument();
+  expect(screen.getByLabelText(/digit 1 of 6/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/digit 6 of 6/i)).toBeInTheDocument();
 });

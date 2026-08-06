@@ -43,7 +43,10 @@ export function OtpField({ name, label = 'Verification code' }: OtpFieldProps) {
     }
   }
 
-  function handleKeyDown(index: number, event: KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(
+    index: number,
+    event: KeyboardEvent<HTMLInputElement>,
+  ) {
     if (event.key === 'Backspace' && digits[index] === '' && index > 0) {
       boxRefs.current[index - 1]?.focus();
     }
@@ -55,7 +58,10 @@ export function OtpField({ name, label = 'Verification code' }: OtpFieldProps) {
 
   return (
     <fieldset aria-labelledby={legendId} className="border-0 p-0 m-0">
-      <legend id={legendId} className="font-sans text-sm font-medium text-text-primary mb-2">
+      <legend
+        id={legendId}
+        className="font-sans text-sm font-medium text-text-primary mb-2"
+      >
         {label}
       </legend>
       <div className="flex items-center gap-2">
