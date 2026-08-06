@@ -1,4 +1,4 @@
-import { formatXaf, formatPhone } from './format';
+import { formatXaf, formatPhone, maskPhone } from './format';
 
 describe('formatXaf', () => {
   it('groups thousands and appends the currency code', () => {
@@ -29,5 +29,15 @@ describe('formatPhone', () => {
 
   it('returns unrecognised input unchanged', () => {
     expect(formatPhone('12345')).toBe('12345');
+  });
+});
+
+describe('maskPhone', () => {
+  it('reveals only the leading digit and the final pair of a Cameroon number', () => {
+    expect(maskPhone('+237691234567')).toBe('+237 6 XX XX XX 67');
+  });
+
+  it('returns unrecognised input unchanged', () => {
+    expect(maskPhone('12345')).toBe('12345');
   });
 });
