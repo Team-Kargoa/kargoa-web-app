@@ -30,10 +30,10 @@ type ToneClasses = {
  * everything except `amber`, whose whole card is tinted.
  */
 const NEUTRAL_CARD_BASE = {
-  card: 'bg-white rounded-xl p-6 md:p-8 border border-border shadow-sm',
+  card: 'bg-white rounded-xl p-6 border border-border shadow-sm',
   eyebrow: 'font-mono text-xs font-bold tracking-wide text-text-secondary',
   title: 'font-heading text-xl font-semibold text-text-primary mb-2',
-  description: 'font-sans text-sm text-text-secondary mb-7',
+  description: 'font-sans text-sm text-text-secondary mb-6',
 };
 
 const TONE_CLASSES: Record<RoleCardProps['tone'], ToneClasses> = {
@@ -46,14 +46,14 @@ const TONE_CLASSES: Record<RoleCardProps['tone'], ToneClasses> = {
     benefitIcon: 'text-success-momo',
   },
   amber: {
-    card: 'bg-primary-container rounded-xl p-6 md:p-8 shadow-sm',
+    card: 'bg-primary-container rounded-xl p-6 shadow-sm',
     iconWrap:
       'w-12 h-12 bg-on-primary-container/10 rounded-lg flex items-center justify-center',
     icon: 'text-on-primary-container',
     eyebrow:
       'font-mono text-xs font-bold tracking-wide text-on-primary-container/80',
     title: 'font-heading text-xl font-semibold text-on-primary-container mb-2',
-    description: 'font-sans text-sm text-on-primary-container/90 mb-7',
+    description: 'font-sans text-sm text-on-primary-container/90 mb-6',
     cta: 'w-full h-14 bg-on-primary-container text-primary-container font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform',
     benefitIcon: 'text-on-primary-container',
   },
@@ -98,7 +98,7 @@ export function RoleCard({
       <h3 className={classes.title}>{title}</h3>
       <p className={classes.description}>{description}</p>
       {benefits && benefits.length > 0 && (
-        <ul className="space-y-3 mb-7">
+        <ul className="space-y-3 mb-6">
           {benefits.map((benefit) => (
             <li
               key={benefit}
