@@ -128,16 +128,12 @@ export default function FleetRegistrationPage() {
               onSubmit={(event) => {
                 submittedRef.current = true;
                 const formData = new FormData(event.currentTarget);
-                phoneRef.current =
-                  (formData.get('phone_number') as string) ?? '';
+                phoneRef.current = formData.get('phone_number') as string;
               }}
             >
               <input type="hidden" name="purpose" value={PURPOSE} />
               <div className="space-y-2">
-                <PhoneField
-                  name="phone_number"
-                  label="Business Phone Number"
-                />
+                <PhoneField name="phone_number" label="Business Phone Number" />
                 <p className="text-xs font-sans text-text-secondary italic">
                   Security: We will send a 6-digit verification code to this
                   number.

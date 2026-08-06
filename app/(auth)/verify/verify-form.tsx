@@ -1,8 +1,15 @@
 'use client';
 
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Truck, ArrowLeft, ArrowRight, Loader2, Lock, ShieldCheck } from 'lucide-react';
+import {
+  Truck,
+  ArrowLeft,
+  ArrowRight,
+  Loader2,
+  Lock,
+  ShieldCheck,
+} from 'lucide-react';
 import { confirmOtp, sendOtp } from '../actions';
 import { OtpField } from '@/components/auth/otp-field';
 import { maskPhone } from '@/lib/format';
@@ -35,14 +42,9 @@ export function VerifyForm({ phone, purpose, role }: VerifyFormProps) {
   const [resendState, resendAction, resendPending] = useActionState(sendOtp, {
     error: null,
   });
-  const [resendConfirmed, setResendConfirmed] = useState(false);
-  const resendSubmittedRef = useRef(false);
-
-  useEffect(() => {
-    if (resendSubmittedRef.current && !resendPending) {
-      if (resendState.error === null) setResendConfirmed(true);
-    }
-  }, [resendState, resendPending]);
+  const [hasResent, setHasResent] = useState(false);
+  const resendConfirmed =
+    hasResent && !resendPending && resendState.error === null;
 
   return (
     <>
@@ -60,7 +62,10 @@ export function VerifyForm({ phone, purpose, role }: VerifyFormProps) {
             onClick={() => router.back()}
             className="p-2 rounded-full hover:bg-surface-container transition-all active:scale-95"
           >
-            <ArrowLeft aria-hidden="true" className="h-5 w-5 text-text-secondary" />
+            <ArrowLeft
+              aria-hidden="true"
+              className="h-5 w-5 text-text-secondary"
+            />
           </button>
         </div>
       </header>
@@ -104,20 +109,17 @@ export function VerifyForm({ phone, purpose, role }: VerifyFormProps) {
               >
                 <span>Verify &amp; Continue</span>
                 {pending ? (
-                  <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
+                  <Loader2
+                    aria-hidden="true"
+                    className="h-5 w-5 animate-spin"
+                  />
                 ) : (
                   <ArrowRight aria-hidden="true" className="h-5 w-5" />
                 )}
               </button>
             </form>
 
-            <form
-              action={resendAction}
-              onSubmit={() => {
-                resendSubmittedRef.current = true;
-                setResendConfirmed(false);
-              }}
-            >
+            <form action={resendAction} onSubmit={() => setHasResent(true)}>
               <input type="hidden" name="phone_number" value={phone} />
               <input type="hidden" name="purpose" value={purpose} />
               <button

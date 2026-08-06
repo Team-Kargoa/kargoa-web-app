@@ -54,7 +54,7 @@ export default function SignInPage() {
           onSubmit={(event) => {
             submittedRef.current = true;
             const formData = new FormData(event.currentTarget);
-            phoneRef.current = (formData.get('phone_number') as string) ?? '';
+            phoneRef.current = formData.get('phone_number') as string;
           }}
         >
           <input type="hidden" name="purpose" value={PURPOSE} />

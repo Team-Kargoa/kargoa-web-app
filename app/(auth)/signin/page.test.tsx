@@ -19,7 +19,9 @@ describe('SignInPage', () => {
   it('renders the admin portal branding and copy', () => {
     render(<SignInPage />);
 
-    expect(screen.getByRole('heading', { name: 'KmerCargo' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'KmerCargo' }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: 'Admin Portal' }),
     ).toBeInTheDocument();
@@ -58,7 +60,9 @@ describe('SignInPage', () => {
     render(<SignInPage />);
     const input = screen.getByLabelText('Enter Admin Code or Password');
     fireEvent.change(input, { target: { value: '+237691234567' } });
-    fireEvent.click(screen.getByRole('button', { name: /sign in to dashboard/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /sign in to dashboard/i }),
+    );
 
     await waitFor(() => expect(mockedSendOtp).toHaveBeenCalledTimes(1));
     const [, formData] = mockedSendOtp.mock.calls[0];
@@ -71,7 +75,9 @@ describe('SignInPage', () => {
     render(<SignInPage />);
     const input = screen.getByLabelText('Enter Admin Code or Password');
     fireEvent.change(input, { target: { value: '+237691234567' } });
-    fireEvent.click(screen.getByRole('button', { name: /sign in to dashboard/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /sign in to dashboard/i }),
+    );
 
     await waitFor(() =>
       expect(mockPush).toHaveBeenCalledWith(
@@ -85,7 +91,9 @@ describe('SignInPage', () => {
       error: 'Enter a valid Cameroon phone number.',
     });
     render(<SignInPage />);
-    fireEvent.click(screen.getByRole('button', { name: /sign in to dashboard/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /sign in to dashboard/i }),
+    );
 
     expect(
       await screen.findByText('Enter a valid Cameroon phone number.'),

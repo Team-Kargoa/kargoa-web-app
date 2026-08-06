@@ -51,9 +51,7 @@ describe('FleetRegistrationPage', () => {
 
   it('renders the phone field under the design label', () => {
     render(<FleetRegistrationPage />);
-    expect(
-      screen.getByLabelText('Business Phone Number'),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Business Phone Number')).toBeInTheDocument();
   });
 
   it('renders the submit button', () => {
