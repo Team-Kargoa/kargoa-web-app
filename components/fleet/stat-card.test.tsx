@@ -83,6 +83,19 @@ describe('StatCard', () => {
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 
+  it('guards the progress bar width against a zero max instead of dividing by zero', () => {
+    render(
+      <StatCard
+        label="Active Trucks"
+        value="0"
+        icon={Truck}
+        progress={{ current: 0, max: 0 }}
+      />,
+    );
+    const fill = screen.getByRole('progressbar').firstChild as HTMLElement;
+    expect(fill).toHaveStyle({ width: '0%' });
+  });
+
   it('renders a footnote when provided', () => {
     render(
       <StatCard
