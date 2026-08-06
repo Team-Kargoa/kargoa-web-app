@@ -3,7 +3,13 @@
 // apps/tracking and apps/admin_api are stubs (verified 2026-08-06). This
 // file stands in for those responses. Delete alongside fleet.ts once the
 // backend ships real fleet-telemetry routes.
-import type { FleetSummary, FleetPerformanceDay, FleetDriver } from '../fleet';
+import type {
+  FleetSummary,
+  FleetPerformanceDay,
+  FleetDriver,
+  FleetDriverProfile,
+  FleetVehicle,
+} from '../fleet';
 
 export const FLEET_SUMMARY_FIXTURE: FleetSummary = {
   activeTrucks: 8,
@@ -51,5 +57,55 @@ export const ACTIVE_DRIVERS_FIXTURE: FleetDriver[] = [
     vehicleId: 'OU-445-BB',
     route: 'Not Assigned',
     status: 'offline',
+  },
+];
+
+// /fleet/drivers roster — matches fleet_owner_driver_vehicle_management's
+// sample cards/rows exactly (design shows tab badges of 24/18 disconnected
+// from the two/three rows it actually renders; this fixture's badge counts
+// come from these arrays' real lengths instead).
+export const DRIVER_ROSTER_FIXTURE: FleetDriverProfile[] = [
+  {
+    id: 'drv-101',
+    name: 'Jean-Paul Ndi',
+    phone: '+237670123456',
+    dutyStatus: 'on-duty',
+    assignedPlate: 'LT-942-KM',
+    weeklyTrips: 18,
+  },
+  {
+    id: 'drv-102',
+    name: "Marie Eto'o",
+    phone: '+237691987654',
+    dutyStatus: 'off-duty',
+    assignedPlate: 'CE-102-AQ',
+    weeklyTrips: 22,
+  },
+];
+
+export const VEHICLE_ROSTER_FIXTURE: FleetVehicle[] = [
+  {
+    id: 'veh-201',
+    plate: 'LT-942-KM',
+    model: 'Isuzu FSR',
+    category: 'Large Cargo',
+    assignedDriverName: 'Jean-Paul Ndi',
+    status: 'active',
+  },
+  {
+    id: 'veh-202',
+    plate: 'CE-551-ZZ',
+    model: 'Toyota Dyna',
+    category: 'Mini Truck',
+    assignedDriverName: null,
+    status: 'maintenance',
+  },
+  {
+    id: 'veh-203',
+    plate: 'SW-220-RX',
+    model: 'Hino 500',
+    category: 'Heavy Duty',
+    assignedDriverName: 'Samuel M.',
+    status: 'needs-paperwork',
   },
 ];

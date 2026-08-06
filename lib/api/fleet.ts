@@ -8,6 +8,8 @@ import {
   FLEET_SUMMARY_FIXTURE,
   WEEKLY_PERFORMANCE_FIXTURE,
   ACTIVE_DRIVERS_FIXTURE,
+  DRIVER_ROSTER_FIXTURE,
+  VEHICLE_ROSTER_FIXTURE,
 } from './fixtures/fleet';
 
 export type FleetSummary = {
@@ -51,4 +53,41 @@ export function getWeeklyPerformance(
 export function getActiveDrivers(token: string): Promise<FleetDriver[]> {
   void token;
   return Promise.resolve(ACTIVE_DRIVERS_FIXTURE);
+}
+
+// --- /fleet/drivers (Driver & Vehicle Management) ---
+
+export type DriverDutyStatus = 'on-duty' | 'off-duty';
+
+export type FleetDriverProfile = {
+  id: string;
+  name: string;
+  /** E.164, rendered through formatPhone. */
+  phone: string;
+  dutyStatus: DriverDutyStatus;
+  assignedPlate: string;
+  weeklyTrips: number;
+};
+
+export type VehicleOperationalStatus =
+  'active' | 'maintenance' | 'needs-paperwork';
+
+export type FleetVehicle = {
+  id: string;
+  plate: string;
+  model: string;
+  category: string;
+  /** null when no driver is currently assigned to this vehicle. */
+  assignedDriverName: string | null;
+  status: VehicleOperationalStatus;
+};
+
+export function getDriverRoster(token: string): Promise<FleetDriverProfile[]> {
+  void token;
+  return Promise.resolve(DRIVER_ROSTER_FIXTURE);
+}
+
+export function getVehicleRoster(token: string): Promise<FleetVehicle[]> {
+  void token;
+  return Promise.resolve(VEHICLE_ROSTER_FIXTURE);
 }
