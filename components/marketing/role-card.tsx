@@ -13,27 +13,35 @@ export type RoleCardProps = {
   tone: 'light' | 'amber' | 'primary' | 'secondary' | 'tertiary';
 };
 
-const TONE_CLASSES: Record<
-  RoleCardProps['tone'],
-  {
-    card: string;
-    iconWrap: string;
-    icon: string;
-    eyebrow: string;
-    title: string;
-    description: string;
-    cta: string;
-    benefitIcon: string;
-  }
-> = {
+type ToneClasses = {
+  card: string;
+  iconWrap: string;
+  icon: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  cta: string;
+  benefitIcon: string;
+};
+
+/**
+ * Shared card/eyebrow/title/description treatment for every tone that
+ * renders a neutral (white) card with a coloured icon-wrap accent —
+ * everything except `amber`, whose whole card is tinted.
+ */
+const NEUTRAL_CARD_BASE = {
+  card: 'bg-white rounded-xl p-6 border border-border shadow-sm',
+  eyebrow: 'font-mono text-xs font-bold tracking-wide text-text-secondary',
+  title: 'font-heading text-xl font-semibold text-text-primary mb-2',
+  description: 'font-sans text-sm text-text-secondary mb-6',
+};
+
+const TONE_CLASSES: Record<RoleCardProps['tone'], ToneClasses> = {
   light: {
-    card: 'bg-white rounded-xl p-6 border border-border shadow-sm',
+    ...NEUTRAL_CARD_BASE,
     iconWrap:
       'w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center',
     icon: 'text-primary',
-    eyebrow: 'font-mono text-xs font-bold tracking-wide text-text-secondary',
-    title: 'font-heading text-xl font-semibold text-text-primary mb-2',
-    description: 'font-sans text-sm text-text-secondary mb-6',
     cta: 'w-full h-14 bg-bg-dark text-white font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform',
     benefitIcon: 'text-success-momo',
   },
@@ -50,35 +58,26 @@ const TONE_CLASSES: Record<
     benefitIcon: 'text-on-primary-container',
   },
   primary: {
-    card: 'bg-white rounded-xl p-6 border border-border shadow-sm',
+    ...NEUTRAL_CARD_BASE,
     iconWrap:
       'w-12 h-12 bg-primary-container rounded-lg flex items-center justify-center',
     icon: 'text-on-primary-container',
-    eyebrow: 'font-mono text-xs font-bold tracking-wide text-text-secondary',
-    title: 'font-heading text-xl font-semibold text-text-primary mb-2',
-    description: 'font-sans text-sm text-text-secondary mb-6',
     cta: 'w-full h-14 bg-primary text-primary-foreground font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform',
     benefitIcon: 'text-success-momo',
   },
   secondary: {
-    card: 'bg-white rounded-xl p-6 border border-border shadow-sm',
+    ...NEUTRAL_CARD_BASE,
     iconWrap:
-      'w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center',
-    icon: 'text-secondary',
-    eyebrow: 'font-mono text-xs font-bold tracking-wide text-text-secondary',
-    title: 'font-heading text-xl font-semibold text-text-primary mb-2',
-    description: 'font-sans text-sm text-text-secondary mb-6',
+      'w-12 h-12 bg-secondary-container rounded-lg flex items-center justify-center',
+    icon: 'text-secondary-container-foreground',
     cta: 'w-full h-14 bg-secondary text-secondary-foreground font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform',
     benefitIcon: 'text-secondary',
   },
   tertiary: {
-    card: 'bg-white rounded-xl p-6 border border-border shadow-sm',
+    ...NEUTRAL_CARD_BASE,
     iconWrap:
-      'w-12 h-12 bg-tertiary/10 rounded-lg flex items-center justify-center',
-    icon: 'text-tertiary',
-    eyebrow: 'font-mono text-xs font-bold tracking-wide text-text-secondary',
-    title: 'font-heading text-xl font-semibold text-text-primary mb-2',
-    description: 'font-sans text-sm text-text-secondary mb-6',
+      'w-12 h-12 bg-tertiary-container rounded-lg flex items-center justify-center',
+    icon: 'text-tertiary-container-foreground',
     cta: 'w-full h-14 bg-tertiary text-tertiary-foreground font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform',
     benefitIcon: 'text-tertiary',
   },
