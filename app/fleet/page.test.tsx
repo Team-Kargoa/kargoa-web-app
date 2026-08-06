@@ -83,6 +83,41 @@ describe('FleetDashboardPage', () => {
     expect(screen.getByText('Jean-Paul N.')).toBeInTheDocument();
   });
 
+  it('renders the performance chart section, not just the cards and table', async () => {
+    // Regression guard: <PerformanceChart /> is rendered unconditionally in
+    // the page, so deleting it changes no branch and coverage stays at
+    // 100% — this must be asserted directly, not inferred.
+    render(await FleetDashboardPage());
+    expect(
+      screen.getByRole('heading', { name: 'Fleet Performance' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Thu')).toBeInTheDocument();
+  });
+
+  it('renders the pending verifications count and its avatar initials', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText(/pending verifications/i)).toBeInTheDocument();
+    expect(screen.getByText('03')).toBeInTheDocument();
+    expect(screen.getByText('JD')).toBeInTheDocument();
+    expect(screen.getByText('SM')).toBeInTheDocument();
+    expect(screen.getByText('AA')).toBeInTheDocument();
+  });
+
+  it('renders the header nav items from the design, with no href since their routes do not exist yet', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Fleet')).toBeInTheDocument();
+    expect(screen.getByText('Reports')).toBeInTheDocument();
+    expect(screen.queryAllByRole('link')).toHaveLength(0);
+  });
+
+  it('renders the admin profile chip', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText('Admin Profile')).toBeInTheDocument();
+    expect(screen.getByText('Logistics Ops')).toBeInTheDocument();
+    expect(screen.getByText('AU')).toBeInTheDocument();
+  });
+
   it('fetches with the access token from the session', async () => {
     render(await FleetDashboardPage());
     expect(mockedGetWallet).toHaveBeenCalledWith('jwt-abc');
