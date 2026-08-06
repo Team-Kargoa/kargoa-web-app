@@ -1,6 +1,16 @@
-import { getWallet, getSettlements } from './payments';
+import {
+  getWallet,
+  getSettlements,
+  getRevenueSummary,
+  getSettlementTransactions,
+} from './payments';
 import { apiRequest } from './client';
-import { WALLET_FIXTURE, SETTLEMENTS_FIXTURE } from './fixtures/payments';
+import {
+  WALLET_FIXTURE,
+  SETTLEMENTS_FIXTURE,
+  REVENUE_SUMMARY_FIXTURE,
+  SETTLEMENT_TRANSACTIONS_FIXTURE,
+} from './fixtures/payments';
 
 jest.mock('./client');
 const mockedRequest = apiRequest as jest.MockedFunction<typeof apiRequest>;
@@ -29,6 +39,32 @@ describe('getSettlements', () => {
 
   it('never calls apiRequest — tripwire for when /payments/settlements ships', async () => {
     await getSettlements('jwt-abc');
+    expect(apiRequest).not.toHaveBeenCalled();
+  });
+});
+
+describe('getRevenueSummary', () => {
+  it('resolves the revenue summary fixture', async () => {
+    await expect(getRevenueSummary('jwt-abc')).resolves.toEqual(
+      REVENUE_SUMMARY_FIXTURE,
+    );
+  });
+
+  it('never calls apiRequest — tripwire for when a real revenue-summary endpoint ships', async () => {
+    await getRevenueSummary('jwt-abc');
+    expect(apiRequest).not.toHaveBeenCalled();
+  });
+});
+
+describe('getSettlementTransactions', () => {
+  it('resolves the settlement transactions fixture', async () => {
+    await expect(getSettlementTransactions('jwt-abc')).resolves.toEqual(
+      SETTLEMENT_TRANSACTIONS_FIXTURE,
+    );
+  });
+
+  it('never calls apiRequest — tripwire for when a real settlement-transactions endpoint ships', async () => {
+    await getSettlementTransactions('jwt-abc');
     expect(apiRequest).not.toHaveBeenCalled();
   });
 });
