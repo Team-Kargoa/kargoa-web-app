@@ -1,4 +1,10 @@
-import { requestOtp, verifyOtp, getProfile, refreshTokens, logout } from './auth';
+import {
+  requestOtp,
+  verifyOtp,
+  getProfile,
+  refreshTokens,
+  logout,
+} from './auth';
 import { apiRequest } from './client';
 
 jest.mock('./client');
