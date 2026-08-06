@@ -86,6 +86,15 @@ describe('OnboardingBusinessPage', () => {
     // 6 tracked fields; 1 filled -> 66 + round((1/6) * 33) = 72.
     expect(screen.getByText('72% COMPLETE')).toBeInTheDocument();
     expect(screen.queryByText('66% COMPLETE')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Tax ID (NIU)'), {
+      target: { value: 'M000000000000X' },
+    });
+    fireEvent.change(screen.getByLabelText('Number of Vehicles'), {
+      target: { value: '1-5' },
+    });
+    // 3 filled -> 66 + round((3/6) * 33) = 66 + 17 = 83.
+    expect(screen.getByText('83% COMPLETE')).toBeInTheDocument();
   });
 
   it('renders the Business Registration upload card and reflects a selected file', () => {
@@ -112,7 +121,9 @@ describe('OnboardingBusinessPage', () => {
       screen.getByRole('heading', { name: 'Owner Identity Card' }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText('A high-quality scan of your CNI or Passport (both sides).'),
+      screen.getByText(
+        'A high-quality scan of your CNI or Passport (both sides).',
+      ),
     ).toBeInTheDocument();
 
     const input = screen.getByLabelText('Select Owner Identity Card file');
@@ -164,8 +175,8 @@ describe('OnboardingBusinessPage', () => {
     expect(screen.getByText('Registration')).toBeInTheDocument();
     expect(screen.getByText('Support')).toBeInTheDocument();
     expect(screen.getByText('Help')).toBeInTheDocument();
-    expect(screen.queryAllByRole('link', { name: /support|help/i })).toHaveLength(
-      0,
-    );
+    expect(
+      screen.queryAllByRole('link', { name: /support|help/i }),
+    ).toHaveLength(0);
   });
 });
