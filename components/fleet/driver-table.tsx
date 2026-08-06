@@ -36,7 +36,10 @@ export function DriverTable({ drivers }: DriverTableProps) {
         <h3 className="font-heading text-2xl text-text-primary">
           Active Drivers
         </h3>
-        <button type="button" className="text-primary font-bold text-sm hover:underline">
+        <button
+          type="button"
+          className="text-primary font-bold text-sm hover:underline"
+        >
           View All Drivers
         </button>
       </div>

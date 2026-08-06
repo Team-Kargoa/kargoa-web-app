@@ -7,10 +7,7 @@ import {
   getActiveDrivers,
 } from '@/lib/api/fleet';
 import { formatXaf } from '@/lib/format';
-import {
-  StatCard,
-  type StatCardAvatar,
-} from '@/components/fleet/stat-card';
+import { StatCard, type StatCardAvatar } from '@/components/fleet/stat-card';
 import { PerformanceChart } from '@/components/fleet/performance-chart';
 import { DriverTable } from '@/components/fleet/driver-table';
 
@@ -56,7 +53,10 @@ export default async function FleetDashboardPage() {
             valueSuffix={`/ ${summary.totalTrucks}`}
             icon={Truck}
             tone="neutral"
-            progress={{ current: summary.activeTrucks, max: summary.totalTrucks }}
+            progress={{
+              current: summary.activeTrucks,
+              max: summary.totalTrucks,
+            }}
             footnote={`${summary.offlineForMaintenance} Vehicles currently offline for maintenance`}
           />
 

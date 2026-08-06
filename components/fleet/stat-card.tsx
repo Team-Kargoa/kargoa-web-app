@@ -84,13 +84,13 @@ export function StatCard({
 
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-baseline gap-2">
-          <span className={`font-mono text-3xl font-bold ${VALUE_TONE_CLASSES[tone]}`}>
+          <span
+            className={`font-mono text-3xl font-bold ${VALUE_TONE_CLASSES[tone]}`}
+          >
             {value}
           </span>
           {valueSuffix && (
-            <span
-              className={`font-mono text-lg ${SUFFIX_TONE_CLASSES[tone]}`}
-            >
+            <span className={`font-mono text-lg ${SUFFIX_TONE_CLASSES[tone]}`}>
               {valueSuffix}
             </span>
           )}

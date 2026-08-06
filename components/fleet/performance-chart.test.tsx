@@ -64,22 +64,26 @@ describe('PerformanceChart', () => {
 
   it('renders the weekly/monthly toggle with weekly active by default', () => {
     render(<PerformanceChart data={DATA} />);
-    expect(
-      screen.getByRole('button', { name: 'Weekly' }),
-    ).toHaveAttribute('aria-pressed', 'true');
-    expect(
-      screen.getByRole('button', { name: 'Monthly' }),
-    ).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'Weekly' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: 'Monthly' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('toggles the active range when Monthly is clicked', () => {
     render(<PerformanceChart data={DATA} />);
     fireEvent.click(screen.getByRole('button', { name: 'Monthly' }));
-    expect(
-      screen.getByRole('button', { name: 'Monthly' }),
-    ).toHaveAttribute('aria-pressed', 'true');
-    expect(
-      screen.getByRole('button', { name: 'Weekly' }),
-    ).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'Monthly' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: 'Weekly' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 });
