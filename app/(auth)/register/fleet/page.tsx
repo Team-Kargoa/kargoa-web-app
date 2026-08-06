@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { sendOtp } from '../../actions';
 import { PhoneField } from '@/components/auth/phone-field';
+import { BackToHomeLink } from '@/components/auth/back-to-home-link';
 import Footer from '@/components/Footer';
 
 const PURPOSE = 'registration';
@@ -59,11 +60,14 @@ export default function FleetRegistrationPage() {
               FLEET LOGISTICS
             </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-text-secondary hidden md:block">
-              CAMEROON OPS
-            </span>
-            <UserCircle aria-hidden="true" className="h-6 w-6 text-primary" />
+          <div className="flex items-center gap-4">
+            <BackToHomeLink />
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs text-text-secondary hidden md:block">
+                CAMEROON OPS
+              </span>
+              <UserCircle aria-hidden="true" className="h-6 w-6 text-primary" />
+            </div>
           </div>
         </div>
       </header>

@@ -1,17 +1,10 @@
 'use client';
 
 import { useActionState, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-  Truck,
-  ArrowLeft,
-  ArrowRight,
-  Loader2,
-  Lock,
-  ShieldCheck,
-} from 'lucide-react';
+import { Truck, ArrowRight, Loader2, Lock, ShieldCheck } from 'lucide-react';
 import { confirmOtp, sendOtp } from '../actions';
 import { OtpField } from '@/components/auth/otp-field';
+import { BackToHomeLink } from '@/components/auth/back-to-home-link';
 import { maskPhone } from '@/lib/format';
 import type { OtpPurpose } from '@/lib/api/types';
 
@@ -35,7 +28,6 @@ const TRUST_BADGES = [
 ];
 
 export function VerifyForm({ phone, purpose, role }: VerifyFormProps) {
-  const router = useRouter();
   const [state, formAction, pending] = useActionState(confirmOtp, {
     error: null,
   });
@@ -56,17 +48,7 @@ export function VerifyForm({ phone, purpose, role }: VerifyFormProps) {
               FLEET LOGISTICS
             </h1>
           </div>
-          <button
-            type="button"
-            aria-label="Go back"
-            onClick={() => router.back()}
-            className="p-2 rounded-full hover:bg-surface-container transition-all active:scale-95"
-          >
-            <ArrowLeft
-              aria-hidden="true"
-              className="h-5 w-5 text-text-secondary"
-            />
-          </button>
+          <BackToHomeLink />
         </div>
       </header>
 
