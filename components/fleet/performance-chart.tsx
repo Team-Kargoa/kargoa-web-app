@@ -1,7 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { BarChart, Bar, Cell, ResponsiveContainer, XAxis, Tooltip } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  Cell,
+  ResponsiveContainer,
+  XAxis,
+  Tooltip,
+} from 'recharts';
 import { formatXaf } from '@/lib/format';
 import type { FleetPerformanceDay } from '@/lib/api/fleet';
 
@@ -57,8 +64,13 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barCategoryGap="24%">
-            <XAxis dataKey="day" tick={false} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(value: number) => formatXaf(value)} />
+            <XAxis
+              dataKey="day"
+              tick={false}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip formatter={(value) => formatXaf(Number(value))} />
             <Bar dataKey="amount" radius={[8, 8, 0, 0]}>
               {data.map((entry) => (
                 <Cell
