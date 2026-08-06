@@ -53,7 +53,9 @@ describe('PerformanceChart', () => {
   it('passes the exact data series through to the underlying BarChart', () => {
     render(<PerformanceChart data={DATA} />);
     const chart = screen.getByTestId('bar-chart');
-    const receivedData = JSON.parse(chart.getAttribute('data-chart-data') ?? 'null');
+    const receivedData = JSON.parse(
+      chart.getAttribute('data-chart-data') ?? 'null',
+    );
     expect(receivedData).toEqual(DATA);
   });
 

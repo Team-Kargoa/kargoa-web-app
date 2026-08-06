@@ -72,9 +72,7 @@ export default async function FleetDashboardPage() {
               <p className="text-xs font-bold text-text-primary leading-tight">
                 Admin Profile
               </p>
-              <p className="text-[10px] text-text-secondary">
-                Logistics Ops
-              </p>
+              <p className="text-[10px] text-text-secondary">Logistics Ops</p>
             </div>
           </div>
         </div>

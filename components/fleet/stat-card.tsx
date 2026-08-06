@@ -115,9 +115,7 @@ export function StatCard({
             className="bg-primary h-full rounded-full"
             style={{
               width: `${
-                progress.max > 0
-                  ? (progress.current / progress.max) * 100
-                  : 0
+                progress.max > 0 ? (progress.current / progress.max) * 100 : 0
               }%`,
             }}
           />
