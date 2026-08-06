@@ -69,9 +69,7 @@ describe('FleetNav', () => {
   it('marks no route active on an unrelated pathname', () => {
     mockUsePathname.mockReturnValue('/fleet/something-else');
     render(<FleetNav />);
-    expect(
-      screen.queryAllByRole('link', { current: 'page' }),
-    ).toHaveLength(0);
+    expect(screen.queryAllByRole('link', { current: 'page' })).toHaveLength(0);
   });
 
   it('gives every icon a visible text label', () => {
