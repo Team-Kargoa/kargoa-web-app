@@ -60,21 +60,32 @@ describe('FleetRevenuePage', () => {
     ).toBeInTheDocument();
   });
 
-  it("renders this month's gross, commission and trip volume trend", async () => {
+  it("renders this month's gross, commission and trip volume trend through StatCard's existing props", async () => {
     render(await FleetRevenuePage());
     expect(screen.getByText(/this month's gross/i)).toBeInTheDocument();
     expect(screen.getByText('5,297,250 XAF')).toBeInTheDocument();
-    expect(screen.getByText(/fleet commission \(9%\)/i)).toBeInTheDocument();
-    expect(screen.getByText('476,750 XAF')).toBeInTheDocument();
+    // Commission has no dedicated StatCard prop, so it's composed into the
+    // footnote string (an existing prop) rather than a two-column row.
+    expect(
+      screen.getByText('Fleet Commission (9%): 476,750 XAF'),
+    ).toBeInTheDocument();
+    // Trip volume trend rides StatCard's existing `trend` prop.
     expect(screen.getByText('+12% vs last mo.')).toBeInTheDocument();
+    // The net-payout percentage bar rides StatCard's existing `progress` prop.
+    const progress = screen.getByRole('progressbar', {
+      name: "This Month's Gross",
+    });
+    expect(progress).toHaveAttribute('aria-valuenow', '91');
+    expect(progress).toHaveAttribute('aria-valuemax', '100');
   });
 
   it("renders this month's gross card through the shared StatCard component", async () => {
     render(await FleetRevenuePage());
-    // Pins the fix-round-1 refactor: this card now goes through StatCard
-    // rather than hand-rolled markup, so it inherits StatCard's label
-    // treatment (uppercase, tracking-wider) instead of its old plain-case
-    // styling.
+    // Pins the fix-round-2 outcome: this card is composed entirely through
+    // StatCard's pre-existing typed props (value/icon/progress/trend/
+    // footnote) — no generic children escape hatch — so it inherits
+    // StatCard's label treatment (uppercase, tracking-wider) instead of its
+    // old plain-case styling.
     expect(screen.getByText("This Month's Gross")).toHaveClass('uppercase');
   });
 

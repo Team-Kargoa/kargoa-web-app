@@ -169,23 +169,6 @@ describe('StatCard', () => {
     expect(screen.getByText('03')).toHaveClass('text-error');
   });
 
-  it('renders arbitrary children after the footnote, for cards whose extra content has no dedicated prop', () => {
-    render(
-      <StatCard label="This Month's Gross" value="5,297,250 XAF" icon={Truck}>
-        <p>Fleet Commission (9%)</p>
-      </StatCard>,
-    );
-    expect(screen.getByText('Fleet Commission (9%)')).toBeInTheDocument();
-  });
-
-  it('omits any extra content when no children are provided', () => {
-    const { container } = render(
-      <StatCard label="Active Trucks" value="8" icon={Truck} />,
-    );
-    // The card body is exactly: icon wrap, label, value row — nothing else.
-    expect(container.querySelectorAll('p')).toHaveLength(1);
-  });
-
   it('applies the gradient tone card background', () => {
     const { container } = render(
       <StatCard
