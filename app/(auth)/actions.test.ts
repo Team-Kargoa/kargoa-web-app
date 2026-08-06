@@ -62,9 +62,7 @@ describe('sendOtp', () => {
   });
 
   it('maps a thrown ApiError to its message', async () => {
-    mockedRequestOtp.mockRejectedValue(
-      new ApiError('Too many requests.', 429),
-    );
+    mockedRequestOtp.mockRejectedValue(new ApiError('Too many requests.', 429));
     const formData = new FormData();
     formData.set('phone_number', '+237691234567');
     formData.set('purpose', 'login');
@@ -126,9 +124,9 @@ describe('confirmOtp', () => {
       role: 'fleet_owner',
     });
 
-    await expect(
-      confirmOtp(initialState, formData),
-    ).rejects.toThrow('REDIRECT:/fleet');
+    await expect(confirmOtp(initialState, formData)).rejects.toThrow(
+      'REDIRECT:/fleet',
+    );
 
     expect(mockedVerifyOtp).toHaveBeenCalledWith({
       phoneNumber: '+237691234567',
@@ -149,9 +147,9 @@ describe('confirmOtp', () => {
     mockedVerifyOtp.mockResolvedValue(tokens);
     const formData = makeFormData();
 
-    await expect(
-      confirmOtp(initialState, formData),
-    ).rejects.toThrow('REDIRECT:/admin');
+    await expect(confirmOtp(initialState, formData)).rejects.toThrow(
+      'REDIRECT:/admin',
+    );
 
     expect(mockedRedirect).toHaveBeenCalledWith('/admin');
   });
