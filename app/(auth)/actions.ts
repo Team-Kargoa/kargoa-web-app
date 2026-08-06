@@ -27,7 +27,7 @@ export async function sendOtp(
   _state: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
-  const phoneNumber = String(formData.get('phone_number') ?? '');
+  const phoneNumber = formData.get('phone_number') as string;
   const purpose = formData.get('purpose') as OtpPurpose;
 
   if (!PHONE_REGEX.test(phoneNumber)) {
@@ -46,13 +46,14 @@ export async function confirmOtp(
   _state: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
-  const phoneNumber = String(formData.get('phone_number') ?? '');
-  const code = String(formData.get('code') ?? '');
+  const phoneNumber = formData.get('phone_number') as string;
+  const code = formData.get('code') as string;
   const purpose = formData.get('purpose') as OtpPurpose;
   const roleValue = formData.get('role');
-  const role = typeof roleValue === 'string' && roleValue.length > 0
-    ? (roleValue as Role)
-    : undefined;
+  const role =
+    typeof roleValue === 'string' && roleValue.length > 0
+      ? (roleValue as Role)
+      : undefined;
 
   if (!PHONE_REGEX.test(phoneNumber)) {
     return { error: 'Enter a valid Cameroon phone number.' };
