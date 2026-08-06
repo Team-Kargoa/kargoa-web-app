@@ -7,6 +7,10 @@ type VerifySearchParams = {
   role?: string;
 };
 
+function isOtpPurpose(value: string | undefined): value is OtpPurpose {
+  return value === 'registration' || value === 'login';
+}
+
 export default async function VerifyPage({
   searchParams,
 }: {
@@ -14,7 +18,7 @@ export default async function VerifyPage({
 }) {
   const params = await searchParams;
   const phone = params.phone ?? '';
-  const purpose = (params.purpose as OtpPurpose | undefined) ?? 'login';
+  const purpose = isOtpPurpose(params.purpose) ? params.purpose : 'login';
 
   return <VerifyForm phone={phone} purpose={purpose} role={params.role} />;
 }
