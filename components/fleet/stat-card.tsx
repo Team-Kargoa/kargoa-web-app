@@ -113,7 +113,13 @@ export function StatCard({
         >
           <div
             className="bg-primary h-full rounded-full"
-            style={{ width: `${(progress.current / progress.max) * 100}%` }}
+            style={{
+              width: `${
+                progress.max > 0
+                  ? (progress.current / progress.max) * 100
+                  : 0
+              }%`,
+            }}
           />
         </div>
       )}
