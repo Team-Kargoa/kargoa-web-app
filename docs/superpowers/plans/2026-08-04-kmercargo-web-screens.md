@@ -1189,7 +1189,13 @@ Expected: FAIL, modules not found.
 
 `/signin` follows `admin_login_password_code` exactly — centred card, amber rounded-square truck icon, "KmerCargo" over "Admin Portal", the amber gradient submit button, the "Request Admin Access" link, the footer note. Per the design decision in the spec, the single field is a phone number rather than a password, because the backend has no password auth; the visual treatment is unchanged.
 
-Forms use `useActionState(sendOtp, { error: null })`. On success `sendOtp` redirects to `/verify?phone=…&purpose=…`.
+Forms use `useActionState(sendOtp, { error: null })`. On success `sendOtp`
+**returns `{ error: null }`** — it does not redirect. The client screen owns
+navigation to `/verify?phone=…&purpose=…`, appending `&role=fleet_owner` on the
+fleet registration path. Only `confirmOtp` calls `redirect()`, after
+`createSession`. This split matters: `sendOtp` never receives `role`, so a
+server-side redirect there could not carry it, and fleet-owner registration
+would break.
 
 - [ ] **Step 4: Run to verify they pass**
 

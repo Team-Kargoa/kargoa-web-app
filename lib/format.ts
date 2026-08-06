@@ -16,3 +16,15 @@ export function formatPhone(e164: string): string {
   const [, prefix, ...pairs] = match;
   return `+237 ${prefix} ${pairs.join(' ')}`;
 }
+
+/**
+ * Masks a Cameroon E.164 number for display on the OTP verification
+ * screen: reveals just the leading digit and the final pair, enough for
+ * the owner to recognise their own number without exposing it in full.
+ */
+export function maskPhone(e164: string): string {
+  const match = CAMEROON_E164.exec(e164);
+  if (!match) return e164;
+  const [, prefix, , , , lastPair] = match;
+  return `+237 ${prefix} XX XX XX ${lastPair}`;
+}

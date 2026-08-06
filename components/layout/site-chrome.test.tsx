@@ -36,4 +36,32 @@ describe('SiteChrome', () => {
     expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument();
     expect(screen.getByText('admin content')).toBeInTheDocument();
   });
+
+  it.each(['/signin', '/register/fleet', '/verify'])(
+    'renders only the page content on the auth route %s, which supplies its own header',
+    (pathname) => {
+      mockUsePathname.mockReturnValue(pathname);
+
+      render(
+        <SiteChrome>
+          <p>auth content</p>
+        </SiteChrome>,
+      );
+
+      expect(screen.queryByRole('banner')).not.toBeInTheDocument();
+      expect(screen.getByText('auth content')).toBeInTheDocument();
+    },
+  );
+
+  it('still renders the navbar on the partner registration hub at /register', () => {
+    mockUsePathname.mockReturnValue('/register');
+
+    render(
+      <SiteChrome>
+        <p>hub content</p>
+      </SiteChrome>,
+    );
+
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+  });
 });
