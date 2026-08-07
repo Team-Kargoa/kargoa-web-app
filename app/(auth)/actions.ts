@@ -121,5 +121,5 @@ export async function signOut(): Promise<void> {
   }
 
   await destroySession();
-  redirect('/');
+  redirect('/signin');
 }
