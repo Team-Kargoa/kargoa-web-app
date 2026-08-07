@@ -15,7 +15,6 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
   ACCESS_TOKEN_MAX_AGE,
-  REFRESH_TOKEN_MAX_AGE,
 } from './lib/session';
 
 jest.mock('./lib/api/auth');
@@ -59,12 +58,11 @@ describe('middleware', () => {
     expect(response.cookies.get(REFRESH_TOKEN_COOKIE)).toBeUndefined();
   });
 
-  it('refreshes and sets both cookies fresh, with the exact session flags, when the access token is absent but the refresh token succeeds', async () => {
-    mockedRefreshTokens.mockResolvedValue({
-      access_token: 'new-access',
-      refresh_token: 'new-refresh',
-      user: {} as never,
-    });
+  it('refreshes and sets only the access-token cookie, with the exact session flags, when the access token is absent but the refresh token succeeds', async () => {
+    // The real POST /auth/token/refresh response carries only an
+    // access_token — no refresh_token, no user. Mocking anything richer
+    // than that is exactly how the undefined-refresh-cookie bug shipped.
+    mockedRefreshTokens.mockResolvedValue({ access_token: 'new-access' });
     const request = makeRequest({ [REFRESH_TOKEN_COOKIE]: 'old-refresh' });
 
     const response = await middleware(request);
@@ -80,14 +78,14 @@ describe('middleware', () => {
       maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
-    const refreshCookie = response.cookies.get(REFRESH_TOKEN_COOKIE);
-    expect(refreshCookie?.value).toBe('new-refresh');
-    expect(refreshCookie).toMatchObject({
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: REFRESH_TOKEN_MAX_AGE,
-    });
+    // The regression: the refresh endpoint doesn't rotate the refresh
+    // token, so a successful refresh must leave the refresh-token cookie
+    // completely untouched — not set, and certainly not set to undefined.
+    // `.has()` (not `.get()?.value`) is the correct check here: a buggy
+    // `response.cookies.set(REFRESH_TOKEN_COOKIE, undefined, ...)` call
+    // still populates the cookie jar with a value of undefined, which
+    // `.get()?.value` would not distinguish from "never set".
+    expect(response.cookies.has(REFRESH_TOKEN_COOKIE)).toBe(false);
   });
 
   it('clears both cookies but still lets the request proceed when the refresh call fails', async () => {

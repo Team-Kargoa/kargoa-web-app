@@ -92,11 +92,15 @@ describe('getProfile', () => {
 });
 
 describe('refreshTokens', () => {
-  it('posts the refresh token and returns a new token pair', async () => {
-    const tokens = { access_token: 'a2', refresh_token: 'r2', user: {} };
-    mockedRequest.mockResolvedValue(tokens);
+  it('posts the refresh token and returns only a new access token', async () => {
+    // The real POST /auth/token/refresh response is { access_token } —
+    // no refresh_token, no user. A mock shaped like the otp/verify
+    // TokenPair here is exactly how the middleware's undefined-cookie
+    // bug shipped, so this mock must match the server byte-for-byte.
+    const refreshed = { access_token: 'a2' };
+    mockedRequest.mockResolvedValue(refreshed);
 
-    await expect(refreshTokens('r')).resolves.toBe(tokens);
+    await expect(refreshTokens('r')).resolves.toEqual({ access_token: 'a2' });
 
     expect(mockedRequest).toHaveBeenCalledWith('/auth/token/refresh', {
       method: 'POST',
