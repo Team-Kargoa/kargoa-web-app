@@ -94,7 +94,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <Link
-          href="/admin"
+          href="/"
           className="flex h-9 items-center gap-2.5 rounded-md px-2 text-foreground"
         >
           <span className="grid size-7 place-items-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">

@@ -46,7 +46,9 @@ export default function SignInPage() {
               </div>
               <div>
                 <h1 className="font-heading text-3xl font-bold text-text-primary tracking-tight">
-                  KmerCargo
+                  <Link href="/" className="hover:opacity-90 transition">
+                    KmerCargo
+                  </Link>
                 </h1>
                 <h2 className="font-heading text-xl font-semibold text-primary mt-1">
                   Admin Portal

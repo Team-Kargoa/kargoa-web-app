@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useState } from 'react';
+import Link from 'next/link';
 import { Truck, ArrowRight, Loader2, Lock, ShieldCheck } from 'lucide-react';
 import { confirmOtp, sendOtp } from '../actions';
 import { OtpField } from '@/components/auth/otp-field';
@@ -42,12 +43,17 @@ export function VerifyForm({ phone, purpose, role }: VerifyFormProps) {
     <>
       <header className="w-full sticky top-0 bg-surface z-50">
         <div className="flex items-center justify-between px-4 md:px-8 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-3">
-            <Truck aria-hidden="true" className="h-7 w-7 text-primary" />
-            <h1 className="font-heading text-lg font-bold tracking-tight text-primary">
-              FLEET LOGISTICS
-            </h1>
-          </div>
+          <h1>
+            <Link
+              href="/"
+              className="flex items-center gap-3 text-primary hover:opacity-90 transition"
+            >
+              <Truck aria-hidden="true" className="h-7 w-7" />
+              <span className="font-heading text-lg font-bold tracking-tight">
+                KmerCargo
+              </span>
+            </Link>
+          </h1>
           <BackToHomeLink />
         </div>
       </header>
