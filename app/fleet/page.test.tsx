@@ -50,10 +50,19 @@ const mockedGetActiveDrivers = getActiveDrivers as jest.MockedFunction<
 beforeEach(() => {
   jest.clearAllMocks();
   mockedGetAccessToken.mockResolvedValue('jwt-abc');
-  mockedGetWallet.mockResolvedValue(WALLET_FIXTURE);
-  mockedGetFleetSummary.mockResolvedValue(FLEET_SUMMARY_FIXTURE);
-  mockedGetWeeklyPerformance.mockResolvedValue(WEEKLY_PERFORMANCE_FIXTURE);
-  mockedGetActiveDrivers.mockResolvedValue(ACTIVE_DRIVERS_FIXTURE);
+  mockedGetWallet.mockResolvedValue({ data: WALLET_FIXTURE, isSample: true });
+  mockedGetFleetSummary.mockResolvedValue({
+    data: FLEET_SUMMARY_FIXTURE,
+    isSample: true,
+  });
+  mockedGetWeeklyPerformance.mockResolvedValue({
+    data: WEEKLY_PERFORMANCE_FIXTURE,
+    isSample: true,
+  });
+  mockedGetActiveDrivers.mockResolvedValue({
+    data: ACTIVE_DRIVERS_FIXTURE,
+    isSample: true,
+  });
 });
 
 describe('FleetDashboardPage', () => {
@@ -130,5 +139,38 @@ describe('FleetDashboardPage', () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
     render(await FleetDashboardPage());
     expect(mockedGetWallet).toHaveBeenCalledWith('');
+  });
+
+  it('shows a Sample data badge on every section when every source is sample data', async () => {
+    render(await FleetDashboardPage());
+    // Earnings StatCard, Active Trucks StatCard, Pending Verifications
+    // StatCard, PerformanceChart, DriverTable.
+    expect(screen.getAllByText('Sample data')).toHaveLength(5);
+  });
+
+  it('shows no Sample data badge when every source is real data', async () => {
+    mockedGetWallet.mockResolvedValue({ data: WALLET_FIXTURE, isSample: false });
+    mockedGetFleetSummary.mockResolvedValue({
+      data: FLEET_SUMMARY_FIXTURE,
+      isSample: false,
+    });
+    mockedGetWeeklyPerformance.mockResolvedValue({
+      data: WEEKLY_PERFORMANCE_FIXTURE,
+      isSample: false,
+    });
+    mockedGetActiveDrivers.mockResolvedValue({
+      data: ACTIVE_DRIVERS_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetDashboardPage());
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+  });
+
+  it('shows the badge only on the sections still backed by sample data', async () => {
+    mockedGetWallet.mockResolvedValue({ data: WALLET_FIXTURE, isSample: false });
+    render(await FleetDashboardPage());
+    // Fleet summary (2 cards), performance chart, driver table remain
+    // sample; wallet-backed earnings card is now real.
+    expect(screen.getAllByText('Sample data')).toHaveLength(4);
   });
 });
