@@ -42,6 +42,17 @@ describe('FleetNav', () => {
     brandLinks.forEach((link) => expect(link).toHaveAttribute('href', '/'));
   });
 
+  it('renders the brand at the smaller "sm" size, in both the sidebar and the mobile header, matching the original fleet-nav treatment', () => {
+    render(<FleetNav />);
+    const brandLinks = screen.getAllByRole('link', { name: 'KmerCargo' });
+    brandLinks.forEach((link) => {
+      expect(link.querySelector('svg')).toHaveClass('h-5', 'w-5');
+    });
+    screen.getAllByText('KmerCargo').forEach((wordmark) => {
+      expect(wordmark).toHaveClass('text-xl');
+    });
+  });
+
   it('carries the brand link in a slim mobile-only top header (md:hidden), so phones get it too — not just the desktop sidebar (hidden md:flex)', () => {
     render(<FleetNav />);
     const mobileHeader = screen.getByRole('banner');

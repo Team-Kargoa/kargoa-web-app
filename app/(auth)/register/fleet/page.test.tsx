@@ -27,6 +27,13 @@ describe('FleetRegistrationPage', () => {
     );
   });
 
+  it('renders the brand at its original, larger-icon/compact-wordmark size (the "lg" variant), not the Navbar default', () => {
+    render(<FleetRegistrationPage />);
+    const link = screen.getByRole('link', { name: 'KmerCargo' });
+    expect(link.querySelector('svg')).toHaveClass('h-7', 'w-7');
+    expect(screen.getByText('KmerCargo')).toHaveClass('text-lg');
+  });
+
   it('renders the registration headline and copy', () => {
     render(<FleetRegistrationPage />);
     expect(

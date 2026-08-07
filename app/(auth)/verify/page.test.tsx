@@ -64,6 +64,13 @@ describe('VerifyPage', () => {
     );
   });
 
+  it('renders the brand at its original, larger-icon/compact-wordmark size (the "lg" variant), not the Navbar default', async () => {
+    await renderVerify({ phone: '+237691234567', purpose: 'login' });
+    const link = screen.getByRole('link', { name: 'KmerCargo' });
+    expect(link.querySelector('svg')).toHaveClass('h-7', 'w-7');
+    expect(screen.getByText('KmerCargo')).toHaveClass('text-lg');
+  });
+
   it('renders the verify submit button and the dash divider', async () => {
     const { container } = await renderVerify({
       phone: '+237691234567',

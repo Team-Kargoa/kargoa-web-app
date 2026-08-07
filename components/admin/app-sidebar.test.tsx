@@ -36,4 +36,11 @@ describe('AppSidebar', () => {
     expect(link.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
     expect(screen.queryByText('K', { exact: true })).not.toBeInTheDocument();
   });
+
+  it('renders the brand at the smaller "sm" size so it sits comfortably in the compact sidebar header row', () => {
+    renderSidebar();
+    const link = screen.getByRole('link', { name: /kmercargo/i });
+    expect(link.querySelector('svg')).toHaveClass('h-5', 'w-5');
+    expect(screen.getByText('KmerCargo')).toHaveClass('text-xl');
+  });
 });
