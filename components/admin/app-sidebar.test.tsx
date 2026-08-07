@@ -17,18 +17,20 @@ function renderSidebar() {
   );
 }
 
-// The design (admin_fleet_approval_queue/code.html + screen.png) has
-// exactly five nav items: Dashboard, Fleet Approvals, Driver Verification,
-// Financial Oversight, Settings. Every href below must resolve to a real
-// route on disk — see app/admin/{fleet-approvals,drivers,finance,settings}
-// for the minimal placeholder pages backing the four that aren't live yet.
-const EXPECTED_ITEMS = [
+// The design (admin_fleet_approval_queue/code.html + screen.png) has five
+// nav items, but only three have a real backend-backed screen behind them
+// today (app/admin, app/admin/drivers, app/admin/settings — see task 4.3).
+// Fleet Approvals and Financial Oversight have no backend endpoint
+// (getFleetApplications/the payments module both fall back to fixtures), so
+// they render as non-interactive labels rather than links to routes that
+// don't exist — the same precedent already used for "Request Admin Access"
+// on the sign-in page.
+const LINKED_ITEMS = [
   { name: 'Dashboard', href: '/admin' },
-  { name: 'Fleet Approvals', href: '/admin/fleet-approvals' },
   { name: 'Driver Verification', href: '/admin/drivers' },
-  { name: 'Financial Oversight', href: '/admin/finance' },
   { name: 'Settings', href: '/admin/settings' },
 ];
+const LABEL_ITEMS = ['Fleet Approvals', 'Financial Oversight'];
 
 describe('AppSidebar', () => {
   beforeEach(() => {
@@ -57,40 +59,49 @@ describe('AppSidebar', () => {
     expect(screen.getByText('KmerCargo')).toHaveClass('text-xl');
   });
 
-  it('renders exactly the five navigation items the design specifies, each linking to a real route, with a visible text label', () => {
+  it('renders exactly the five navigation items the design specifies, with a visible text label', () => {
+    renderSidebar();
+    const nav = screen.getByRole('navigation');
+    expect(nav).toHaveTextContent('Dashboard');
+    expect(nav).toHaveTextContent('Fleet Approvals');
+    expect(nav).toHaveTextContent('Driver Verification');
+    expect(nav).toHaveTextContent('Financial Oversight');
+    expect(nav).toHaveTextContent('Settings');
+  });
+
+  it('links every backed section to its real route on disk, each icon paired with an aria-hidden svg', () => {
     renderSidebar();
     const nav = screen.getByRole('navigation');
     const links = screen
       .getAllByRole('link')
       .filter((link) => nav.contains(link));
 
-    expect(links).toHaveLength(EXPECTED_ITEMS.length);
+    expect(links).toHaveLength(LINKED_ITEMS.length);
 
-    EXPECTED_ITEMS.forEach(({ name, href }) => {
+    LINKED_ITEMS.forEach(({ name, href }) => {
       const link = screen.getByRole('link', { name });
       expect(link).toHaveAttribute('href', href);
       expect(link).toHaveTextContent(name);
+      expect(link.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
     });
   });
 
-  it('pairs every nav icon with an aria-hidden svg, never an unlabelled icon-only link', () => {
+  it('renders Fleet Approvals and Financial Oversight as non-interactive labels, never as links to a route that does not exist', () => {
     renderSidebar();
-    const nav = screen.getByRole('navigation');
-    const links = screen
-      .getAllByRole('link')
-      .filter((link) => nav.contains(link));
 
-    links.forEach((link) => {
-      expect(link.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
-      expect(link.textContent).not.toBe('');
+    LABEL_ITEMS.forEach((name) => {
+      expect(screen.getByText(name)).toBeInTheDocument();
+      expect(
+        screen.queryByRole('link', { name }),
+      ).not.toBeInTheDocument();
     });
   });
 
   it('marks the active route with aria-current="page" and does not rely on colour alone', () => {
-    mockUsePathname.mockReturnValue('/admin/fleet-approvals');
+    mockUsePathname.mockReturnValue('/admin/drivers');
     renderSidebar();
 
-    const activeLink = screen.getByRole('link', { name: 'Fleet Approvals' });
+    const activeLink = screen.getByRole('link', { name: 'Driver Verification' });
     expect(activeLink).toHaveAttribute('aria-current', 'page');
     // A visible non-colour signal (bold weight) accompanies the colour cue.
     expect(activeLink.className).toMatch(/font-semibold|font-bold/);
@@ -103,9 +114,9 @@ describe('AppSidebar', () => {
     mockUsePathname.mockReturnValue('/admin/drivers');
     renderSidebar();
 
-    expect(
-      screen.getByRole('link', { name: 'Dashboard' }),
-    ).not.toHaveAttribute('aria-current');
+    expect(screen.getByRole('link', { name: 'Dashboard' })).not.toHaveAttribute(
+      'aria-current',
+    );
     expect(
       screen.getByRole('link', { name: 'Driver Verification' }),
     ).toHaveAttribute('aria-current', 'page');
