@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { requestOtp, verifyOtp, logout } from '../../lib/api/auth';
 import { ApiError } from '../../lib/api/client';
+import { OTP_RATE_LIMIT, OTP_RATE_WINDOW_MINUTES } from '../../lib/config';
 import {
   createSession,
   destroySession,
@@ -16,8 +17,7 @@ export type AuthState = { error: string | null };
 const PHONE_REGEX = /^\+237[62][0-9]{8}$/;
 const CODE_REGEX = /^[0-9]{6}$/;
 const GENERIC_ERROR = 'Something went wrong. Please try again.';
-const RATE_LIMIT_ERROR =
-  'You can request a maximum of 3 codes per phone number every 10 minutes. Please wait before trying again.';
+const RATE_LIMIT_ERROR = `You can request a maximum of ${OTP_RATE_LIMIT} codes per phone number every ${OTP_RATE_WINDOW_MINUTES} minutes. Please wait before trying again.`;
 
 function errorMessage(error: unknown): string {
   if (error instanceof ApiError) {

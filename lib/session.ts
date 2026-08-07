@@ -1,11 +1,15 @@
 import { cookies } from 'next/headers';
+import { SESSION_ACCESS_MAX_AGE, SESSION_REFRESH_MAX_AGE } from './config';
 import type { TokenPair } from './api/types';
 
 export const ACCESS_TOKEN_COOKIE = 'access_token';
 export const REFRESH_TOKEN_COOKIE = 'refresh_token';
 
-export const ACCESS_TOKEN_MAX_AGE = 60 * 15;
-export const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 30;
+// Sourced from lib/config.ts (env-configurable, with these as the
+// defaults) — see that module for why these must stay in sync with the
+// backend's own token lifetimes.
+export const ACCESS_TOKEN_MAX_AGE = SESSION_ACCESS_MAX_AGE;
+export const REFRESH_TOKEN_MAX_AGE = SESSION_REFRESH_MAX_AGE;
 
 // Single shared definition of the cookie flags for both createSession here
 // and the token-refresh logic in middleware.ts — duplicating these across

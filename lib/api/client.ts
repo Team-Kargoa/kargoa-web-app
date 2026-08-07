@@ -1,7 +1,5 @@
+import { getApiUrl } from '../config';
 import type { Envelope } from './types';
-
-const BASE_URL = () =>
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1';
 
 export class ApiError extends Error {
   readonly status: number;
@@ -30,7 +28,7 @@ export async function apiRequest<T>(
 
   let response: Response;
   try {
-    response = await fetch(`${BASE_URL()}${path}`, {
+    response = await fetch(`${getApiUrl()}${path}`, {
       method,
       headers,
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
