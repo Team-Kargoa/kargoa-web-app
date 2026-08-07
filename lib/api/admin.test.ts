@@ -260,18 +260,18 @@ describe('rejectDriver (LIVE)', () => {
     );
   });
 
-  it('propagates the 400 validation ApiError from apiRequest', async () => {
-    // Verified live against the running backend (2026-08-07): omitting
-    // `reason` returns HTTP 400 with
-    // {"status":"error","data":{"fields":{"reason":["This field is
-    // required."]}},"message":"Validation failed."} — apiRequest already
-    // turns this into an ApiError; this pins that rejectDriver does not
-    // swallow or reshape it.
-    mockedRequest.mockRejectedValue(new ApiError('Validation failed.', 400));
+  it('propagates the 422 validation ApiError from apiRequest', async () => {
+    // Observed 2026-08-07: a live curl against the running backend with
+    // `reason` omitted returned HTTP_STATUS:422, and the project owner's
+    // Docker log independently shows "Unprocessable Entity:
+    // /api/v1/admin-api/drivers/<id>/reject" for the same request.
+    // apiRequest already turns this into an ApiError; this pins that
+    // rejectDriver does not swallow or reshape it.
+    mockedRequest.mockRejectedValue(new ApiError('Validation failed.', 422));
 
     await expect(
       rejectDriver('jwt-abc', 'drv-1', 'Blurry documents'),
-    ).rejects.toMatchObject({ status: 400, message: 'Validation failed.' });
+    ).rejects.toMatchObject({ status: 422, message: 'Validation failed.' });
   });
 });
 

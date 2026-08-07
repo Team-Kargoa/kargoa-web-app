@@ -63,7 +63,11 @@ export type PlatformConfig = {
   value_type: string;
   description: string;
   updated_at: string;
-  /** A phone number, or null if never updated. */
+  /**
+   * A phone number, or null if never updated. Unverified: every observed
+   * config had `updated_by: null`; no non-null example has been seen to
+   * confirm the format.
+   */
   updated_by: string | null;
 };
 
