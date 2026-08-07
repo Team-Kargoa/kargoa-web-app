@@ -16,11 +16,15 @@ beforeEach(() => {
 });
 
 describe('FleetRegistrationPage', () => {
-  it('renders the fleet logistics header', () => {
+  it('renders the KmerCargo brand in the header as a link back to the landing page', () => {
     render(<FleetRegistrationPage />);
     expect(
-      screen.getByRole('heading', { name: /fleet logistics/i }),
+      screen.getByRole('heading', { name: 'KmerCargo' }),
     ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'KmerCargo' })).toHaveAttribute(
+      'href',
+      '/',
+    );
   });
 
   it('renders the registration headline and copy', () => {

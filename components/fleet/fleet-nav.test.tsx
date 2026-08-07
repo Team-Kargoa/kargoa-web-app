@@ -25,13 +25,21 @@ describe('FleetNav', () => {
     expect(revenueLinks).toHaveLength(2);
   });
 
-  it('only links to routes that exist: /fleet, /fleet/drivers, /fleet/revenue', () => {
+  it('only links to routes that exist: /fleet, /fleet/drivers, /fleet/revenue, plus the brand link home', () => {
     render(<FleetNav />);
     const links = screen.getAllByRole('link');
     const hrefs = links.map((link) => link.getAttribute('href'));
     expect(hrefs.every((href) => href !== null)).toBe(true);
     expect(new Set(hrefs)).toEqual(
-      new Set(['/fleet', '/fleet/drivers', '/fleet/revenue']),
+      new Set(['/', '/fleet', '/fleet/drivers', '/fleet/revenue']),
+    );
+  });
+
+  it('renders the KmerCargo brand as a link back to the landing page', () => {
+    render(<FleetNav />);
+    expect(screen.getByRole('link', { name: 'KmerCargo' })).toHaveAttribute(
+      'href',
+      '/',
     );
   });
 

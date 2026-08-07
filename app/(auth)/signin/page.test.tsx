@@ -35,6 +35,14 @@ describe('SignInPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the KmerCargo heading as a link back to the landing page', () => {
+    render(<SignInPage />);
+    expect(screen.getByRole('link', { name: 'KmerCargo' })).toHaveAttribute(
+      'href',
+      '/',
+    );
+  });
+
   it('renders the phone field under the design label', () => {
     render(<SignInPage />);
     expect(

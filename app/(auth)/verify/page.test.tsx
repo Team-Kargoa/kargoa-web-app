@@ -53,6 +53,17 @@ describe('VerifyPage', () => {
     );
   });
 
+  it('renders the KmerCargo brand in the header as a link back to the landing page', async () => {
+    await renderVerify({ phone: '+237691234567', purpose: 'login' });
+    expect(
+      screen.getByRole('heading', { name: 'KmerCargo' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'KmerCargo' })).toHaveAttribute(
+      'href',
+      '/',
+    );
+  });
+
   it('renders the verify submit button and the dash divider', async () => {
     const { container } = await renderVerify({
       phone: '+237691234567',
