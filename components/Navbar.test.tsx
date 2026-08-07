@@ -37,7 +37,7 @@ describe('Navbar', () => {
 
   it.each([
     ['Registration', '/register'],
-    ['Support', '/support'],
+    ['Support', '/contact'],
     ['Help', '/help'],
   ])('links %s to %s', (label, href) => {
     render(<Navbar user={null} />);
