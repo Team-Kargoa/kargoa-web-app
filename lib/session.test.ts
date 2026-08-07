@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import {
   createSession,
   getAccessToken,
+  getRefreshToken,
   destroySession,
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
@@ -43,6 +44,17 @@ it('reads the access token back', async () => {
 it('returns undefined when no cookie is set', async () => {
   store.get.mockReturnValue(undefined);
   await expect(getAccessToken()).resolves.toBeUndefined();
+});
+
+it('reads the refresh token back', async () => {
+  store.get.mockReturnValue({ value: 'r' });
+  await expect(getRefreshToken()).resolves.toBe('r');
+  expect(store.get).toHaveBeenCalledWith('refresh_token');
+});
+
+it('returns undefined for the refresh token when no cookie is set', async () => {
+  store.get.mockReturnValue(undefined);
+  await expect(getRefreshToken()).resolves.toBeUndefined();
 });
 
 it('clears both cookies on destroy', async () => {
