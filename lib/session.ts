@@ -35,6 +35,11 @@ export async function getAccessToken(): Promise<string | undefined> {
   return store.get(ACCESS_TOKEN_COOKIE)?.value;
 }
 
+export async function getRefreshToken(): Promise<string | undefined> {
+  const store = await cookies();
+  return store.get(REFRESH_TOKEN_COOKIE)?.value;
+}
+
 export async function destroySession(): Promise<void> {
   const store = await cookies();
   store.delete(ACCESS_TOKEN_COOKIE);
