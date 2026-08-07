@@ -21,9 +21,7 @@ import {
  * must still be able to reach public pages, so every path below ends in
  * NextResponse.next().
  */
-export async function middleware(
-  request: NextRequest,
-): Promise<NextResponse> {
+export async function middleware(request: NextRequest): Promise<NextResponse> {
   const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   if (accessToken) {
     // Still valid (or at least present) — nothing to do.

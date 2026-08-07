@@ -1,4 +1,10 @@
-import { render, screen, within, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import { usePathname } from 'next/navigation';
 import { FleetNav } from './fleet-nav';
 import { signOut } from '@/app/(auth)/actions';
