@@ -1,20 +1,22 @@
-// Fixture data for lib/api/admin.ts. apps/admin_api has no live routes yet
-// (verified 2026-08-04) — this file stands in for real API responses.
+// Fixture data for the FIXTURE-BACKED half of lib/api/admin.ts — the admin
+// overview/dashboard summary, fleet applications, document inspection and
+// team management, none of which apps/admin_api implements yet (verified
+// live 2026-08-07, alongside the drivers/configs/audit-logs endpoints that
+// did go live and are no longer fixture-backed — see lib/api/admin.ts).
 //
 // OVERVIEW_FIXTURE's shape mirrors /admin/overview in api_spec.yaml exactly
 // (active_trips, online_drivers, bookings_last_24h, revenue_last_24h_fcfa,
 // open_disputes, pending_approvals, as_of) — that endpoint is spec'd even
 // though unbuilt. FLEET_APPLICATIONS_FIXTURE is transcribed verbatim from
-// admin_fleet_approval_queue/screen.png. DRIVER_APPLICATION_FIXTURE,
-// DOCUMENT_FIXTURE and TEAM_FIXTURE are drawn from their respective design
-// screens (admin_driver_application_review, admin_document_inspector,
-// admin_team_management) — none of these three have a matching path in
-// api_spec.yaml at all, so their shapes are scaffolding, not contract.
-// Delete alongside admin.ts once the backend ships real admin routes.
+// admin_fleet_approval_queue/screen.png. DOCUMENT_FIXTURE and TEAM_FIXTURE
+// are drawn from their respective design screens (admin_document_inspector,
+// admin_team_management) — neither has a matching path in api_spec.yaml at
+// all, so their shapes are scaffolding, not contract.
+// Delete alongside admin.ts's fixture-backed group once the backend ships
+// these remaining routes.
 import type {
   AdminOverview,
   FleetApplication,
-  DriverApplication,
   DocumentRecord,
   TeamMember,
 } from '../admin';
@@ -68,23 +70,6 @@ export const FLEET_APPLICATIONS_FIXTURE: FleetApplication[] = [
     status: 'pending_review',
   },
 ];
-
-// admin_driver_application_review/screen.png — single applicant shown
-// (Jean-Paul Eto'o). Phone number is masked in the design; this value is a
-// placeholder, not a real one lifted from the mockup.
-export const DRIVER_APPLICATION_FIXTURE: DriverApplication = {
-  id: 'drv-app-1',
-  full_name: "Jean-Paul Eto'o",
-  phone_number: '+237670000000',
-  location: 'Yaoundé, Centre',
-  status: 'pending_review',
-  applied_date: 'Oct 24, 2023',
-  license_class: 'Class C - Heavy Duty',
-  license_document_url: 'https://fixtures.kargoa.local/documents/license-1.jpg',
-  selfie_url: 'https://fixtures.kargoa.local/documents/selfie-1.jpg',
-  selfie_match_percent: 98.4,
-  admin_notes: null,
-};
 
 // admin_document_inspector/screen.png — the Vehicle Registration document
 // opened from that same driver application.

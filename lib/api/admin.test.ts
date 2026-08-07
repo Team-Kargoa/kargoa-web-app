@@ -117,9 +117,9 @@ describe('getDriverApplication (LIVE)', () => {
   it('requests /admin-api/drivers/{id} with the bearer token and resolves the application', async () => {
     mockedRequest.mockResolvedValue(application);
 
-    await expect(
-      getDriverApplication('jwt-abc', application.id),
-    ).resolves.toBe(application);
+    await expect(getDriverApplication('jwt-abc', application.id)).resolves.toBe(
+      application,
+    );
 
     expect(mockedRequest).toHaveBeenCalledWith(
       `/admin-api/drivers/${application.id}`,
@@ -128,9 +128,7 @@ describe('getDriverApplication (LIVE)', () => {
   });
 
   it('propagates a 404 ApiError from apiRequest for an unknown id — mount path is /admin-api, not /admin', async () => {
-    mockedRequest.mockRejectedValue(
-      new ApiError('Not found.', 404),
-    );
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
 
     await expect(
       getDriverApplication('jwt-abc', 'does-not-exist'),
@@ -336,10 +334,9 @@ describe('listAuditLogs (LIVE)', () => {
 
     await listAuditLogs('jwt-abc', { page: 2 });
 
-    expect(mockedRequest).toHaveBeenCalledWith(
-      '/admin-api/audit-logs?page=2',
-      { token: 'jwt-abc' },
-    );
+    expect(mockedRequest).toHaveBeenCalledWith('/admin-api/audit-logs?page=2', {
+      token: 'jwt-abc',
+    });
   });
 });
 
