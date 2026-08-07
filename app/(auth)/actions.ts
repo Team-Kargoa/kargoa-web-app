@@ -1,9 +1,14 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { requestOtp, verifyOtp } from '../../lib/api/auth';
+import { requestOtp, verifyOtp, logout } from '../../lib/api/auth';
 import { ApiError } from '../../lib/api/client';
-import { createSession } from '../../lib/session';
+import {
+  createSession,
+  destroySession,
+  getAccessToken,
+  getRefreshToken,
+} from '../../lib/session';
 import type { OtpPurpose, Role, TokenPair } from '../../lib/api/types';
 
 export type AuthState = { error: string | null };
@@ -90,4 +95,31 @@ export async function confirmOtp(
 
   await createSession(tokens);
   redirect(redirectTarget(userRole));
+}
+
+/**
+ * Signs the current user out. Bound directly as a form action
+ * (`<form action={signOut}>`) so it works without client JavaScript.
+ *
+ * Invalidating the refresh token server-side is best-effort: if the
+ * backend call fails (network blip, backend hiccup), the local session is
+ * destroyed anyway — a failed API call must never trap someone in a
+ * session they explicitly asked to leave.
+ */
+export async function signOut(): Promise<void> {
+  const [accessToken, refreshToken] = await Promise.all([
+    getAccessToken(),
+    getRefreshToken(),
+  ]);
+
+  if (accessToken && refreshToken) {
+    try {
+      await logout(accessToken, refreshToken);
+    } catch {
+      // Continue anyway — see doc comment above.
+    }
+  }
+
+  await destroySession();
+  redirect('/');
 }
