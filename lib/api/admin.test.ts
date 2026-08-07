@@ -37,49 +37,92 @@ const mockedRequest = apiRequest as jest.MockedFunction<typeof apiRequest>;
 beforeEach(() => mockedRequest.mockReset());
 
 describe('getOverview', () => {
-  it('resolves the overview fixture', async () => {
-    await expect(getOverview('jwt-abc')).resolves.toEqual(OVERVIEW_FIXTURE);
+  it('requests /admin-api/overview and returns live data with isSample: false', async () => {
+    const live = { ...OVERVIEW_FIXTURE, active_trips: 999 };
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(getOverview('jwt-abc')).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
+    expect(mockedRequest).toHaveBeenCalledWith('/admin-api/overview', {
+      token: 'jwt-abc',
+    });
   });
 
-  it('never calls apiRequest — tripwire for when /admin-api/overview ships', async () => {
-    // No admin overview/dashboard-summary endpoint exists yet — verified
-    // live 2026-08-07. If this ever fails, the fixture must be deleted and
-    // getOverview rewired to call apiRequest.
-    await getOverview('jwt-abc');
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the overview fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(getOverview('jwt-abc')).resolves.toEqual({
+      data: OVERVIEW_FIXTURE,
+      isSample: true,
+    });
   });
 });
 
 describe('getFleetApplications', () => {
-  it('resolves the fleet applications fixture', async () => {
-    await expect(getFleetApplications('jwt-abc')).resolves.toEqual(
-      FLEET_APPLICATIONS_FIXTURE,
+  it('requests /admin-api/fleet-applications and returns live data with isSample: false', async () => {
+    const live = [FLEET_APPLICATIONS_FIXTURE[0]];
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(getFleetApplications('jwt-abc')).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
+    expect(mockedRequest).toHaveBeenCalledWith(
+      '/admin-api/fleet-applications',
+      { token: 'jwt-abc' },
     );
   });
 
-  it('never calls apiRequest — tripwire for when a live fleet-applications endpoint ships', async () => {
-    await getFleetApplications('jwt-abc');
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the fleet applications fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(getFleetApplications('jwt-abc')).resolves.toEqual({
+      data: FLEET_APPLICATIONS_FIXTURE,
+      isSample: true,
+    });
+  });
+
+  it('falls back to the fixture with isSample: true when the endpoint returns an empty array', async () => {
+    mockedRequest.mockResolvedValue([]);
+
+    await expect(getFleetApplications('jwt-abc')).resolves.toEqual({
+      data: FLEET_APPLICATIONS_FIXTURE,
+      isSample: true,
+    });
   });
 });
 
 describe('getFleetApplication', () => {
-  it('resolves the matching fleet application fixture by id', async () => {
+  it('requests /admin-api/fleet-applications/{id} and returns live data with isSample: false', async () => {
     const [first] = FLEET_APPLICATIONS_FIXTURE;
-    await expect(getFleetApplication('jwt-abc', first.id)).resolves.toEqual(
-      first,
+    const live = { ...first, organization: 'Live Org' };
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(
+      getFleetApplication('jwt-abc', first.id),
+    ).resolves.toEqual({ data: live, isSample: false });
+    expect(mockedRequest).toHaveBeenCalledWith(
+      `/admin-api/fleet-applications/${first.id}`,
+      { token: 'jwt-abc' },
     );
   });
 
-  it('never calls apiRequest — tripwire for when a live fleet-application endpoint ships', async () => {
+  it('falls back to the matching fixture with isSample: true when the endpoint 404s', async () => {
     const [first] = FLEET_APPLICATIONS_FIXTURE;
-    await getFleetApplication('jwt-abc', first.id);
-    expect(apiRequest).not.toHaveBeenCalled();
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(
+      getFleetApplication('jwt-abc', first.id),
+    ).resolves.toEqual({ data: first, isSample: true });
   });
 
-  it('throws a 404 ApiError for an unknown id — matching what the real endpoint will do', async () => {
+  it('throws a 404 ApiError for an id with no live data and no matching fixture', async () => {
     // Jest's toThrow only compares .message, never .status — use
     // rejects.toMatchObject to pin both, plus an explicit instanceof check.
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
     await expect(
       getFleetApplication('jwt-abc', 'does-not-exist'),
     ).rejects.toMatchObject({ status: 404 });
@@ -341,18 +384,30 @@ describe('listAuditLogs (LIVE)', () => {
 });
 
 describe('getDocument', () => {
-  it('resolves the document fixture by id', async () => {
-    await expect(getDocument('jwt-abc', DOCUMENT_FIXTURE.id)).resolves.toEqual(
-      DOCUMENT_FIXTURE,
+  it('requests /admin-api/documents/{id} and returns live data with isSample: false', async () => {
+    const live = { ...DOCUMENT_FIXTURE, file_size_mb: 42 };
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(
+      getDocument('jwt-abc', DOCUMENT_FIXTURE.id),
+    ).resolves.toEqual({ data: live, isSample: false });
+    expect(mockedRequest).toHaveBeenCalledWith(
+      `/admin-api/documents/${DOCUMENT_FIXTURE.id}`,
+      { token: 'jwt-abc' },
     );
   });
 
-  it('never calls apiRequest — tripwire for when a live document endpoint ships', async () => {
-    await getDocument('jwt-abc', DOCUMENT_FIXTURE.id);
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the document fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(
+      getDocument('jwt-abc', DOCUMENT_FIXTURE.id),
+    ).resolves.toEqual({ data: DOCUMENT_FIXTURE, isSample: true });
   });
 
   it('throws a 404 ApiError for an unknown id — matching what the real endpoint will do', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
     await expect(
       getDocument('jwt-abc', 'does-not-exist'),
     ).rejects.toMatchObject({ status: 404 });
@@ -368,12 +423,34 @@ describe('getDocument', () => {
 });
 
 describe('getTeam', () => {
-  it('resolves the team fixture', async () => {
-    await expect(getTeam('jwt-abc')).resolves.toEqual(TEAM_FIXTURE);
+  it('requests /admin-api/team and returns live data with isSample: false', async () => {
+    const live = [TEAM_FIXTURE[0]];
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(getTeam('jwt-abc')).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
+    expect(mockedRequest).toHaveBeenCalledWith('/admin-api/team', {
+      token: 'jwt-abc',
+    });
   });
 
-  it('never calls apiRequest — tripwire for when a live team endpoint ships', async () => {
-    await getTeam('jwt-abc');
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the team fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(getTeam('jwt-abc')).resolves.toEqual({
+      data: TEAM_FIXTURE,
+      isSample: true,
+    });
+  });
+
+  it('falls back to the fixture with isSample: true when the endpoint returns an empty array', async () => {
+    mockedRequest.mockResolvedValue([]);
+
+    await expect(getTeam('jwt-abc')).resolves.toEqual({
+      data: TEAM_FIXTURE,
+      isSample: true,
+    });
   });
 });
