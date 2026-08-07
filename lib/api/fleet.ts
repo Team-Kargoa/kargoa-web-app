@@ -1,9 +1,16 @@
-// FIXTURE-BACKED. apps/tracking and apps/admin_api have no live routes for
-// fleet telemetry (active truck counts, driver positions, weekly revenue)
-// yet — verified 2026-08-06. When those endpoints ship, replace these
-// bodies with apiRequest calls. Signatures must not change — screens depend
-// on them.
+// LIVE-WITH-FALLBACK. apps/tracking and apps/admin_api have no live routes
+// for fleet telemetry (active truck counts, driver positions, weekly
+// revenue) yet — verified 2026-08-06. Every function below attempts its
+// guessed /tracking/* or /fleet/* path via withFallback and only falls
+// back to its fixture when that call errors or returns something empty.
+// The fixture disappears on its own, with no code change needed here, the
+// moment the backend actually serves the route. Signatures now return
+// Sourced<T> (`{ data, isSample }`) instead of T — callers must read
+// `.data` and may read `.isSample` to show that a section is showing
+// sample data.
 
+import { apiRequest } from './client';
+import { withFallback, type Sourced } from './with-fallback';
 import {
   FLEET_SUMMARY_FIXTURE,
   WEEKLY_PERFORMANCE_FIXTURE,
@@ -38,21 +45,34 @@ export type FleetDriver = {
   status: FleetDriverStatus;
 };
 
-export function getFleetSummary(token: string): Promise<FleetSummary> {
-  void token;
-  return Promise.resolve(FLEET_SUMMARY_FIXTURE);
+export function getFleetSummary(
+  token: string,
+): Promise<Sourced<FleetSummary>> {
+  return withFallback(
+    () => apiRequest<FleetSummary>('/tracking/fleet-summary', { token }),
+    FLEET_SUMMARY_FIXTURE,
+  );
 }
 
 export function getWeeklyPerformance(
   token: string,
-): Promise<FleetPerformanceDay[]> {
-  void token;
-  return Promise.resolve(WEEKLY_PERFORMANCE_FIXTURE);
+): Promise<Sourced<FleetPerformanceDay[]>> {
+  return withFallback(
+    () =>
+      apiRequest<FleetPerformanceDay[]>('/tracking/weekly-performance', {
+        token,
+      }),
+    WEEKLY_PERFORMANCE_FIXTURE,
+  );
 }
 
-export function getActiveDrivers(token: string): Promise<FleetDriver[]> {
-  void token;
-  return Promise.resolve(ACTIVE_DRIVERS_FIXTURE);
+export function getActiveDrivers(
+  token: string,
+): Promise<Sourced<FleetDriver[]>> {
+  return withFallback(
+    () => apiRequest<FleetDriver[]>('/tracking/active-drivers', { token }),
+    ACTIVE_DRIVERS_FIXTURE,
+  );
 }
 
 // --- /fleet/drivers (Driver & Vehicle Management) ---
@@ -82,12 +102,20 @@ export type FleetVehicle = {
   status: VehicleOperationalStatus;
 };
 
-export function getDriverRoster(token: string): Promise<FleetDriverProfile[]> {
-  void token;
-  return Promise.resolve(DRIVER_ROSTER_FIXTURE);
+export function getDriverRoster(
+  token: string,
+): Promise<Sourced<FleetDriverProfile[]>> {
+  return withFallback(
+    () => apiRequest<FleetDriverProfile[]>('/fleet/drivers', { token }),
+    DRIVER_ROSTER_FIXTURE,
+  );
 }
 
-export function getVehicleRoster(token: string): Promise<FleetVehicle[]> {
-  void token;
-  return Promise.resolve(VEHICLE_ROSTER_FIXTURE);
+export function getVehicleRoster(
+  token: string,
+): Promise<Sourced<FleetVehicle[]>> {
+  return withFallback(
+    () => apiRequest<FleetVehicle[]>('/fleet/vehicles', { token }),
+    VEHICLE_ROSTER_FIXTURE,
+  );
 }
