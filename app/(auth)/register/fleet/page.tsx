@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  Truck,
   UserCircle,
   ArrowRight,
   ShieldCheck,
@@ -17,6 +16,7 @@ import {
 import { sendOtp } from '../../actions';
 import { PhoneField } from '@/components/auth/phone-field';
 import { BackToHomeLink } from '@/components/auth/back-to-home-link';
+import { BrandLink } from '@/components/brand-link';
 import Footer from '@/components/Footer';
 
 const PURPOSE = 'registration';
@@ -55,15 +55,7 @@ export default function FleetRegistrationPage() {
       <header className="w-full sticky top-0 bg-surface z-50">
         <div className="flex items-center justify-between px-4 md:px-8 py-4 max-w-7xl mx-auto">
           <h1>
-            <Link
-              href="/"
-              className="flex items-center gap-3 text-primary hover:opacity-90 transition"
-            >
-              <Truck aria-hidden="true" className="h-7 w-7" />
-              <span className="font-heading text-lg font-bold tracking-tight">
-                KmerCargo
-              </span>
-            </Link>
+            <BrandLink className="text-primary hover:opacity-90 transition" />
           </h1>
           <div className="flex items-center gap-4">
             <BackToHomeLink />

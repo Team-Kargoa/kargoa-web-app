@@ -21,6 +21,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { BrandLink } from '@/components/brand-link';
 import {
   Sidebar,
   SidebarContent,
@@ -93,15 +94,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link
-          href="/"
-          className="flex h-9 items-center gap-2.5 rounded-md px-2 text-foreground"
-        >
-          <span className="grid size-7 place-items-center rounded-lg bg-primary text-xs font-bold text-primary-foreground">
-            K
-          </span>
-          <span className="font-semibold tracking-tight">KmerCargo</span>
-        </Link>
+        <BrandLink className="h-9 rounded-md px-2 text-foreground" />
       </SidebarHeader>
       <Separator />
       <SidebarContent>

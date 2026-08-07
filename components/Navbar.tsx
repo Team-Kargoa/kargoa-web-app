@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Truck } from 'lucide-react';
 import type { UserSummary } from '@/lib/api/types';
 import { formatPhone, getInitials } from '@/lib/format';
+import { BrandLink } from '@/components/brand-link';
 
 const NAV_LINKS = [
   { label: 'Registration', href: '/register' },
@@ -27,12 +27,7 @@ export default function Navbar({ user }: NavbarProps) {
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-5">
         <div className="flex items-center justify-between rounded-full border border-gray-200 bg-surface/80 backdrop-blur-md px-6 py-3 shadow-sm">
-          <Link href="/" className="flex items-center gap-2">
-            <Truck className="h-6 w-6" aria-hidden="true" />
-            <span className="text-2xl font-black tracking-tight font-heading">
-              KmerCargo
-            </span>
-          </Link>
+          <BrandLink />
 
           <nav className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map(({ label, href }) => (
@@ -63,13 +58,32 @@ export default function Navbar({ user }: NavbarProps) {
   );
 }
 
+/**
+ * Where the identity button sends each portal role. getCurrentUser only
+ * ever resolves fleet_owner/admin users into this component, but the
+ * UserSummary type doesn't statically guarantee that — spelled out as a
+ * switch, with a documented fallback, rather than a ternary that would
+ * silently send any future role to /fleet without anyone deciding that
+ * on purpose.
+ */
+function dashboardHref(role: UserSummary['role']): string {
+  switch (role) {
+    case 'admin':
+      return '/admin';
+    case 'fleet_owner':
+      return '/fleet';
+    default:
+      return '/fleet';
+  }
+}
+
 function DashboardLink({ user }: { user: UserSummary }) {
   const trimmedName = user.full_name.trim();
   const displayName = trimmedName || formatPhone(user.phone_number);
   const initials = trimmedName
     ? getInitials(trimmedName)
     : user.phone_number.replace(/\D/g, '').slice(-2);
-  const href = user.role === 'admin' ? '/admin' : '/fleet';
+  const href = dashboardHref(user.role);
 
   return (
     <Link
