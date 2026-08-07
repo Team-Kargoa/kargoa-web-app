@@ -7,7 +7,7 @@ import { BrandLink } from '@/components/brand-link';
 
 const NAV_LINKS = [
   { label: 'Registration', href: '/register' },
-  { label: 'Support', href: '/support' },
+  { label: 'Support', href: '/contact' },
   { label: 'Help', href: '/help' },
 ];
 
