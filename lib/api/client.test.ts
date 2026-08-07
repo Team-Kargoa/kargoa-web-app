@@ -33,6 +33,16 @@ describe('apiRequest', () => {
     );
   });
 
+  it('falls back to the local backend when NEXT_PUBLIC_API_URL is unset', async () => {
+    delete process.env.NEXT_PUBLIC_API_URL;
+    (global.fetch as jest.Mock).mockReturnValue(okResponse({}));
+    await apiRequest('/auth/profile');
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:8000/api/v1/auth/profile',
+      expect.anything(),
+    );
+  });
+
   it('sends a JSON body for writes', async () => {
     (global.fetch as jest.Mock).mockReturnValue(okResponse({}));
     await apiRequest('/auth/otp/request', {
