@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import { AdminHeader } from './admin-header';
 import { signOut } from '@/app/(auth)/actions';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import type { UserSummary } from '@/lib/api/types';
 
 jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
@@ -14,10 +15,23 @@ jest.mock('@/app/(auth)/actions', () => ({
 const mockUsePathname = usePathname as jest.Mock;
 const mockedSignOut = signOut as jest.Mock;
 
-function renderHeader() {
+function makeUser(overrides: Partial<UserSummary> = {}): UserSummary {
+  return {
+    id: 'admin-1',
+    phone_number: '+237674628817',
+    role: 'admin',
+    full_name: 'Admin Office',
+    profile_photo: null,
+    is_active: true,
+    date_joined: '2026-01-01',
+    ...overrides,
+  };
+}
+
+function renderHeader(user: UserSummary | null = makeUser()) {
   return render(
     <SidebarProvider>
-      <AdminHeader />
+      <AdminHeader user={user} />
     </SidebarProvider>,
   );
 }
@@ -58,5 +72,38 @@ describe('AdminHeader sign out', () => {
     renderHeader();
     const button = screen.getByRole('button', { name: /sign out/i });
     expect(button.className).toMatch(/rounded-xl/);
+  });
+});
+
+// Regression coverage for the leftover admin@kmercargo.com placeholder:
+// the identity block must reflect whoever app/admin/layout.tsx resolved
+// via lib/current-user.ts and passed down, never a hardcoded stand-in.
+describe('AdminHeader admin identity', () => {
+  beforeEach(() => {
+    mockUsePathname.mockReturnValue('/admin');
+    jest.clearAllMocks();
+  });
+
+  it("shows the signed-in admin's full name when present", () => {
+    renderHeader(makeUser({ full_name: 'Ngozi Fon' }));
+    expect(screen.getByText('Ngozi Fon')).toBeInTheDocument();
+    expect(screen.queryByText('admin@kmercargo.com')).not.toBeInTheDocument();
+  });
+
+  it('falls back to the formatted phone number, in font-mono, when full_name is empty', () => {
+    renderHeader(makeUser({ full_name: '', phone_number: '+237674628817' }));
+    const phoneEl = screen.getByText('+237 6 74 62 88 17');
+    expect(phoneEl).toBeInTheDocument();
+    expect(phoneEl.className).toMatch(/font-mono/);
+  });
+
+  it('falls back to the formatted phone number when full_name is only whitespace', () => {
+    renderHeader(makeUser({ full_name: '   ', phone_number: '+237674628817' }));
+    expect(screen.getByText('+237 6 74 62 88 17')).toBeInTheDocument();
+  });
+
+  it('handles a signed-out (null) user without crashing', () => {
+    renderHeader(null);
+    expect(screen.getByText('Signed out')).toBeInTheDocument();
   });
 });
