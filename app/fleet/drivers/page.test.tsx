@@ -23,8 +23,14 @@ const mockedGetVehicleRoster = getVehicleRoster as jest.MockedFunction<
 beforeEach(() => {
   jest.clearAllMocks();
   mockedGetAccessToken.mockResolvedValue('jwt-abc');
-  mockedGetDriverRoster.mockResolvedValue(DRIVER_ROSTER_FIXTURE);
-  mockedGetVehicleRoster.mockResolvedValue(VEHICLE_ROSTER_FIXTURE);
+  mockedGetDriverRoster.mockResolvedValue({
+    data: DRIVER_ROSTER_FIXTURE,
+    isSample: true,
+  });
+  mockedGetVehicleRoster.mockResolvedValue({
+    data: VEHICLE_ROSTER_FIXTURE,
+    isSample: true,
+  });
 });
 
 describe('FleetDriversPage', () => {
@@ -172,5 +178,37 @@ describe('FleetDriversPage', () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
     render(await FleetDriversPage());
     expect(mockedGetDriverRoster).toHaveBeenCalledWith('');
+  });
+
+  it('shows the Sample data badge on the drivers tab when the driver roster is sample data', async () => {
+    render(await FleetDriversPage());
+    expect(screen.getByText('Sample data')).toBeInTheDocument();
+  });
+
+  it('shows the Sample data badge on the vehicles tab when the vehicle roster is sample data', async () => {
+    mockedGetDriverRoster.mockResolvedValue({
+      data: DRIVER_ROSTER_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetDriversPage());
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('tab', { name: /vehicles/i }));
+    expect(screen.getByText('Sample data')).toBeInTheDocument();
+  });
+
+  it('shows no Sample data badge when both rosters are real data', async () => {
+    mockedGetDriverRoster.mockResolvedValue({
+      data: DRIVER_ROSTER_FIXTURE,
+      isSample: false,
+    });
+    mockedGetVehicleRoster.mockResolvedValue({
+      data: VEHICLE_ROSTER_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetDriversPage());
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: /vehicles/i }));
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
   });
 });
