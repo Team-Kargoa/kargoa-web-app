@@ -161,9 +161,9 @@ describe('Navbar', () => {
       render(<Navbar user={null} />);
 
       ALL_LABELS.forEach((label) => {
-        expect(
-          screen.getByRole('link', { name: label }),
-        ).not.toHaveAttribute('aria-current');
+        expect(screen.getByRole('link', { name: label })).not.toHaveAttribute(
+          'aria-current',
+        );
       });
     });
   });

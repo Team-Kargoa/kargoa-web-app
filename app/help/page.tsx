@@ -12,8 +12,8 @@ export default function HelpPage() {
           Help
         </h1>
         <p className="font-sans text-text-secondary mb-2">
-          Help documentation is not yet published. It will appear here
-          before launch.
+          Help documentation is not yet published. It will appear here before
+          launch.
         </p>
         <Link
           href="/"
