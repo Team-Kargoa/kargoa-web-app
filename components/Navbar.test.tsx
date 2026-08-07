@@ -76,6 +76,18 @@ describe('Navbar', () => {
       expect(link).toHaveTextContent('+237 6 74 62 88 17');
       expect(screen.getByText('+237 6 74 62 88 17')).toHaveClass('font-mono');
     });
+
+    it('renders the last two digits of the phone number as the avatar initials when full_name is empty', () => {
+      // +237674628817 -> digits-only "237674628817" -> last two: "17".
+      // Pinned explicitly so a wrong slice (e.g. the country code, or the
+      // first two digits) fails loudly instead of shipping at 100%
+      // coverage — the display-name and font-mono assertions above don't
+      // touch this value at all.
+      const user = makeUser({ role: 'fleet_owner', full_name: '' });
+      render(<Navbar user={user} />);
+
+      expect(screen.getByText('17')).toBeInTheDocument();
+    });
   });
 
   describe('signed in as an admin', () => {
@@ -86,6 +98,25 @@ describe('Navbar', () => {
       const link = screen.getByRole('link', { name: /dashboard/i });
       expect(link).toHaveAttribute('href', '/admin');
       expect(link).toHaveTextContent('Admin User');
+    });
+  });
+
+  describe('an unexpected role reaching the dashboard link', () => {
+    it('defends by routing to /fleet rather than guessing silently', () => {
+      // getCurrentUser only ever resolves fleet_owner/admin users into
+      // this component, but the prop type doesn't statically guarantee
+      // that. Prove the fallback is deliberate, not an accident, by
+      // exercising it directly.
+      const user = makeUser({
+        role: 'customer' as UserSummary['role'],
+        full_name: 'Someone',
+      });
+      render(<Navbar user={user} />);
+
+      expect(screen.getByRole('link', { name: /dashboard/i })).toHaveAttribute(
+        'href',
+        '/fleet',
+      );
     });
   });
 });

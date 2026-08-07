@@ -29,4 +29,11 @@ describe('AppSidebar', () => {
       '/',
     );
   });
+
+  it('renders the shared Truck icon lockup, not the old "K" letter badge', () => {
+    renderSidebar();
+    const link = screen.getByRole('link', { name: /kmercargo/i });
+    expect(link.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+    expect(screen.queryByText('K', { exact: true })).not.toBeInTheDocument();
+  });
 });

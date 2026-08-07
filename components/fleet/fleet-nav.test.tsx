@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { usePathname } from 'next/navigation';
 import { FleetNav } from './fleet-nav';
 
@@ -35,12 +35,21 @@ describe('FleetNav', () => {
     );
   });
 
-  it('renders the KmerCargo brand as a link back to the landing page', () => {
+  it('renders the KmerCargo brand as a link back to the landing page, once for the desktop sidebar and once for the mobile header', () => {
     render(<FleetNav />);
-    expect(screen.getByRole('link', { name: 'KmerCargo' })).toHaveAttribute(
-      'href',
-      '/',
-    );
+    const brandLinks = screen.getAllByRole('link', { name: 'KmerCargo' });
+    expect(brandLinks).toHaveLength(2);
+    brandLinks.forEach((link) => expect(link).toHaveAttribute('href', '/'));
+  });
+
+  it('carries the brand link in a slim mobile-only top header (md:hidden), so phones get it too — not just the desktop sidebar (hidden md:flex)', () => {
+    render(<FleetNav />);
+    const mobileHeader = screen.getByRole('banner');
+    expect(mobileHeader).toHaveClass('md:hidden');
+    expect(mobileHeader).not.toHaveClass('hidden');
+    expect(
+      within(mobileHeader).getByRole('link', { name: 'KmerCargo' }),
+    ).toHaveAttribute('href', '/');
   });
 
   it('marks /fleet as the active route via aria-current when on the dashboard', () => {
