@@ -18,10 +18,16 @@ import type {
   VehicleOperationalStatus,
 } from '@/lib/api/fleet';
 import { formatPhone } from '@/lib/format';
+import { SampleDataBadge } from '@/components/sample-data-badge';
 
 export type DriverVehicleManagerProps = {
   drivers: FleetDriverProfile[];
   vehicles: FleetVehicle[];
+  /** Shows the shared SampleDataBadge on the Drivers tab when `drivers`
+   * came from a lib/api fallback fixture rather than the real endpoint. */
+  isDriversSample?: boolean;
+  /** Same, but for the Vehicles tab. */
+  isVehiclesSample?: boolean;
 };
 
 type Tab = 'drivers' | 'vehicles';
@@ -68,15 +74,21 @@ const TAB_BUTTON_INACTIVE =
 export function DriverVehicleManager({
   drivers,
   vehicles,
+  isDriversSample,
+  isVehiclesSample,
 }: DriverVehicleManagerProps) {
   const [tab, setTab] = useState<Tab>('drivers');
+  const isSample = tab === 'drivers' ? isDriversSample : isVehiclesSample;
 
   return (
     <div className="max-w-6xl mx-auto">
       <header className="mb-8">
-        <h2 className="font-heading text-2xl md:text-3xl text-text-primary mb-2">
-          Manage Fleet
-        </h2>
+        <div className="flex flex-wrap items-center gap-2 mb-2">
+          <h2 className="font-heading text-2xl md:text-3xl text-text-primary">
+            Manage Fleet
+          </h2>
+          {isSample && <SampleDataBadge />}
+        </div>
         <p className="text-text-secondary">
           Real-time oversight of your assets and workforce across the hub.
         </p>
