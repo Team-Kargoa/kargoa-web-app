@@ -1,8 +1,13 @@
 import { redirect } from 'next/navigation';
-import { requestOtp, verifyOtp } from '../../lib/api/auth';
+import { requestOtp, verifyOtp, logout } from '../../lib/api/auth';
 import { ApiError } from '../../lib/api/client';
-import { createSession } from '../../lib/session';
-import { sendOtp, confirmOtp } from './actions';
+import {
+  createSession,
+  destroySession,
+  getAccessToken,
+  getRefreshToken,
+} from '../../lib/session';
+import { sendOtp, confirmOtp, signOut } from './actions';
 import type { AuthState } from './actions';
 import type { UserSummary } from '../../lib/api/types';
 
@@ -16,8 +21,18 @@ jest.mock('next/navigation', () => ({
 
 const mockedRequestOtp = requestOtp as jest.MockedFunction<typeof requestOtp>;
 const mockedVerifyOtp = verifyOtp as jest.MockedFunction<typeof verifyOtp>;
+const mockedLogout = logout as jest.MockedFunction<typeof logout>;
 const mockedCreateSession = createSession as jest.MockedFunction<
   typeof createSession
+>;
+const mockedDestroySession = destroySession as jest.MockedFunction<
+  typeof destroySession
+>;
+const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
+  typeof getAccessToken
+>;
+const mockedGetRefreshToken = getRefreshToken as jest.MockedFunction<
+  typeof getRefreshToken
 >;
 const mockedRedirect = redirect as unknown as jest.Mock;
 
@@ -237,5 +252,47 @@ describe('confirmOtp', () => {
       error: 'Something went wrong. Please try again.',
     });
     expect(mockedCreateSession).not.toHaveBeenCalled();
+  });
+});
+
+describe('signOut', () => {
+  beforeEach(() => {
+    mockedGetAccessToken.mockResolvedValue('access-tok');
+    mockedGetRefreshToken.mockResolvedValue('refresh-tok');
+  });
+
+  it('invalidates the refresh token server-side, destroys the local session, and redirects home', async () => {
+    mockedLogout.mockResolvedValue(undefined);
+
+    await expect(signOut()).rejects.toThrow('REDIRECT:/');
+
+    expect(mockedLogout).toHaveBeenCalledWith('access-tok', 'refresh-tok');
+    // redirect() throws — a no-op mock would let code after it keep
+    // running and this assertion would pass for the wrong reason even if
+    // destroySession were never called. Assert the call directly.
+    expect(mockedDestroySession).toHaveBeenCalled();
+    expect(mockedRedirect).toHaveBeenCalledWith('/');
+  });
+
+  it('still destroys the session and redirects home when the backend logout call fails', async () => {
+    mockedLogout.mockRejectedValue(new ApiError('Server error.', 500));
+
+    await expect(signOut()).rejects.toThrow('REDIRECT:/');
+
+    // A backend hiccup must never trap someone in a session they asked to
+    // leave.
+    expect(mockedDestroySession).toHaveBeenCalled();
+    expect(mockedRedirect).toHaveBeenCalledWith('/');
+  });
+
+  it('skips the backend logout call but still destroys the session and redirects when there are no tokens to invalidate', async () => {
+    mockedGetAccessToken.mockResolvedValue(undefined);
+    mockedGetRefreshToken.mockResolvedValue(undefined);
+
+    await expect(signOut()).rejects.toThrow('REDIRECT:/');
+
+    expect(mockedLogout).not.toHaveBeenCalled();
+    expect(mockedDestroySession).toHaveBeenCalled();
+    expect(mockedRedirect).toHaveBeenCalledWith('/');
   });
 });
