@@ -122,24 +122,12 @@ export default function HomePage() {
             <p className="font-sans text-sm text-white/70 mb-6">
               Select your role to start your journey with KmerCargo today.
             </p>
-            <div className="flex flex-col gap-3 md:flex-row md:justify-center">
+            <div className="flex justify-center">
               <Link
                 href="/register"
-                className="h-14 md:px-8 bg-primary-container text-on-primary-container font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                className="h-14 px-8 bg-primary-container text-on-primary-container font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
               >
                 Get Started Now
-              </Link>
-              {/*
-                The design defines no network-map screen, so this button
-                scrolls to role selection (the design's own fallback
-                pattern — code.html uses the same #role-selection anchor
-                for its "Join the Fleet" button) until one exists.
-              */}
-              <Link
-                href="#role-selection"
-                className="h-14 md:px-8 border border-border-dark text-white font-sans font-semibold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
-              >
-                View Network Map
               </Link>
             </div>
           </div>
