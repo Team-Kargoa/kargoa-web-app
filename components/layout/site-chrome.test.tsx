@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { usePathname } from 'next/navigation';
 import { SiteChrome } from './site-chrome';
+import type { UserSummary } from '@/lib/api/types';
 
 jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
@@ -8,12 +9,22 @@ jest.mock('next/navigation', () => ({
 
 const mockUsePathname = usePathname as jest.Mock;
 
+const FLEET_OWNER: UserSummary = {
+  id: 'user-1',
+  phone_number: '+237674628817',
+  role: 'fleet_owner',
+  full_name: 'Ama Owusu',
+  profile_photo: null,
+  is_active: true,
+  date_joined: '2026-08-06T23:18:00.134979Z',
+};
+
 describe('SiteChrome', () => {
   it('renders the navbar and page content, without a footer, on a marketing route', () => {
     mockUsePathname.mockReturnValue('/');
 
     render(
-      <SiteChrome>
+      <SiteChrome user={null}>
         <p>page content</p>
       </SiteChrome>,
     );
@@ -27,7 +38,7 @@ describe('SiteChrome', () => {
     mockUsePathname.mockReturnValue('/admin');
 
     render(
-      <SiteChrome>
+      <SiteChrome user={null}>
         <p>admin content</p>
       </SiteChrome>,
     );
@@ -43,7 +54,7 @@ describe('SiteChrome', () => {
       mockUsePathname.mockReturnValue(pathname);
 
       render(
-        <SiteChrome>
+        <SiteChrome user={null}>
           <p>auth content</p>
         </SiteChrome>,
       );
@@ -57,7 +68,7 @@ describe('SiteChrome', () => {
     mockUsePathname.mockReturnValue('/register');
 
     render(
-      <SiteChrome>
+      <SiteChrome user={null}>
         <p>hub content</p>
       </SiteChrome>,
     );
@@ -71,7 +82,7 @@ describe('SiteChrome', () => {
       mockUsePathname.mockReturnValue(pathname);
 
       render(
-        <SiteChrome>
+        <SiteChrome user={null}>
           <p>fleet content</p>
         </SiteChrome>,
       );
@@ -80,4 +91,21 @@ describe('SiteChrome', () => {
       expect(screen.getByText('fleet content')).toBeInTheDocument();
     },
   );
+
+  it('threads a signed-in user down into the navbar so it can show their dashboard link', () => {
+    mockUsePathname.mockReturnValue('/');
+
+    render(
+      <SiteChrome user={FLEET_OWNER}>
+        <p>page content</p>
+      </SiteChrome>,
+    );
+
+    expect(
+      screen.getByRole('link', { name: /dashboard/i }),
+    ).toHaveAttribute('href', '/fleet');
+    expect(
+      screen.queryByRole('link', { name: 'Get Started' }),
+    ).not.toBeInTheDocument();
+  });
 });
