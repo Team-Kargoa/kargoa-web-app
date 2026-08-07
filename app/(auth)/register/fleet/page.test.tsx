@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import FleetRegistrationPage from './page';
 import { sendOtp } from '../../actions';
@@ -31,7 +37,7 @@ describe('FleetRegistrationPage', () => {
     render(<FleetRegistrationPage />);
     const link = screen.getByRole('link', { name: 'KmerCargo' });
     expect(link.querySelector('svg')).toHaveClass('h-7', 'w-7');
-    expect(screen.getByText('KmerCargo')).toHaveClass('text-lg');
+    expect(within(link).getByText('KmerCargo')).toHaveClass('text-lg');
   });
 
   it('renders the registration headline and copy', () => {

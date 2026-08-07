@@ -94,7 +94,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <BrandLink className="h-9 rounded-md px-2 text-foreground" />
+        <BrandLink size="sm" className="h-9 rounded-md px-2 text-foreground" />
       </SidebarHeader>
       <Separator />
       <SidebarContent>

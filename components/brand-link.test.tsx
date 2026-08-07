@@ -35,21 +35,27 @@ describe('BrandLink', () => {
   describe('size variants', () => {
     it('defaults to md — the h-6 icon and text-2xl wordmark Navbar always used', () => {
       render(<BrandLink />);
-      const icon = screen.getByRole('link', { name: 'KmerCargo' }).querySelector('svg');
+      const icon = screen
+        .getByRole('link', { name: 'KmerCargo' })
+        .querySelector('svg');
       expect(icon).toHaveClass('h-6', 'w-6');
       expect(screen.getByText('KmerCargo')).toHaveClass('text-2xl');
     });
 
     it('sm renders a smaller icon and wordmark, for tight headers like the fleet sidebar', () => {
       render(<BrandLink size="sm" />);
-      const icon = screen.getByRole('link', { name: 'KmerCargo' }).querySelector('svg');
+      const icon = screen
+        .getByRole('link', { name: 'KmerCargo' })
+        .querySelector('svg');
       expect(icon).toHaveClass('h-5', 'w-5');
       expect(screen.getByText('KmerCargo')).toHaveClass('text-xl');
     });
 
     it('lg renders a bigger icon and a more compact wordmark, matching the original fleet-registration and verify headers', () => {
       render(<BrandLink size="lg" />);
-      const icon = screen.getByRole('link', { name: 'KmerCargo' }).querySelector('svg');
+      const icon = screen
+        .getByRole('link', { name: 'KmerCargo' })
+        .querySelector('svg');
       expect(icon).toHaveClass('h-7', 'w-7');
       expect(screen.getByText('KmerCargo')).toHaveClass('text-lg');
     });

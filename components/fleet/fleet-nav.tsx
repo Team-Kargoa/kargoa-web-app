@@ -35,7 +35,7 @@ export function FleetNav() {
           inside the sidebar, so it renders regardless of the sidebar's
           own display. */}
       <header className="md:hidden sticky top-0 z-40 flex items-center border-b border-border bg-surface-container-low px-4 py-3">
-        <BrandLink className="text-primary" />
+        <BrandLink size="sm" className="text-primary" />
       </header>
 
       <aside
@@ -43,7 +43,10 @@ export function FleetNav() {
         className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-border p-4 gap-2 z-30"
       >
         <div className="mb-4 px-2 pt-2">
-          <BrandLink className="text-primary hover:opacity-90 transition" />
+          <BrandLink
+            size="sm"
+            className="text-primary hover:opacity-90 transition"
+          />
         </div>
         <nav aria-label="Fleet sections" className="flex flex-col gap-1">
           {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
