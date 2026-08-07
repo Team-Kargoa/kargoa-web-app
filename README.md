@@ -16,6 +16,7 @@ GitHub organization.
 - [Tech stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Getting started](#getting-started)
+- [Environment variables](#environment-variables)
 - [Project structure](#project-structure)
 - [Branching strategy](#branching-strategy)
 - [Commit message convention](#commit-message-convention)
@@ -78,7 +79,18 @@ gate via [pre-commit](https://pre-commit.com/). Install the hooks once per clone
 pre-commit install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
 ```
 
-### 4. Run the app
+### 4. (Optional) Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Every variable has a working default, so this step can be skipped entirely
+for local development against the default backend URL. See
+[Environment variables](#environment-variables) below before changing
+anything session- or rate-limit-related.
+
+### 5. Run the app
 
 ```bash
 npm run dev
@@ -86,11 +98,35 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000).
 
-### 5. Run the tests
+### 6. Run the tests
 
 ```bash
 npm test
 ```
+
+## Environment variables
+
+All configuration is read and parsed in one place, [lib/config.ts](lib/config.ts).
+[.env.example](.env.example) lists every variable, its default, and a
+one-line description — copy it to `.env` and adjust as needed. The app runs
+correctly with **no** `.env` file at all, since every variable falls back to
+a sensible default.
+
+Two things matter when setting these:
+
+- **Public vs server-only.** Variables prefixed `NEXT_PUBLIC_` are inlined
+  into the browser bundle at build time and are world-readable — never put a
+  secret behind that prefix. Variables without the prefix
+  (`SESSION_ACCESS_MAX_AGE`, `SESSION_REFRESH_MAX_AGE`) are read only in
+  server-side code and are never sent to the client.
+- **Session and rate-limit values must match the backend.** `SESSION_ACCESS_MAX_AGE`,
+  `SESSION_REFRESH_MAX_AGE`, `NEXT_PUBLIC_OTP_RATE_LIMIT`, and
+  `NEXT_PUBLIC_OTP_RATE_WINDOW_MINUTES` all mirror settings that live in the
+  [Kargoa-backend](https://github.com/Team-Kargoa/Kargoa-backend) repo (JWT
+  token lifetimes and OTP rate limiting). Changing a value here without
+  changing it on the backend — or vice versa — will drift the two apart;
+  see the comments in `lib/config.ts` for the exact backend file/line each
+  one must match.
 
 ## Project structure
 
