@@ -1,11 +1,13 @@
-// This module is split between LIVE and FIXTURE-BACKED functions — apps/admin_api
-// went live at the /admin-api/ mount path (verified 2026-08-07 with a real
-// admin token; api_spec.yaml still documents /admin/... and is wrong, the
-// third time that spec has diverged from reality on this project). Each
-// group is headed with its own comment below — do not assume the whole file
-// is one or the other.
+// This module is split between LIVE (strict, no fallback) and
+// LIVE-WITH-FALLBACK functions — apps/admin_api went live at the
+// /admin-api/ mount path (verified 2026-08-07 with a real admin token;
+// api_spec.yaml still documents /admin/... and is wrong, the third time
+// that spec has diverged from reality on this project). Each group is
+// headed with its own comment below — do not assume the whole file is one
+// or the other.
 
-import { apiRequest, ApiError } from './client';
+import { apiRequest } from './client';
+import { withFallback, type Sourced } from './with-fallback';
 import {
   OVERVIEW_FIXTURE,
   FLEET_APPLICATIONS_FIXTURE,
@@ -158,14 +160,19 @@ export function listAuditLogs(
   ).then((result) => ({ logs: result.logs, meta: result.meta }));
 }
 
-// --- FIXTURE-BACKED: still missing from apps/admin_api --------------------
+// --- LIVE-WITH-FALLBACK: still missing from apps/admin_api -----------------
 //
 // Verified live 2026-08-07 against the running backend, alongside the group
 // above: there is still no endpoint for the admin overview/dashboard
 // summary, fleet applications or the fleet approvals queue, the financial
-// dashboard, team management, or document inspection. When any of these
-// ship, replace that function's body with an apiRequest call. Signatures
-// must not change — screens depend on them.
+// dashboard, team management, or document inspection. Each function below
+// attempts its guessed /admin-api/* path via withFallback and only falls
+// back to its fixture when that call errors (404 today) or returns
+// something empty — the fixture disappears on its own, with no code change
+// needed here, the moment apps/admin_api actually serves the route.
+// Signatures now return Sourced<T> (`{ data, isSample }`) instead of T —
+// callers must read `.data` and may read `.isSample` to show that a
+// section is showing sample data.
 
 export type AdminOverview = {
   active_trips: number;
@@ -213,44 +220,62 @@ export type TeamMember = {
   status: TeamMemberStatus;
 };
 
-export function getOverview(token: string): Promise<AdminOverview> {
-  void token;
-  return Promise.resolve(OVERVIEW_FIXTURE);
+export function getOverview(token: string): Promise<Sourced<AdminOverview>> {
+  return withFallback(
+    () => apiRequest<AdminOverview>('/admin-api/overview', { token }),
+    OVERVIEW_FIXTURE,
+  );
 }
 
 export function getFleetApplications(
   token: string,
-): Promise<FleetApplication[]> {
-  void token;
-  return Promise.resolve(FLEET_APPLICATIONS_FIXTURE);
+): Promise<Sourced<FleetApplication[]>> {
+  return withFallback(
+    () =>
+      apiRequest<FleetApplication[]>('/admin-api/fleet-applications', {
+        token,
+      }),
+    FLEET_APPLICATIONS_FIXTURE,
+  );
 }
 
-export function getFleetApplication(
+export async function getFleetApplication(
   token: string,
   id: string,
-): Promise<FleetApplication> {
-  void token;
-  const application = FLEET_APPLICATIONS_FIXTURE.find((app) => app.id === id);
-  if (!application) {
-    return Promise.reject(
-      new ApiError(`Fleet application ${id} not found`, 404),
-    );
+): Promise<Sourced<FleetApplication>> {
+  const live = () =>
+    apiRequest<FleetApplication>(`/admin-api/fleet-applications/${id}`, {
+      token,
+    });
+  const fixtureMatch = FLEET_APPLICATIONS_FIXTURE.find(
+    (app) => app.id === id,
+  );
+  if (!fixtureMatch) {
+    // No fixture to fall back to for this id — let live()'s outcome (real
+    // data, or the 404 the real endpoint will throw for an unknown id)
+    // propagate as-is rather than inventing a fallback that doesn't exist.
+    return { data: await live(), isSample: false };
   }
-  return Promise.resolve(application);
+  return withFallback(live, fixtureMatch);
 }
 
-export function getDocument(
+export async function getDocument(
   token: string,
   id: string,
-): Promise<DocumentRecord> {
-  void token;
+): Promise<Sourced<DocumentRecord>> {
+  const live = () =>
+    apiRequest<DocumentRecord>(`/admin-api/documents/${id}`, { token });
   if (id !== DOCUMENT_FIXTURE.id) {
-    return Promise.reject(new ApiError(`Document ${id} not found`, 404));
+    // Same reasoning as getFleetApplication: no fixture matches this id, so
+    // there is nothing sensible to fall back to.
+    return { data: await live(), isSample: false };
   }
-  return Promise.resolve(DOCUMENT_FIXTURE);
+  return withFallback(live, DOCUMENT_FIXTURE);
 }
 
-export function getTeam(token: string): Promise<TeamMember[]> {
-  void token;
-  return Promise.resolve(TEAM_FIXTURE);
+export function getTeam(token: string): Promise<Sourced<TeamMember[]>> {
+  return withFallback(
+    () => apiRequest<TeamMember[]>('/admin-api/team', { token }),
+    TEAM_FIXTURE,
+  );
 }
