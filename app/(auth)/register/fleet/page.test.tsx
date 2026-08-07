@@ -86,6 +86,13 @@ describe('FleetRegistrationPage', () => {
     );
   });
 
+  it('renders the back-to-home link as the first interactive element in the header', () => {
+    render(<FleetRegistrationPage />);
+    const header = screen.getByRole('banner');
+    const links = within(header).getAllByRole('link');
+    expect(links[0]).toHaveAccessibleName(/back to home/i);
+  });
+
   it('renders the login link for existing accounts with a real destination', () => {
     render(<FleetRegistrationPage />);
     expect(

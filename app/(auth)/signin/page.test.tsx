@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import SignInPage from './page';
 import { sendOtp } from '../actions';
@@ -30,7 +36,7 @@ describe('SignInPage', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Strictly for authorized logistics personnel and fleet managers in Cameroon.',
+        'Admin accounts are provisioned by a platform administrator — contact one to request access. Strictly for authorized logistics personnel and fleet managers in Cameroon.',
       ),
     ).toBeInTheDocument();
   });
@@ -72,11 +78,24 @@ describe('SignInPage', () => {
     );
   });
 
-  it('renders the Request Admin Access link with a real destination', () => {
+  it('renders the back-to-home link as the first interactive element in the header', () => {
     render(<SignInPage />);
+    const header = screen.getByRole('banner');
+    const links = within(header).getAllByRole('link');
+    expect(links[0]).toHaveAccessibleName(/back to home/i);
+  });
+
+  it('renders Request Admin Access as non-interactive text with a provisioning instruction underneath', () => {
+    render(<SignInPage />);
+    expect(screen.getByText(/request admin access/i)).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: /request admin access/i }),
-    ).toHaveAttribute('href', '/contact');
+      screen.queryByRole('link', { name: /request admin access/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /admin accounts are provisioned by a platform administrator/i,
+      ),
+    ).toBeInTheDocument();
   });
 
   it('submits the phone number through sendOtp with purpose=login', async () => {

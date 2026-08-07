@@ -61,14 +61,28 @@ describe('sendOtp', () => {
     expect(mockedRequestOtp).toHaveBeenCalledWith('+237691234567', 'login');
   });
 
-  it('maps a thrown ApiError to its message', async () => {
-    mockedRequestOtp.mockRejectedValue(new ApiError('Too many requests.', 429));
+  it('maps a thrown non-429 ApiError to its own message, untouched', async () => {
+    mockedRequestOtp.mockRejectedValue(new ApiError('Invalid phone number.', 400));
     const formData = new FormData();
     formData.set('phone_number', '+237691234567');
     formData.set('purpose', 'login');
 
     await expect(sendOtp(initialState, formData)).resolves.toEqual({
-      error: 'Too many requests.',
+      error: 'Invalid phone number.',
+    });
+  });
+
+  it('replaces a 429 ApiError message with the concrete rate-limit copy', async () => {
+    mockedRequestOtp.mockRejectedValue(
+      new ApiError('Too many requests. Try again later.', 429),
+    );
+    const formData = new FormData();
+    formData.set('phone_number', '+237691234567');
+    formData.set('purpose', 'login');
+
+    await expect(sendOtp(initialState, formData)).resolves.toEqual({
+      error:
+        'You can request a maximum of 3 codes per phone number every 10 minutes. Please wait before trying again.',
     });
   });
 
@@ -194,6 +208,20 @@ describe('confirmOtp', () => {
 
     await expect(confirmOtp(initialState, formData)).resolves.toEqual({
       error: 'Invalid code.',
+    });
+    expect(mockedCreateSession).not.toHaveBeenCalled();
+    expect(mockedRedirect).not.toHaveBeenCalled();
+  });
+
+  it('replaces a 429 ApiError message with the concrete rate-limit copy', async () => {
+    mockedVerifyOtp.mockRejectedValue(
+      new ApiError('Too many requests. Try again later.', 429),
+    );
+    const formData = makeFormData();
+
+    await expect(confirmOtp(initialState, formData)).resolves.toEqual({
+      error:
+        'You can request a maximum of 3 codes per phone number every 10 minutes. Please wait before trying again.',
     });
     expect(mockedCreateSession).not.toHaveBeenCalled();
     expect(mockedRedirect).not.toHaveBeenCalled();
