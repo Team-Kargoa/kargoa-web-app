@@ -106,4 +106,14 @@ describe('PerformanceChart', () => {
       'false',
     );
   });
+
+  it('renders the sample data badge when isSample is true', () => {
+    render(<PerformanceChart data={DATA} isSample />);
+    expect(screen.getByText('Sample data')).toBeInTheDocument();
+  });
+
+  it('omits the sample data badge when isSample is false or omitted', () => {
+    render(<PerformanceChart data={DATA} />);
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+  });
 });
