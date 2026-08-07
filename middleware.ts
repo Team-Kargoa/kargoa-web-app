@@ -5,7 +5,6 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
   ACCESS_TOKEN_MAX_AGE,
-  REFRESH_TOKEN_MAX_AGE,
   SESSION_COOKIE_OPTIONS,
 } from './lib/session';
 
@@ -42,10 +41,14 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       ...SESSION_COOKIE_OPTIONS,
       maxAge: ACCESS_TOKEN_MAX_AGE,
     });
-    response.cookies.set(REFRESH_TOKEN_COOKIE, tokens.refresh_token, {
-      ...SESSION_COOKIE_OPTIONS,
-      maxAge: REFRESH_TOKEN_MAX_AGE,
-    });
+    // POST /auth/token/refresh returns only { access_token } — verified
+    // live against the running backend. It does NOT return a
+    // refresh_token (the refresh token is not rotated, so the same one
+    // stays valid) and does NOT return a user. Do not add a second
+    // response.cookies.set() for REFRESH_TOKEN_COOKIE here: the request's
+    // existing refresh-token cookie is still correct and already carries
+    // its 30-day max-age from sign-in, so touching it on a successful
+    // refresh only risks overwriting a valid token with undefined.
   } catch {
     // The refresh token is expired, revoked, or the backend is unreachable.
     // Clear both cookies so the user lands in a clean signed-out state
