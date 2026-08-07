@@ -261,38 +261,38 @@ describe('signOut', () => {
     mockedGetRefreshToken.mockResolvedValue('refresh-tok');
   });
 
-  it('invalidates the refresh token server-side, destroys the local session, and redirects home', async () => {
+  it('invalidates the refresh token server-side, destroys the local session, and redirects to /signin', async () => {
     mockedLogout.mockResolvedValue(undefined);
 
-    await expect(signOut()).rejects.toThrow('REDIRECT:/');
+    await expect(signOut()).rejects.toThrow('REDIRECT:/signin');
 
     expect(mockedLogout).toHaveBeenCalledWith('access-tok', 'refresh-tok');
     // redirect() throws — a no-op mock would let code after it keep
     // running and this assertion would pass for the wrong reason even if
     // destroySession were never called. Assert the call directly.
     expect(mockedDestroySession).toHaveBeenCalled();
-    expect(mockedRedirect).toHaveBeenCalledWith('/');
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
   });
 
-  it('still destroys the session and redirects home when the backend logout call fails', async () => {
+  it('still destroys the session and redirects to /signin when the backend logout call fails', async () => {
     mockedLogout.mockRejectedValue(new ApiError('Server error.', 500));
 
-    await expect(signOut()).rejects.toThrow('REDIRECT:/');
+    await expect(signOut()).rejects.toThrow('REDIRECT:/signin');
 
     // A backend hiccup must never trap someone in a session they asked to
     // leave.
     expect(mockedDestroySession).toHaveBeenCalled();
-    expect(mockedRedirect).toHaveBeenCalledWith('/');
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
   });
 
   it('skips the backend logout call but still destroys the session and redirects when there are no tokens to invalidate', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
     mockedGetRefreshToken.mockResolvedValue(undefined);
 
-    await expect(signOut()).rejects.toThrow('REDIRECT:/');
+    await expect(signOut()).rejects.toThrow('REDIRECT:/signin');
 
     expect(mockedLogout).not.toHaveBeenCalled();
     expect(mockedDestroySession).toHaveBeenCalled();
-    expect(mockedRedirect).toHaveBeenCalledWith('/');
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
   });
 });
