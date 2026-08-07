@@ -3,8 +3,9 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bell, Check, Moon, Search, Sun } from 'lucide-react';
+import { Bell, Check, LogOut, Moon, Search, Sun } from 'lucide-react';
 
+import { signOut } from '@/app/(auth)/actions';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Breadcrumb,
@@ -145,12 +146,18 @@ export function AdminHeader() {
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Account settings</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
-              Sign out
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <form action={signOut}>
+          <Button
+            type="submit"
+            variant="ghost"
+            className="h-9 gap-1.5 rounded-xl px-2.5 text-destructive hover:text-destructive"
+          >
+            <LogOut aria-hidden="true" />
+            <span>Sign out</span>
+          </Button>
+        </form>
       </div>
     </header>
   );
