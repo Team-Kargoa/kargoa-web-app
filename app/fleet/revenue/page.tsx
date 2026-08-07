@@ -15,7 +15,12 @@ export default async function FleetRevenuePage() {
 
   return (
     <main className="p-4 md:p-8 pb-24 md:pb-8">
-      <RevenueBreakdown summary={summary} transactions={transactions} />
+      <RevenueBreakdown
+        summary={summary.data}
+        transactions={transactions.data}
+        isSummarySample={summary.isSample}
+        isTransactionsSample={transactions.isSample}
+      />
     </main>
   );
 }
