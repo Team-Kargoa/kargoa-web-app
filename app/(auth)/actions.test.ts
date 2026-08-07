@@ -62,7 +62,9 @@ describe('sendOtp', () => {
   });
 
   it('maps a thrown non-429 ApiError to its own message, untouched', async () => {
-    mockedRequestOtp.mockRejectedValue(new ApiError('Invalid phone number.', 400));
+    mockedRequestOtp.mockRejectedValue(
+      new ApiError('Invalid phone number.', 400),
+    );
     const formData = new FormData();
     formData.set('phone_number', '+237691234567');
     formData.set('purpose', 'login');
