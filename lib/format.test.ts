@@ -1,4 +1,4 @@
-import { formatXaf, formatPhone, maskPhone } from './format';
+import { formatXaf, formatPhone, maskPhone, getInitials } from './format';
 
 describe('formatXaf', () => {
   it('groups thousands and appends the currency code', () => {
@@ -39,5 +39,19 @@ describe('maskPhone', () => {
 
   it('returns unrecognised input unchanged', () => {
     expect(maskPhone('12345')).toBe('12345');
+  });
+});
+
+describe('getInitials', () => {
+  it('takes the first letter of the first and last words, uppercased', () => {
+    expect(getInitials('Ama Owusu')).toBe('AO');
+  });
+
+  it('falls back to a single letter for a one-word name', () => {
+    expect(getInitials('Cher')).toBe('C');
+  });
+
+  it('returns an empty string for an empty name', () => {
+    expect(getInitials('')).toBe('');
   });
 });

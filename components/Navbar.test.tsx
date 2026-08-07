@@ -39,9 +39,10 @@ describe('Navbar', () => {
   describe('signed out (or a resolved-null user, e.g. an expired/invalid token)', () => {
     it('shows Get Started linking to /register and no dashboard link', () => {
       render(<Navbar user={null} />);
-      expect(
-        screen.getByRole('link', { name: 'Get Started' }),
-      ).toHaveAttribute('href', '/register');
+      expect(screen.getByRole('link', { name: 'Get Started' })).toHaveAttribute(
+        'href',
+        '/register',
+      );
       expect(
         screen.queryByRole('link', { name: /dashboard/i }),
       ).not.toBeInTheDocument();

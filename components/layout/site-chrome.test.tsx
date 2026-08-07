@@ -101,9 +101,10 @@ describe('SiteChrome', () => {
       </SiteChrome>,
     );
 
-    expect(
-      screen.getByRole('link', { name: /dashboard/i }),
-    ).toHaveAttribute('href', '/fleet');
+    expect(screen.getByRole('link', { name: /dashboard/i })).toHaveAttribute(
+      'href',
+      '/fleet',
+    );
     expect(
       screen.queryByRole('link', { name: 'Get Started' }),
     ).not.toBeInTheDocument();

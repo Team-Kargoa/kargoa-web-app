@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { SiteChrome } from '@/components/layout/site-chrome';
+import { getCurrentUser } from '@/lib/current-user';
 
 const heading = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -26,14 +27,20 @@ export const metadata: Metadata = {
     'Admin dashboard for the KmerCargo platform: manage driver onboarding, fleet verification, financial ledgers, and disputes.',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const user = await getCurrentUser();
+
   return (
     <html
       lang="en"
       className={`${heading.variable} ${body.variable} ${mono.variable}`}
     >
       <body>
-        <SiteChrome>{children}</SiteChrome>
+        <SiteChrome user={user}>{children}</SiteChrome>
       </body>
     </html>
   );
