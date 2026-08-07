@@ -116,9 +116,9 @@ describe('getDriverApplication', () => {
 
 describe('getDocument', () => {
   it('resolves the document fixture by id', async () => {
-    await expect(
-      getDocument('jwt-abc', DOCUMENT_FIXTURE.id),
-    ).resolves.toEqual(DOCUMENT_FIXTURE);
+    await expect(getDocument('jwt-abc', DOCUMENT_FIXTURE.id)).resolves.toEqual(
+      DOCUMENT_FIXTURE,
+    );
   });
 
   it('never calls apiRequest — tripwire for when a live document endpoint ships', async () => {
