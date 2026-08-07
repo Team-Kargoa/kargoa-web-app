@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { redirect } from 'next/navigation';
 import AdminDriversPage from './page';
 import { getAccessToken } from '@/lib/session';
@@ -123,7 +123,8 @@ describe('AdminDriversPage', () => {
     const plate = screen.getByText('LT 123 AB');
     expect(plate).toHaveClass('font-mono');
     expect(screen.getByText('Pickup')).toBeInTheDocument();
-    expect(screen.getByText('Pending')).toBeInTheDocument();
+    const table = screen.getByRole('table');
+    expect(within(table).getByText('Pending')).toBeInTheDocument();
   });
 
   it('falls back to the formatted phone number as the name when full_name is empty', async () => {
