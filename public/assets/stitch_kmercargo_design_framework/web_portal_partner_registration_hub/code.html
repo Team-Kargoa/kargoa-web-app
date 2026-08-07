@@ -1,0 +1,281 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>KmerCargo Partner Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .path-card:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#fcebdd",
+                      "text-secondary-light": "#64748B",
+                      "border-dark": "#334155",
+                      "inverse-surface": "#382f25",
+                      "background": "#fff8f4",
+                      "bg-dark": "#0F172A",
+                      "surface-container-highest": "#f0e0d2",
+                      "on-primary-fixed-variant": "#683d00",
+                      "on-tertiary-fixed": "#001e2b",
+                      "secondary-fixed-dim": "#b6c4ff",
+                      "text-primary-dark": "#F8FAFC",
+                      "on-background": "#221a12",
+                      "outline": "#877462",
+                      "tertiary-fixed": "#c0e8ff",
+                      "tertiary-fixed-dim": "#70d2ff",
+                      "on-primary-fixed": "#2c1700",
+                      "on-secondary-container": "#1d3989",
+                      "inverse-on-surface": "#ffeee0",
+                      "surface-variant": "#f0e0d2",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed": "#dce1ff",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#dac2ae",
+                      "on-primary-container": "#683c00",
+                      "bg-light": "#F8FAFC",
+                      "surface": "#fff8f4",
+                      "surface-container-lowest": "#ffffff",
+                      "primary": "#895100",
+                      "inverse-primary": "#ffb86b",
+                      "on-secondary-fixed": "#00164e",
+                      "on-tertiary-fixed-variant": "#004d66",
+                      "secondary": "#4059aa",
+                      "surface-container-low": "#fff1e7",
+                      "surface-dim": "#e8d7ca",
+                      "surface-bright": "#fff8f4",
+                      "on-secondary-fixed-variant": "#264191",
+                      "on-surface": "#221a12",
+                      "on-surface-variant": "#544434",
+                      "on-tertiary-container": "#004d66",
+                      "surface-container-high": "#f6e5d7",
+                      "on-error": "#ffffff",
+                      "text-primary-light": "#0F172A",
+                      "primary-fixed-dim": "#ffb86b",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "tertiary": "#006686",
+                      "success-momo": "#10B981",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#8fa7fe",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#895100",
+                      "text-secondary-dark": "#94A3B8",
+                      "tertiary-container": "#00c3fd",
+                      "primary-container": "#ff9f1c",
+                      "border-light": "#E2E8F0",
+                      "primary-fixed": "#ffdcbc"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "touch-target-min": "56px",
+                      "margin-desktop": "32px",
+                      "gutter": "16px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "data-display": ["JetBrains Mono"],
+                      "h2-mobile": ["Plus Jakarta Sans"],
+                      "h2": ["Plus Jakarta Sans"],
+                      "button": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "h1-mobile": ["Plus Jakarta Sans"],
+                      "data-label": ["JetBrains Mono"],
+                      "h1": ["Plus Jakarta Sans"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                      "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-bg-dark flex justify-between items-center px-margin-mobile md:px-margin-desktop h-touch-target-min w-full z-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+<h1 class="font-h1-mobile text-h1-mobile font-bold text-primary dark:text-primary-fixed-dim tracking-tight">KmerCargo</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-variant rounded-full transition-colors" data-icon="language">language</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a modern Cameroonian professional in a sleek corporate environment. The image is bright and crisp, reflecting a high-trust logistics hub atmosphere. Soft natural lighting emphasizes reliable features and a welcoming expression, consistent with a premium corporate utility brand identity using a warm, professional palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiT7q7JQ677jqrPgC0eW7CUjE4L8EAmCGSF7RmxlNLlBBNiqYW6mBuXhZhAlpVgJtB8AAXsFqDMOVYMLzDqIOxXzuCEGbVhhUiEn04U_2_uOdE_RekAVsRlQisq_Uzsf0rnKa33ENvx2maArTRluzbnVGEOYlsDKuN8lJxA5dP9CkxpKaFpIiZ7TIE4YxM3K58BqCUDozWP1lZfKOipFAjhPwuN9JHkUkRzBVlotNL214XhD-WAslteZ7tEhQp65YkEhDuS4mgm5U">
+</div>
+</div>
+</header>
+<main class="min-h-screen pb-24">
+<!-- Hero Section -->
+<section class="relative w-full h-[40vh] md:h-[50vh] overflow-hidden flex items-center px-margin-mobile md:px-margin-desktop">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover brightness-50" data-alt="A sweeping wide shot of a logistics terminal in Yaoundé, Cameroon, featuring a fleet of modern heavy-duty cargo trucks aligned neatly. The lighting is golden hour, casting long professional shadows and highlighting the high-visibility safety orange of the equipment. The aesthetic is industrial yet technologically advanced, representing the backbone of regional logistics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPTNeIYEakr84ssJTDKVtFyt6LraCS3Ggj0-Mpf4yRetDEyK43B6dqQ1JKFjIBkeDZLBqRUDKYrC7AJ8QN1PnXdqS-_PGjiBQxKVwpilAMfK0IfWsYinNsUSX6y6C3FQ0H5xbFXWa2KbmdJRj-tf5OheaUbYzBf0j12TOS8E1S-LBR4NAzmzhhemvX1x220EbMcFZxPYCp-nAdNfLco4qX5_EDlKuivr1fq3cJxi8KiW9BrJjxp-8vz9mJhJX8EXOAYiZY6eOpVyk">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/30"></div>
+</div>
+<div class="relative z-10 max-w-2xl">
+<span class="font-data-label text-data-label uppercase tracking-widest text-primary-container mb-2 block">National Logistics Hub</span>
+<h2 class="font-h1 text-h1 text-white mb-4">The Backbone of Cameroon Logistics</h2>
+<p class="font-body-lg text-body-lg text-white/90">Join the most trusted cargo ecosystem in Central Africa. Choose your path to start moving.</p>
+</div>
+</section>
+<!-- Path Selection Bento Grid -->
+<section class="px-margin-mobile md:px-margin-desktop -mt-12 relative z-20">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter justify-center max-w-4xl mx-auto">
+<!-- Path: Fleet Owner -->
+<div class="path-card group bg-surface-container-low border border-outline-variant rounded-xl p-8 flex flex-col justify-between hover:border-primary transition-all duration-300 shadow-sm hover:shadow-lg">
+<div>
+<div class="w-16 h-16 bg-primary-container text-on-primary-container rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl" data-icon="local_shipping">local_shipping</span>
+</div>
+<h3 class="font-h2 text-h2 mb-3">I am a Fleet Owner</h3>
+<p class="font-body-md text-on-surface-variant mb-6">Manage multiple trucks across Cameroon with real-time tracking, automated dispatching, and optimized route planning.</p>
+<ul class="space-y-3 mb-8">
+<li class="flex items-center gap-2 text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-success-momo" data-icon="check_circle">check_circle</span>
+                                Multi-vehicle fleet dashboard
+                            </li>
+<li class="flex items-center gap-2 text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-success-momo" data-icon="check_circle">check_circle</span>
+                                Fuel consumption analytics
+                            </li>
+<li class="flex items-center gap-2 text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-success-momo" data-icon="check_circle">check_circle</span>
+                                Guaranteed payment cycles
+                            </li>
+</ul>
+</div>
+<button class="w-full h-touch-target-min bg-primary text-white font-button rounded-lg flex items-center justify-center gap-2 hover:bg-on-primary-container transition-colors">
+                        Register Fleet
+                        <span class="material-symbols-outlined arrow-icon transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Path: Admin -->
+<div class="path-card group bg-surface-container-low border border-outline-variant rounded-xl p-8 flex flex-col justify-between hover:border-secondary transition-all duration-300 shadow-sm hover:shadow-lg">
+<div>
+<div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl" data-icon="admin_panel_settings">admin_panel_settings</span>
+</div>
+<h3 class="font-h2 text-h2 mb-3">I am an Admin</h3>
+<p class="font-body-md text-on-surface-variant mb-6">Coordinate regional logistics hubs, monitor driver safety, and oversee large-scale operations across the corridor.</p>
+<ul class="space-y-3 mb-8">
+<li class="flex items-center gap-2 text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+                                High-density data monitoring
+                            </li>
+<li class="flex items-center gap-2 text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+                                Regional compliance tools
+                            </li>
+<li class="flex items-center gap-2 text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+                                Incident management console
+                            </li>
+</ul>
+</div>
+<button class="w-full h-touch-target-min bg-secondary text-white font-button rounded-lg flex items-center justify-center gap-2 hover:bg-on-secondary-container transition-colors">
+                        Request Admin Access
+                        <span class="material-symbols-outlined arrow-icon transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Path: Corporate Client -->
+
+</div>
+</section>
+<!-- Stats Section -->
+<section class="mt-20 px-margin-mobile md:px-margin-desktop">
+<div class="bg-surface-container-highest rounded-2xl p-10 flex flex-wrap justify-around gap-8 text-center border border-outline-variant">
+<div>
+<div class="font-h1 text-primary">500+</div>
+<div class="font-data-label uppercase">Trucks Active</div>
+</div>
+<div class="w-px h-16 bg-outline-variant hidden md:block"></div>
+<div>
+<div class="font-h1 text-primary">10k+</div>
+<div class="font-data-label uppercase">Monthly Trips</div>
+</div>
+<div class="w-px h-16 bg-outline-variant hidden md:block"></div>
+<div>
+<div class="font-h1 text-primary">99.2%</div>
+<div class="font-data-label uppercase">Safety Rating</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter border-t border-outline-variant bg-surface-container-lowest">
+<div class="flex flex-col items-center md:items-start">
+<div class="font-h2 text-h2 font-bold text-primary mb-2">KmerCargo</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 KmerCargo Logistics Ecosystem. All rights reserved.</p>
+</div>
+<div class="flex gap-6">
+<a class="font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+<!-- BottomNavBar (Visible only on mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center h-20 px-2 pb-safe bg-surface-container border-t border-outline-variant">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-body-sm text-body-sm">Fleet</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="route">route</span>
+<span class="font-body-sm text-body-sm">Routes</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-body-sm text-body-sm">Wallet</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-body-sm text-body-sm font-bold">Profile</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions for path cards
+        document.querySelectorAll('.path-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('translate-y-[-4px]');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('translate-y-[-4px]');
+            });
+        });
+    </script>
+
+
+</body></html>

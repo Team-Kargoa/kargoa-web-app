@@ -1,0 +1,448 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>KmerCargo Fleet Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#8fa7fe",
+                    "primary": "#895100",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#fff8f4",
+                    "surface-container": "#fcebdd",
+                    "on-primary-fixed": "#2c1700",
+                    "text-primary-dark": "#F8FAFC",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#895100",
+                    "surface-variant": "#f0e0d2",
+                    "on-primary-container": "#683c00",
+                    "background": "#fff8f4",
+                    "secondary-fixed-dim": "#b6c4ff",
+                    "secondary": "#4059aa",
+                    "border-light": "#E2E8F0",
+                    "tertiary-fixed": "#c0e8ff",
+                    "primary-container": "#ff9f1c",
+                    "on-tertiary-container": "#004d66",
+                    "inverse-surface": "#382f25",
+                    "surface-container-highest": "#f0e0d2",
+                    "on-secondary-container": "#1d3989",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#ffb86b",
+                    "surface": "#fff8f4",
+                    "on-primary-fixed-variant": "#683d00",
+                    "text-secondary-light": "#64748B",
+                    "success-momo": "#10B981",
+                    "on-tertiary-fixed-variant": "#004d66",
+                    "on-surface": "#221a12",
+                    "on-secondary-fixed": "#00164e",
+                    "tertiary": "#006686",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#e8d7ca",
+                    "text-primary-light": "#0F172A",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#ffeee0",
+                    "bg-dark": "#0F172A",
+                    "primary-fixed": "#ffdcbc",
+                    "on-secondary-fixed-variant": "#264191",
+                    "secondary-fixed": "#dce1ff",
+                    "on-tertiary-fixed": "#001e2b",
+                    "outline": "#877462",
+                    "on-surface-variant": "#544434",
+                    "surface-container-high": "#f6e5d7",
+                    "text-secondary-dark": "#94A3B8",
+                    "surface-container-low": "#fff1e7",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#ffb86b",
+                    "on-background": "#221a12",
+                    "on-secondary": "#ffffff",
+                    "border-dark": "#334155",
+                    "error": "#ba1a1a",
+                    "bg-light": "#F8FAFC",
+                    "outline-variant": "#dac2ae",
+                    "tertiary-fixed-dim": "#70d2ff",
+                    "tertiary-container": "#00c3fd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "touch-target-min": "56px",
+                    "margin-desktop": "32px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "h1": ["Plus Jakarta Sans"],
+                    "h2-mobile": ["Plus Jakarta Sans"],
+                    "data-display": ["JetBrains Mono"],
+                    "data-label": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "button": ["Inter"],
+                    "h2": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            border-bottom: 4px solid #895100;
+            color: #895100;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dac2ae;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-surface-container w-full top-0 sticky z-40 border-b border-outline-variant flex items-center justify-between px-margin-mobile md:px-margin-desktop h-20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="local_shipping">local_shipping</span>
+<h1 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 font-bold text-primary">KmerCargo Fleet</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col text-right">
+<span class="font-bold text-on-surface">Logistics Operations</span>
+<span class="text-body-sm text-on-surface-variant">Yaoundé Hub</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden border-2 border-primary-container">
+<img alt="Admin User Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a logistics administrator in a modern office environment. He is wearing a crisp white shirt and a company badge. The background is slightly blurred showing a high-tech logistics control center with large monitors displaying maps and data charts. The lighting is soft and professional, fitting a high-end corporate application aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDyG5dUZGjV_Zo_oNFIaP4vPzDCe0W-SIA0EAR9RWiiQzCfrkdaatLdetat9w7iQeoJQb3lrYE7naXwdmXIe0jDUuqIG1oi4J1BzORBaPz9iHdYLZk26qdh9yWssduXg10Tx1Pu2inr2ht-kOknR9uZo5gpiOBWhSgrm-eKueBuJotpmo7Gp6o_plhbkrzrnu9q6rpm3X_nxxa84A3nl2pOOGKFAJlz1QrvbS_FUD1grnjg4lWN5eQ77swPlDejxhbJVlJYZCkHY4">
+</div>
+</div>
+</header>
+<div class="flex">
+<!-- NavigationDrawer (Desktop Only) -->
+<aside class="hidden md:flex flex-col h-[calc(100vh-80px)] w-80 sticky top-20 left-0 bg-surface-container-low border-r border-outline-variant p-4 gap-2">
+<div class="px-4 py-2 mb-4">
+<p class="text-body-sm font-bold text-on-surface-variant opacity-70">MAIN MENU</p>
+</div>
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 p-4 bg-primary-container text-on-primary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md">Fleet Management</span>
+</a>
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body-md">Revenue Tracking</span>
+</a>
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+<div class="mt-auto p-4 text-body-sm text-on-surface-variant opacity-60 flex justify-between items-center">
+<span>v2.1.0</span>
+<span class="material-symbols-outlined text-lg" data-icon="info">info</span>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop">
+<div class="max-w-6xl mx-auto">
+<header class="mb-8">
+<h2 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 text-on-surface mb-2">Manage Fleet</h2>
+<p class="text-on-surface-variant">Real-time oversight of your assets and workforce across the hub.</p>
+</header>
+<!-- Tabs Navigation -->
+<div class="flex border-b border-outline-variant mb-8 overflow-x-auto no-scrollbar">
+<button class="px-8 py-4 font-button text-button transition-all active-tab flex items-center gap-2 whitespace-nowrap" id="tab-drivers" onclick="switchTab('drivers')">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                        Drivers
+                        <span class="ml-2 bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full text-[10px]">24</span>
+</button>
+<button class="px-8 py-4 font-button text-button transition-all text-on-surface-variant hover:bg-surface-variant flex items-center gap-2 whitespace-nowrap" id="tab-vehicles" onclick="switchTab('vehicles')">
+<span class="material-symbols-outlined" data-icon="minor_crash">minor_crash</span>
+                        Vehicles
+                        <span class="ml-2 bg-surface-container-highest text-on-surface-variant px-2 py-0.5 rounded-full text-[10px]">18</span>
+</button>
+</div>
+<!-- Content Area: Drivers -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="content-drivers">
+<!-- Driver Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:shadow-md transition-shadow group">
+<div class="flex items-start justify-between mb-4">
+<div class="flex gap-4 items-center">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-outline-variant">
+<img alt="Driver 1" class="w-full h-full object-cover" data-alt="A portrait of a smiling African delivery driver in a professional logistics uniform. He is standing in front of a modern transport hub in Cameroon. The sunlight is warm and bright, highlighting his friendly expression. The overall style is high-contrast and professional, with a clean corporate finish." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiiVU20rKfmGy2imCjSPdDA4BYWJgAtDu0nUifBD6o0XOURAhsDJYATdWeYnxQDhckhE-RRzSvx11uPA1EsKWNubPVf9GiMahDNaG_9LfJxckKu_qDTwpyZ7oio3cQIBfM_4PftGyqlROW-KYOplNyxjMpknFZ8GSdp7knyRm28rTxp-N52SCkPXwPjdAuI7bkIOKZCJ9vzXSp85SsxsKpc7VXSlTSJLsVb_laLBxs8E0kuMOjz5MhyxuA3eF6hblNeWwHnlawa_w">
+</div>
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">Jean-Paul Ndi</h3>
+<p class="text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="call">call</span>
+                                        +237 670 123 456
+                                    </p>
+</div>
+</div>
+<span class="bg-success-momo/20 text-success-momo font-data-label text-data-label px-3 py-1 rounded-full flex items-center gap-1">
+<span class="w-2 h-2 bg-success-momo rounded-full animate-pulse"></span>
+                                ON DUTY
+                            </span>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex items-center justify-between mb-6">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Assigned Plate</p>
+<p class="font-data-display text-data-display text-primary tracking-widest bg-white px-2 py-1 rounded border border-outline-variant shadow-sm">LT-942-KM</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Weekly Trips</p>
+<p class="font-h2 text-h2 text-on-surface">18</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 h-touch-target-min bg-primary-container text-on-primary-container font-button rounded-xl flex items-center justify-center gap-2 hover:brightness-95 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                                View Earnings
+                            </button>
+<button class="w-touch-target-min h-touch-target-min border-2 border-outline-variant text-on-surface-variant rounded-xl flex items-center justify-center hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+</button>
+</div>
+</div>
+<!-- Driver Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 hover:shadow-md transition-shadow group">
+<div class="flex items-start justify-between mb-4">
+<div class="flex gap-4 items-center">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-outline-variant">
+<img alt="Driver 2" class="w-full h-full object-cover" data-alt="A professional headshot of a female logistics driver in a clean uniform, looking confident and reliable. Behind her is a partial view of a bright yellow delivery truck. The setting is a well-lit distribution center in Yaoundé. The visual style is crisp and detailed with vibrant, high-contrast colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoSCRdL1fLZBAqxSZ8p6LFbMs1K5-ZitQmpzM2ujSBf_tBiVDbYflxDmSqJ25U-EB_zUmYANPe_UbRI8I19Ty7sAHvv1W9LGVW3lqYz5rznc4hJK6rV9HY5PRbVKRVZ1_q1DSBXKNciuUNXCCqZHN3IdeWqReegeYI2BQzEoVjJIZrH1A-uxl0UFFXWS2ebf6BcjnLUX2gURDmIuP09Zl4cuZFYoK4HC1J9RsqFWSNS9CwA9f3Dlswnl_hfsgPptNQ3mA2QSwbNTU">
+</div>
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">Marie Eto'o</h3>
+<p class="text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="call">call</span>
+                                        +237 691 987 654
+                                    </p>
+</div>
+</div>
+<span class="bg-surface-variant text-on-surface-variant font-data-label text-data-label px-3 py-1 rounded-full flex items-center gap-1">
+                                OFF DUTY
+                            </span>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex items-center justify-between mb-6">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Assigned Plate</p>
+<p class="font-data-display text-data-display text-primary tracking-widest bg-white px-2 py-1 rounded border border-outline-variant shadow-sm">CE-102-AQ</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Weekly Trips</p>
+<p class="font-h2 text-h2 text-on-surface">22</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 h-touch-target-min bg-primary-container text-on-primary-container font-button rounded-xl flex items-center justify-center gap-2 hover:brightness-95 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                                View Earnings
+                            </button>
+<button class="w-touch-target-min h-touch-target-min border-2 border-outline-variant text-on-surface-variant rounded-xl flex items-center justify-center hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Content Area: Vehicles (Hidden by default) -->
+<section class="hidden" id="content-vehicles">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high border-b border-outline-variant">
+<th class="p-4 font-data-label text-data-label text-on-surface-variant">VEHICLE INFO</th>
+<th class="p-4 font-data-label text-data-label text-on-surface-variant">CATEGORY</th>
+<th class="p-4 font-data-label text-data-label text-on-surface-variant">ASSIGNED DRIVER</th>
+<th class="p-4 font-data-label text-data-label text-on-surface-variant">STATUS</th>
+<th class="p-4 font-data-label text-data-label text-on-surface-variant text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="truck">brick</span>
+</div>
+<div>
+<p class="font-data-display text-on-surface font-bold">LT-942-KM</p>
+<p class="text-body-sm text-on-surface-variant">Isuzu FSR</p>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="text-body-sm bg-surface-variant text-on-surface-variant px-2 py-1 rounded">Large Cargo</span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-outline-variant overflow-hidden">
+<img alt="Driver sm" data-alt="Small thumbnail of an African truck driver in uniform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-hSjLg9_L8CFeFTV_u54B2CGHa9GPCpBbiMksJ2-jfTzuI1OjliGkp4h7RyK8CI1mRl58Kb3mjMCTuVg1g3wDTuO9aS_Fm-_3OqP6_Kz_fBxX_AnmRYmVYOH1-FbkwORfpkN78TnNaoo964WAYeh01omk4UiqIL4Z2__H5wTLzQ5Gia6fylBUT-yGmxRgi4rP6X3uNdK0Bq1pnU2JG9ZDgSYxKUFPbWmsNjSftY4WjNAykNitYnM65f9hAXm50EQyLrTlfFDlMhQ">
+</div>
+<span class="text-body-sm">Jean-Paul Ndi</span>
+</div>
+</td>
+<td class="p-4">
+<span class="text-data-label bg-success-momo/10 text-success-momo border border-success-momo/20 px-2 py-1 rounded">Active</span>
+</td>
+<td class="p-4 text-right">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<p class="font-data-display text-on-surface font-bold">CE-551-ZZ</p>
+<p class="text-body-sm text-on-surface-variant">Toyota Dyna</p>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="text-body-sm bg-surface-variant text-on-surface-variant px-2 py-1 rounded">Mini Truck</span>
+</td>
+<td class="p-4">
+<span class="text-body-sm italic text-on-surface-variant">Unassigned</span>
+</td>
+<td class="p-4">
+<span class="text-data-label bg-primary-container/20 text-on-primary-container border border-primary-container/30 px-2 py-1 rounded">Maintenance</span>
+</td>
+<td class="p-4 text-right">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="shipping">shopping</span>
+</div>
+<div>
+<p class="font-data-display text-on-surface font-bold">SW-220-RX</p>
+<p class="text-body-sm text-on-surface-variant">Hino 500</p>
+</div>
+</div>
+</td>
+<td class="p-4">
+<span class="text-body-sm bg-surface-variant text-on-surface-variant px-2 py-1 rounded">Heavy Duty</span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-outline-variant overflow-hidden">
+<img alt="Driver sm" data-alt="Small thumbnail of an African truck driver in uniform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX8G_vzL5pTwRlZVbuHpICAzNAv93pVdubSxoWXQ52g_vqG1WqkJUcUPTSPvX6aM8MtcoYw5JyuWtG-fQzcACvPEUROdDVLIVpy5jDSWlx4eiJJHl0AmMfm_A84FxMD-83L9iW0aNUud3N-bx_pOfwodB_iILb10EWuvWCgPQiIBx3DjQf6O_Tewap5aUt97CLh1Ty0vJ9VYFGChxZIBe5ihoqBZRDxl4W2svHj8uSe7y_A9agjSEZuZK58-qMisdcKM3qMRWhgXA">
+</div>
+<span class="text-body-sm">Samuel M.</span>
+</div>
+</td>
+<td class="p-4">
+<span class="text-data-label bg-error-container text-error border border-error/20 px-2 py-1 rounded">Needs Paperwork</span>
+</td>
+<td class="p-4 text-right">
+<button class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 md:bottom-12 md:right-12 w-16 h-16 bg-primary-container text-on-primary-container rounded-full shadow-xl flex items-center justify-center group hover:scale-110 active:scale-95 transition-transform z-50">
+<span class="material-symbols-outlined text-3xl font-bold" data-icon="add">add</span>
+<span class="absolute right-full mr-4 bg-primary text-white text-body-sm font-bold px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-md">Add Vehicle/Driver</span>
+</button>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full md:hidden bg-surface border-t border-outline-variant flex justify-around items-center px-4 py-2 z-40 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-data-label text-[10px]">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-data-label text-[10px]">Drivers</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-2" href="#">
+<span class="material-symbols-outlined" data-icon="minor_crash">minor_crash</span>
+<span class="font-data-label text-[10px]">Vehicles</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-data-label text-[10px]">Alerts</span>
+</a>
+</nav>
+<script>
+        function switchTab(tab) {
+            const driversTab = document.getElementById('tab-drivers');
+            const vehiclesTab = document.getElementById('tab-vehicles');
+            const driversContent = document.getElementById('content-drivers');
+            const vehiclesContent = document.getElementById('content-vehicles');
+
+            if (tab === 'drivers') {
+                driversTab.classList.add('active-tab');
+                driversTab.classList.remove('text-on-surface-variant');
+                vehiclesTab.classList.remove('active-tab');
+                vehiclesTab.classList.add('text-on-surface-variant');
+                
+                driversContent.classList.remove('hidden');
+                driversContent.classList.add('grid');
+                vehiclesContent.classList.add('hidden');
+            } else {
+                vehiclesTab.classList.add('active-tab');
+                vehiclesTab.classList.remove('text-on-surface-variant');
+                driversTab.classList.remove('active-tab');
+                driversTab.classList.add('text-on-surface-variant');
+                
+                vehiclesContent.classList.remove('hidden');
+                driversContent.classList.add('hidden');
+                driversContent.classList.remove('grid');
+            }
+        }
+    </script>
+</body></html>

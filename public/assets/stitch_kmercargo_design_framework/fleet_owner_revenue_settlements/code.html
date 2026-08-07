@@ -1,0 +1,440 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>KmerCargo Fleet - Revenue Tracking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(218, 194, 174, 0.3);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#8fa7fe",
+                        "primary": "#895100",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#fff8f4",
+                        "surface-container": "#fcebdd",
+                        "on-primary-fixed": "#2c1700",
+                        "text-primary-dark": "#F8FAFC",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#895100",
+                        "surface-variant": "#f0e0d2",
+                        "on-primary-container": "#683c00",
+                        "background": "#fff8f4",
+                        "secondary-fixed-dim": "#b6c4ff",
+                        "secondary": "#4059aa",
+                        "border-light": "#E2E8F0",
+                        "tertiary-fixed": "#c0e8ff",
+                        "primary-container": "#ff9f1c",
+                        "on-tertiary-container": "#004d66",
+                        "inverse-surface": "#382f25",
+                        "surface-container-highest": "#f0e0d2",
+                        "on-secondary-container": "#1d3989",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#ffb86b",
+                        "surface": "#fff8f4",
+                        "on-primary-fixed-variant": "#683d00",
+                        "text-secondary-light": "#64748B",
+                        "success-momo": "#10B981",
+                        "on-tertiary-fixed-variant": "#004d66",
+                        "on-surface": "#221a12",
+                        "on-secondary-fixed": "#00164e",
+                        "tertiary": "#006686",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#e8d7ca",
+                        "text-primary-light": "#0F172A",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ffeee0",
+                        "bg-dark": "#0F172A",
+                        "primary-fixed": "#ffdcbc",
+                        "on-secondary-fixed-variant": "#264191",
+                        "secondary-fixed": "#dce1ff",
+                        "on-tertiary-fixed": "#001e2b",
+                        "outline": "#877462",
+                        "on-surface-variant": "#544434",
+                        "surface-container-high": "#f6e5d7",
+                        "text-secondary-dark": "#94A3B8",
+                        "surface-container-low": "#fff1e7",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#ffb86b",
+                        "on-background": "#221a12",
+                        "on-secondary": "#ffffff",
+                        "border-dark": "#334155",
+                        "error": "#ba1a1a",
+                        "bg-light": "#F8FAFC",
+                        "outline-variant": "#dac2ae",
+                        "tertiary-fixed-dim": "#70d2ff",
+                        "tertiary-container": "#00c3fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "56px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans"],
+                        "h2-mobile": ["Plus Jakarta Sans"],
+                        "data-display": ["JetBrains Mono"],
+                        "data-label": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "button": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                        "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- Navigation Drawer (Desktop) -->
+<aside class="hidden md:flex flex-col h-screen w-80 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant z-40 p-4 gap-2">
+<div class="flex flex-col gap-1 mb-8">
+<span class="font-h2 text-h2 font-black text-primary">KmerCargo Fleet</span>
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-variant/30 mt-4">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-on-surface font-bold">Logistics Operations</span>
+<span class="font-body-sm text-on-surface-variant">Yaoundé Hub</span>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer rounded-lg font-body-md">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer rounded-lg font-body-md">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Fleet Management</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-primary-container text-on-primary-container rounded-lg font-bold font-body-md">
+<span class="material-symbols-outlined">payments</span>
+<span>Revenue Tracking</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer rounded-lg font-body-md">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+</nav>
+<div class="mt-auto pt-4 border-t border-outline-variant">
+<span class="font-data-label text-on-surface-variant block px-3">v2.1.0</span>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-80 flex flex-col pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-30 bg-surface-container border-b border-outline-variant flex items-center justify-between px-margin-mobile md:px-margin-desktop h-20">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">local_shipping</span>
+<h1 class="font-h1 text-h1-mobile md:text-h1 text-on-surface">Revenue Tracking</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col text-right">
+<span class="font-body-sm font-bold text-on-surface">Admin User</span>
+<span class="font-data-label text-primary">Master Fleet</span>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary bg-surface-variant overflow-hidden cursor-pointer active:opacity-80 transition-colors">
+<img alt="Admin User Avatar" data-alt="A professional high-resolution headshot of a Cameroonian logistics manager in a modern office environment. The person has a friendly but authoritative expression, wearing a clean corporate polo shirt with a subtle logo. The background is a soft-focus logistics hub with digital screens showing maps of Yaoundé. The lighting is bright and warm, reflecting a professional and reliable tech-forward brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABMamV1KQO5pRWQaPnj2WYAjV60NS1ixEQe60maPUYlo9igeKWOrP3r3SYVNO8x4KIAZwvAMF2eghqBtEia3aHd-EHs8k_4uABiHcZgelCoxt-sx1Vy5nDJefDveDAtWaHKxXvgF7IG1yNPombRv3ffvemojzo49WcOZPTvIYoa9i7wJ2ze5r0v3hD4utouGmJSnTQB0yENjxjqyl0QkH0mEovFBDIsD9P5YD4C5jikYLYcNK5JF0VhzGFfSwmnRBigBxj39tBqv0">
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="p-margin-mobile md:p-margin-desktop flex flex-col gap-8">
+<!-- Hero Stats: Bento Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Primary Balance Card -->
+<div class="lg:col-span-2 relative overflow-hidden rounded-3xl bg-primary text-on-primary p-8 flex flex-col justify-between min-h-[320px] shadow-xl">
+<div class="absolute top-0 right-0 p-12 opacity-10">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<div class="relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-body-md opacity-80 uppercase tracking-widest">Available Balance</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="font-data-display text-[48px] font-bold">4,820,500</span>
+<span class="font-h2">XAF</span>
+</div>
+</div>
+<div class="bg-primary-container text-on-primary-container px-4 py-2 rounded-full font-data-label text-[14px]">
+                                91% Net Payout
+                            </div>
+</div>
+<p class="font-body-sm mt-4 opacity-70 max-w-sm">
+                            Total net earnings from all digital trips across the fleet for the current settlement period.
+                        </p>
+</div>
+<div class="relative z-10 flex flex-wrap gap-4 mt-8">
+<button class="bg-success-momo text-white h-touch-target-min px-8 rounded-xl font-button flex items-center gap-3 hover:brightness-110 active:scale-95 transition-all shadow-lg">
+<span class="material-symbols-outlined">account_balance</span>
+                            Withdraw to Business MoMo
+                        </button>
+<button class="bg-on-primary/10 border border-on-primary/20 backdrop-blur-sm h-touch-target-min px-6 rounded-xl font-button flex items-center gap-3 hover:bg-on-primary/20 transition-all">
+<span class="material-symbols-outlined">receipt_long</span>
+                            History
+                        </button>
+</div>
+</div>
+<!-- Secondary Metric -->
+<div class="rounded-3xl border border-outline-variant bg-surface-container-high p-8 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="font-body-md text-on-surface-variant font-bold">This Month's Gross</span>
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-data-display text-h1 text-on-surface">5,297,250</span>
+<span class="font-data-label text-on-surface-variant">XAF</span>
+</div>
+</div>
+<div class="space-y-4 mt-8">
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Fleet Commision (9%)</span>
+<span class="font-data-label text-error">476,750 XAF</span>
+</div>
+<div class="w-full bg-outline-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[91%]"></div>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Trip Volume</span>
+<span class="font-data-label text-success-momo">+12% vs last mo.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Transactions Section -->
+<div class="flex flex-col gap-6">
+<!-- Header & Filters -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<h2 class="font-h2 text-h2 text-on-surface">Settlement Breakdown</h2>
+<div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+<div class="relative flex-1 md:flex-none">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">person_search</span>
+<input class="w-full md:w-64 pl-10 pr-4 py-3 rounded-xl border border-outline-variant bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-md transition-all" placeholder="Filter by Driver..." type="text">
+</div>
+<button class="flex items-center gap-2 px-4 py-3 rounded-xl border border-outline-variant bg-surface-bright hover:bg-surface-variant transition-colors font-button">
+<span class="material-symbols-outlined">calendar_today</span>
+<span>Date Range</span>
+</button>
+<button class="p-3 rounded-xl border border-outline-variant bg-surface-bright hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Trips Table -->
+<div class="bg-surface-container-lowest rounded-3xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="overflow-x-auto no-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-variant/50 text-on-surface-variant font-data-label uppercase">
+<th class="px-6 py-4">Driver Name</th>
+<th class="px-6 py-4">Trip ID</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Gross Amount</th>
+<th class="px-6 py-4 text-right">Owner Net (91%)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-xs font-bold">EK</div>
+<span class="font-body-md font-semibold text-on-surface">Emanuel Kouassi</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-label text-on-surface-variant">KC-44921-Y</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-momo/10 text-success-momo font-data-label text-[10px]">
+<span class="w-1.5 h-1.5 rounded-full bg-success-momo"></span>
+                                            SETTLED
+                                        </span>
+</td>
+<td class="px-6 py-4 font-data-display">25,000 XAF</td>
+<td class="px-6 py-4 text-right font-data-display text-primary font-bold">22,750 XAF</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-xs font-bold">MB</div>
+<span class="font-body-md font-semibold text-on-surface">Moussa Bello</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-label text-on-surface-variant">KC-44930-D</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/10 text-on-primary-container font-data-label text-[10px]">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                                            PENDING
+                                        </span>
+</td>
+<td class="px-6 py-4 font-data-display">42,500 XAF</td>
+<td class="px-6 py-4 text-right font-data-display text-primary font-bold">38,675 XAF</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-xs font-bold">CN</div>
+<span class="font-body-md font-semibold text-on-surface">Clarisse N'golo</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-label text-on-surface-variant">KC-44938-Y</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-momo/10 text-success-momo font-data-label text-[10px]">
+<span class="w-1.5 h-1.5 rounded-full bg-success-momo"></span>
+                                            SETTLED
+                                        </span>
+</td>
+<td class="px-6 py-4 font-data-display">18,200 XAF</td>
+<td class="px-6 py-4 text-right font-data-display text-primary font-bold">16,562 XAF</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-xs font-bold">JD</div>
+<span class="font-body-md font-semibold text-on-surface">Jean-Pierre Dikolo</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-label text-on-surface-variant">KC-44941-Y</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container/20 text-error font-data-label text-[10px]">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                            FLAGGED
+                                        </span>
+</td>
+<td class="px-6 py-4 font-data-display">112,000 XAF</td>
+<td class="px-6 py-4 text-right font-data-display text-primary font-bold">101,920 XAF</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-xs font-bold">AM</div>
+<span class="font-body-md font-semibold text-on-surface">Amadou M.</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-label text-on-surface-variant">KC-44944-D</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success-momo/10 text-success-momo font-data-label text-[10px]">
+<span class="w-1.5 h-1.5 rounded-full bg-success-momo"></span>
+                                            SETTLED
+                                        </span>
+</td>
+<td class="px-6 py-4 font-data-display">8,500 XAF</td>
+<td class="px-6 py-4 text-right font-data-display text-primary font-bold">7,735 XAF</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant bg-surface-container/30 flex justify-between items-center">
+<span class="font-body-sm text-on-surface-variant">Showing 5 of 124 transactions</span>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-outline-variant hover:bg-white transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 rounded-lg border border-outline-variant hover:bg-white transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-surface border-t border-outline-variant shadow-lg z-50">
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 transition-transform duration-200">
+<span class="material-symbols-outlined">home</span>
+<span class="font-data-label text-data-label">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 transition-transform duration-200">
+<span class="material-symbols-outlined">person</span>
+<span class="font-data-label text-data-label">Drivers</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 transition-transform duration-200">
+<span class="material-symbols-outlined">minor_crash</span>
+<span class="font-data-label text-data-label">Vehicles</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl p-2 transition-transform duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-data-label text-data-label">Revenue</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 transition-transform duration-200 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-data-label text-data-label">Alerts</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for currency updates or hover effects
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.querySelector('.font-data-display.text-primary')?.classList.add('scale-105');
+            });
+            row.addEventListener('mouseleave', () => {
+                row.querySelector('.font-data-display.text-primary')?.classList.remove('scale-105');
+            });
+        });
+
+        // Simple filter logic simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const name = row.querySelector('td:first-child').textContent.toLowerCase();
+                if (name.includes(term)) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body></html>

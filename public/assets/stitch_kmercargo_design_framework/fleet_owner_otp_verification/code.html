@@ -1,0 +1,253 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Fleet Logistics | Identity Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#ffeee0",
+                    "bg-dark": "#0F172A",
+                    "primary-fixed": "#ffdcbc",
+                    "on-secondary-fixed-variant": "#264191",
+                    "surface-dim": "#e8d7ca",
+                    "text-primary-light": "#0F172A",
+                    "text-secondary-dark": "#94A3B8",
+                    "surface-container-low": "#fff1e7",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#ffb86b",
+                    "secondary-fixed": "#dce1ff",
+                    "on-tertiary-fixed": "#001e2b",
+                    "surface-container-high": "#f6e5d7",
+                    "outline": "#877462",
+                    "on-surface-variant": "#544434",
+                    "on-secondary": "#ffffff",
+                    "border-dark": "#334155",
+                    "error": "#ba1a1a",
+                    "bg-light": "#F8FAFC",
+                    "on-background": "#221a12",
+                    "tertiary-fixed-dim": "#70d2ff",
+                    "tertiary-container": "#00c3fd",
+                    "outline-variant": "#dac2ae",
+                    "primary": "#895100",
+                    "secondary-container": "#8fa7fe",
+                    "surface-variant": "#f0e0d2",
+                    "surface-tint": "#895100",
+                    "on-primary-container": "#683c00",
+                    "surface-container": "#fcebdd",
+                    "on-primary-fixed": "#2c1700",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#fff8f4",
+                    "error-container": "#ffdad6",
+                    "text-primary-dark": "#F8FAFC",
+                    "on-tertiary-container": "#004d66",
+                    "tertiary-fixed": "#c0e8ff",
+                    "primary-container": "#ff9f1c",
+                    "primary-fixed-dim": "#ffb86b",
+                    "inverse-surface": "#382f25",
+                    "surface-container-highest": "#f0e0d2",
+                    "on-secondary-container": "#1d3989",
+                    "on-primary": "#ffffff",
+                    "background": "#fff8f4",
+                    "secondary-fixed-dim": "#b6c4ff",
+                    "secondary": "#4059aa",
+                    "border-light": "#E2E8F0",
+                    "on-primary-fixed-variant": "#683d00",
+                    "text-secondary-light": "#64748B",
+                    "success-momo": "#10B981",
+                    "on-tertiary-fixed-variant": "#004d66",
+                    "on-surface": "#221a12",
+                    "on-secondary-fixed": "#00164e",
+                    "tertiary": "#006686",
+                    "on-error": "#ffffff",
+                    "surface": "#fff8f4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "touch-target-min": "56px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "h2-mobile": ["Plus Jakarta Sans"],
+                    "data-display": ["JetBrains Mono"],
+                    "data-label": ["JetBrains Mono"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "button": ["Inter"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .otp-input:focus {
+            outline: none;
+            border-color: #ff9f1c;
+            box-shadow: 0 0 0 2px rgba(255, 159, 28, 0.2);
+        }
+        .bento-texture {
+            background-image: radial-gradient(circle at 1px 1px, #dac2ae 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md">
+<!-- TopAppBar Shell (Suppressed Nav, Show Branding) -->
+<header class="w-full top-0 sticky bg-surface-container-lowest z-50">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="local_shipping">local_shipping</span>
+<h1 class="font-h2-mobile text-h2-mobile font-bold tracking-tight text-primary">FLEET LOGISTICS</h1>
+</div>
+<button aria-label="Go back" class="p-2 hover:bg-surface-container rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="arrow_back">arrow_back</span>
+</button>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center p-margin-mobile">
+<!-- Secure Container: Bento Grid Style -->
+<div class="max-w-xl w-full grid grid-cols-1 md:grid-cols-6 gap-6">
+<!-- Branding & Status (Asymmetric Layout) -->
+<div class="md:col-span-6 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-8xl" data-icon="verified_user">verified_user</span>
+</div>
+<div class="relative z-10">
+<h2 class="font-h1-mobile text-h1-mobile md:font-h1 md:text-h1 text-on-surface mb-2">Verify Your Identity</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">A 6-digit code has been sent to <span class="font-bold text-primary">+237 6XX XXX XXX</span></p>
+</div>
+</div>
+<!-- OTP Input Section -->
+<div class="md:col-span-6 bg-surface-container-lowest p-8 rounded-xl border border-outline-variant shadow-sm flex flex-col items-center">
+<div class="flex gap-2 md:gap-4 mb-8" id="otp-container">
+<input class="otp-input w-12 h-16 md:w-16 md:h-20 text-center font-data-display text-2xl md:text-3xl border-2 border-outline-variant rounded-lg bg-surface flex items-center justify-center transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="text">
+<input class="otp-input w-12 h-16 md:w-16 md:h-20 text-center font-data-display text-2xl md:text-3xl border-2 border-outline-variant rounded-lg bg-surface flex items-center justify-center transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="text">
+<input class="otp-input w-12 h-16 md:w-16 md:h-20 text-center font-data-display text-2xl md:text-3xl border-2 border-outline-variant rounded-lg bg-surface flex items-center justify-center transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="text">
+<div class="flex items-center text-outline-variant">
+<span class="w-2 h-[2px] bg-outline-variant rounded-full"></span>
+</div>
+<input class="otp-input w-12 h-16 md:w-16 md:h-20 text-center font-data-display text-2xl md:text-3xl border-2 border-outline-variant rounded-lg bg-surface flex items-center justify-center transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="text">
+<input class="otp-input w-12 h-16 md:w-16 md:h-20 text-center font-data-display text-2xl md:text-3xl border-2 border-outline-variant rounded-lg bg-surface flex items-center justify-center transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="text">
+<input class="otp-input w-12 h-16 md:w-16 md:h-20 text-center font-data-display text-2xl md:text-3xl border-2 border-outline-variant rounded-lg bg-surface flex items-center justify-center transition-all" inputmode="numeric" maxlength="1" pattern="\d*" type="text">
+</div>
+<div class="w-full space-y-6">
+<button class="w-full h-touch-target-min bg-primary-container text-on-primary-container font-button text-button rounded-xl hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-lg">
+<span>Verify &amp; Continue</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<div class="flex flex-col items-center gap-2">
+<div class="flex items-center gap-2 text-on-surface-variant font-data-label text-data-label">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span id="timer">Resend Code in 01:08</span>
+</div>
+<button class="text-primary font-button text-body-sm hover:underline opacity-50 cursor-not-allowed" disabled="">
+                            Resend Verification Code
+                        </button>
+</div>
+</div>
+</div>
+<!-- Security Trust Badges (Contextual Secondary Info) -->
+<div class="md:col-span-3 bg-surface-variant/30 p-6 rounded-xl border border-outline-variant flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="lock">lock</span>
+</div>
+<div>
+<h3 class="font-data-label text-data-label text-on-surface">End-to-End Encrypted</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Secure Protocol V2.4</p>
+</div>
+</div>
+<div class="md:col-span-3 bg-surface-variant/30 p-6 rounded-xl border border-outline-variant flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-success-momo/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-success-momo" data-icon="shield_check">shield_lock</span>
+</div>
+<div>
+<h3 class="font-data-label text-data-label text-on-surface">Owner Identity Guard</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Fleet Protected</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Visual Polish: Background Graphic -->
+<div class="fixed inset-0 -z-10 opacity-5 pointer-events-none bento-texture"></div>
+<script>
+        // OTP Auto-focus Logic
+        const inputs = document.querySelectorAll('.otp-input');
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Simple Countdown Timer Logic
+        let timeLeft = 118; // 01:58 in seconds
+        const timerElement = document.getElementById('timer');
+        const countdown = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.innerText = "Ready to resend";
+                timerElement.parentElement.nextElementSibling.classList.remove('opacity-50', 'cursor-not-allowed');
+                timerElement.parentElement.nextElementSibling.removeAttribute('disabled');
+            } else {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerElement.innerText = `Resend Code in ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timeLeft--;
+            }
+        }, 1000);
+
+        // Interaction Feedback
+        document.querySelector('button').addEventListener('click', function() {
+            this.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span> Authenticating...';
+            setTimeout(() => {
+                window.location.reload(); // Simulate progress
+            }, 1500);
+        });
+    </script>
+</body></html>

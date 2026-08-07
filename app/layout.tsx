@@ -1,8 +1,25 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import Footer from './components/Footer';
-import Navbar from './components/Navbar';
+import { SiteChrome } from '@/components/layout/site-chrome';
+import { getCurrentUser } from '@/lib/current-user';
+
+const heading = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-heading',
+});
+const body = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-sans',
+});
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['500', '700'],
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
   title: 'Kargoa Admin Dashboard',
@@ -10,13 +27,20 @@ export const metadata: Metadata = {
     'Admin dashboard for the KmerCargo platform: manage driver onboarding, fleet verification, financial ledgers, and disputes.',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const user = await getCurrentUser();
+
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${heading.variable} ${body.variable} ${mono.variable}`}
+    >
       <body>
-        <Navbar />
-        {children}
-        <Footer />
+        <SiteChrome user={user}>{children}</SiteChrome>
       </body>
     </html>
   );
