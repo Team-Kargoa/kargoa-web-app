@@ -247,9 +247,7 @@ export async function getFleetApplication(
     apiRequest<FleetApplication>(`/admin-api/fleet-applications/${id}`, {
       token,
     });
-  const fixtureMatch = FLEET_APPLICATIONS_FIXTURE.find(
-    (app) => app.id === id,
-  );
+  const fixtureMatch = FLEET_APPLICATIONS_FIXTURE.find((app) => app.id === id);
   if (!fixtureMatch) {
     // No fixture to fall back to for this id — let live()'s outcome (real
     // data, or the 404 the real endpoint will throw for an unknown id)

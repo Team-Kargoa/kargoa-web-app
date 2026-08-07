@@ -182,9 +182,7 @@ describe('StatCard', () => {
   });
 
   it('renders the sample data badge when isSample is true', () => {
-    render(
-      <StatCard label="Active Trucks" value="8" icon={Truck} isSample />,
-    );
+    render(<StatCard label="Active Trucks" value="8" icon={Truck} isSample />);
     expect(screen.getByText('Sample data')).toBeInTheDocument();
   });
 

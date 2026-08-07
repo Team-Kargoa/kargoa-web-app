@@ -149,7 +149,10 @@ describe('FleetDashboardPage', () => {
   });
 
   it('shows no Sample data badge when every source is real data', async () => {
-    mockedGetWallet.mockResolvedValue({ data: WALLET_FIXTURE, isSample: false });
+    mockedGetWallet.mockResolvedValue({
+      data: WALLET_FIXTURE,
+      isSample: false,
+    });
     mockedGetFleetSummary.mockResolvedValue({
       data: FLEET_SUMMARY_FIXTURE,
       isSample: false,
@@ -167,7 +170,10 @@ describe('FleetDashboardPage', () => {
   });
 
   it('shows the badge only on the sections still backed by sample data', async () => {
-    mockedGetWallet.mockResolvedValue({ data: WALLET_FIXTURE, isSample: false });
+    mockedGetWallet.mockResolvedValue({
+      data: WALLET_FIXTURE,
+      isSample: false,
+    });
     render(await FleetDashboardPage());
     // Fleet summary (2 cards), performance chart, driver table remain
     // sample; wallet-backed earnings card is now real.

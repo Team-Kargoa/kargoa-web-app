@@ -100,9 +100,10 @@ describe('getFleetApplication', () => {
     const live = { ...first, organization: 'Live Org' };
     mockedRequest.mockResolvedValue(live);
 
-    await expect(
-      getFleetApplication('jwt-abc', first.id),
-    ).resolves.toEqual({ data: live, isSample: false });
+    await expect(getFleetApplication('jwt-abc', first.id)).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
     expect(mockedRequest).toHaveBeenCalledWith(
       `/admin-api/fleet-applications/${first.id}`,
       { token: 'jwt-abc' },
@@ -113,9 +114,10 @@ describe('getFleetApplication', () => {
     const [first] = FLEET_APPLICATIONS_FIXTURE;
     mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
 
-    await expect(
-      getFleetApplication('jwt-abc', first.id),
-    ).resolves.toEqual({ data: first, isSample: true });
+    await expect(getFleetApplication('jwt-abc', first.id)).resolves.toEqual({
+      data: first,
+      isSample: true,
+    });
   });
 
   it('throws a 404 ApiError for an id with no live data and no matching fixture', async () => {
@@ -388,9 +390,10 @@ describe('getDocument', () => {
     const live = { ...DOCUMENT_FIXTURE, file_size_mb: 42 };
     mockedRequest.mockResolvedValue(live);
 
-    await expect(
-      getDocument('jwt-abc', DOCUMENT_FIXTURE.id),
-    ).resolves.toEqual({ data: live, isSample: false });
+    await expect(getDocument('jwt-abc', DOCUMENT_FIXTURE.id)).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
     expect(mockedRequest).toHaveBeenCalledWith(
       `/admin-api/documents/${DOCUMENT_FIXTURE.id}`,
       { token: 'jwt-abc' },
@@ -400,9 +403,10 @@ describe('getDocument', () => {
   it('falls back to the document fixture with isSample: true when the endpoint 404s', async () => {
     mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
 
-    await expect(
-      getDocument('jwt-abc', DOCUMENT_FIXTURE.id),
-    ).resolves.toEqual({ data: DOCUMENT_FIXTURE, isSample: true });
+    await expect(getDocument('jwt-abc', DOCUMENT_FIXTURE.id)).resolves.toEqual({
+      data: DOCUMENT_FIXTURE,
+      isSample: true,
+    });
   });
 
   it('throws a 404 ApiError for an unknown id — matching what the real endpoint will do', async () => {

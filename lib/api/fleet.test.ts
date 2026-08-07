@@ -56,10 +56,9 @@ describe('getWeeklyPerformance', () => {
       data: live,
       isSample: false,
     });
-    expect(mockedRequest).toHaveBeenCalledWith(
-      '/tracking/weekly-performance',
-      { token: 'jwt-abc' },
-    );
+    expect(mockedRequest).toHaveBeenCalledWith('/tracking/weekly-performance', {
+      token: 'jwt-abc',
+    });
   });
 
   it('falls back to the weekly performance fixture with isSample: true when the endpoint 404s', async () => {

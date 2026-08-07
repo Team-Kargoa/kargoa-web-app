@@ -5,17 +5,19 @@ describe('withFallback', () => {
   it('returns live data with isSample: false when the live call resolves with a non-empty value', async () => {
     const live = jest.fn().mockResolvedValue({ id: 'real-1' });
 
-    await expect(
-      withFallback(live, { id: 'fixture-1' }),
-    ).resolves.toEqual({ data: { id: 'real-1' }, isSample: false });
+    await expect(withFallback(live, { id: 'fixture-1' })).resolves.toEqual({
+      data: { id: 'real-1' },
+      isSample: false,
+    });
   });
 
   it('returns the fixture with isSample: true when the live call throws a 404 ApiError', async () => {
     const live = jest.fn().mockRejectedValue(new ApiError('Not found.', 404));
 
-    await expect(
-      withFallback(live, { id: 'fixture-1' }),
-    ).resolves.toEqual({ data: { id: 'fixture-1' }, isSample: true });
+    await expect(withFallback(live, { id: 'fixture-1' })).resolves.toEqual({
+      data: { id: 'fixture-1' },
+      isSample: true,
+    });
   });
 
   it('returns the fixture with isSample: true when the live call throws a 501 ApiError', async () => {
@@ -23,9 +25,10 @@ describe('withFallback', () => {
       .fn()
       .mockRejectedValue(new ApiError('Not implemented.', 501));
 
-    await expect(
-      withFallback(live, { id: 'fixture-1' }),
-    ).resolves.toEqual({ data: { id: 'fixture-1' }, isSample: true });
+    await expect(withFallback(live, { id: 'fixture-1' })).resolves.toEqual({
+      data: { id: 'fixture-1' },
+      isSample: true,
+    });
   });
 
   it('returns the fixture with isSample: true when the live call throws an ApiError with status 0 (backend unreachable)', async () => {
@@ -35,17 +38,19 @@ describe('withFallback', () => {
         new ApiError('Unable to reach the server. Check your connection.', 0),
       );
 
-    await expect(
-      withFallback(live, { id: 'fixture-1' }),
-    ).resolves.toEqual({ data: { id: 'fixture-1' }, isSample: true });
+    await expect(withFallback(live, { id: 'fixture-1' })).resolves.toEqual({
+      data: { id: 'fixture-1' },
+      isSample: true,
+    });
   });
 
   it('returns the fixture with isSample: true when the live call throws a non-ApiError', async () => {
     const live = jest.fn().mockRejectedValue(new TypeError('boom'));
 
-    await expect(
-      withFallback(live, { id: 'fixture-1' }),
-    ).resolves.toEqual({ data: { id: 'fixture-1' }, isSample: true });
+    await expect(withFallback(live, { id: 'fixture-1' })).resolves.toEqual({
+      data: { id: 'fixture-1' },
+      isSample: true,
+    });
   });
 
   it('never throws — a rejected live() with no isEmpty option must still resolve', async () => {

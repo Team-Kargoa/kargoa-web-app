@@ -31,9 +31,7 @@ export function getWallet(token: string): Promise<Sourced<Wallet>> {
   );
 }
 
-export function getSettlements(
-  token: string,
-): Promise<Sourced<Settlement[]>> {
+export function getSettlements(token: string): Promise<Sourced<Settlement[]>> {
   return withFallback(
     () => apiRequest<Settlement[]>('/payments/settlements', { token }),
     SETTLEMENTS_FIXTURE,
@@ -72,8 +70,7 @@ export function getRevenueSummary(
   token: string,
 ): Promise<Sourced<RevenueSummary>> {
   return withFallback(
-    () =>
-      apiRequest<RevenueSummary>('/payments/revenue-summary', { token }),
+    () => apiRequest<RevenueSummary>('/payments/revenue-summary', { token }),
     REVENUE_SUMMARY_FIXTURE,
   );
 }
@@ -83,10 +80,9 @@ export function getSettlementTransactions(
 ): Promise<Sourced<SettlementTransaction[]>> {
   return withFallback(
     () =>
-      apiRequest<SettlementTransaction[]>(
-        '/payments/settlement-transactions',
-        { token },
-      ),
+      apiRequest<SettlementTransaction[]>('/payments/settlement-transactions', {
+        token,
+      }),
     SETTLEMENT_TRANSACTIONS_FIXTURE,
   );
 }

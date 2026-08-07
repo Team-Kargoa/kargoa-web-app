@@ -45,9 +45,7 @@ export type FleetDriver = {
   status: FleetDriverStatus;
 };
 
-export function getFleetSummary(
-  token: string,
-): Promise<Sourced<FleetSummary>> {
+export function getFleetSummary(token: string): Promise<Sourced<FleetSummary>> {
   return withFallback(
     () => apiRequest<FleetSummary>('/tracking/fleet-summary', { token }),
     FLEET_SUMMARY_FIXTURE,
