@@ -12,7 +12,19 @@ const CHROMELESS_ROUTES = [
   '/register/fleet',
   '/verify',
   '/fleet',
+  '/onboarding',
 ];
+
+/**
+ * A route is chromeless on an exact pathname match, or on a nested route
+ * below it (e.g. /onboarding/business under /onboarding). Mirrors
+ * components/Navbar.tsx's isNavLinkActive: bare pathname.startsWith(route)
+ * would also match an unrelated route that merely shares a prefix (e.g. a
+ * future /fleets alongside /fleet), wrongly hiding its navbar.
+ */
+function isChromelessRoute(pathname: string, route: string): boolean {
+  return pathname === route || pathname.startsWith(`${route}/`);
+}
 
 export type SiteChromeProps = {
   children: React.ReactNode;
@@ -26,7 +38,7 @@ export type SiteChromeProps = {
 
 export function SiteChrome({ children, user }: SiteChromeProps) {
   const pathname = usePathname();
-  if (CHROMELESS_ROUTES.some((route) => pathname.startsWith(route))) {
+  if (CHROMELESS_ROUTES.some((route) => isChromelessRoute(pathname, route))) {
     return <>{children}</>;
   }
   return (
