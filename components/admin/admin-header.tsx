@@ -28,21 +28,14 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import type { UserSummary } from '@/lib/api/types';
 import { formatPhone, getInitials } from '@/lib/format';
 
+// Remnants of a deleted app/admin/[section] catch-all route used to live
+// here too (operations, vehicles, customers, trips, payments, wallets,
+// disputes, reviews, analytics, audit, administrators) — none of those
+// routes exist on disk. Only admin, drivers and settings are real pages.
 const labels: Record<string, string> = {
   admin: 'Dashboard',
-  operations: 'Operations',
   drivers: 'Drivers',
-  vehicles: 'Vehicles',
-  customers: 'Customers',
-  trips: 'Trips',
-  payments: 'Payments',
-  wallets: 'Wallets',
-  disputes: 'Disputes',
-  reviews: 'Reviews',
-  analytics: 'Analytics',
   settings: 'Platform Settings',
-  audit: 'Audit Logs',
-  administrators: 'Administrators',
 };
 
 export type AdminHeaderProps = {

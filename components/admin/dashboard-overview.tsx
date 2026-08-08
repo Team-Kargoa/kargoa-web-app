@@ -40,60 +40,45 @@ import {
 } from '@/components/ui/chart';
 import { Separator } from '@/components/ui/separator';
 import { SampleDataBadge } from '@/components/sample-data-badge';
+import { formatXaf } from '@/lib/format';
+import type { AdminOverview } from '@/lib/api/admin';
+
+export type DashboardOverviewProps = {
+  /** The live (or fixture-fallback) admin overview from getOverview(). */
+  overview: AdminOverview;
+  /**
+   * True when `overview` is fixture data (the real /admin-api/overview
+   * endpoint errored or doesn't exist yet — see lib/api/with-fallback.ts).
+   * Drives the single page-level Sample data badge over the
+   * AdminOverview-backed stat cards below.
+   */
+  isSample: boolean;
+};
+
+const GREETING_DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
 
 // Vehicles, trips, payments and disputes have no backend endpoint yet (the
 // admin_api app only exposes drivers, platform configs and audit logs —
-// apps/payments and apps/disputes are still empty stubs), so those four
-// stat cards omit `href` and render as non-interactive, aria-disabled cards
-// with the shared Sample data badge rather than link to a route that
-// doesn't exist on disk — the same precedent already used for the sidebar's
-// Fleet Approvals/Financial Oversight items (components/admin/app-sidebar.tsx).
-const stats = [
-  {
-    label: 'Pending Driver Approvals',
-    value: '24',
-    detail: '8 added today',
-    icon: UserRoundCheck,
-    href: '/admin/drivers',
-    tone: 'text-amber-700 bg-amber-500/10',
-  },
-  {
-    label: 'Pending Vehicle Approvals',
-    value: '12',
-    detail: '3 awaiting insurance',
-    icon: CarFront,
-    tone: 'text-blue-700 bg-blue-500/10',
-  },
-  {
-    label: 'Online Drivers',
-    value: '328',
-    detail: '+12.5% from yesterday',
-    icon: Radio,
-    href: '/admin/drivers',
-    tone: 'text-emerald-700 bg-emerald-500/10',
-  },
-  {
-    label: 'Active Trips',
-    value: '186',
-    detail: '24 near completion',
-    icon: Truck,
-    tone: 'text-violet-700 bg-violet-500/10',
-  },
-  {
-    label: 'Today’s Revenue',
-    value: 'XAF 2.48M',
-    detail: '+18.2% from yesterday',
-    icon: CreditCard,
-    tone: 'text-primary bg-primary/10',
-  },
-  {
-    label: 'Open Disputes',
-    value: '4',
-    detail: '2 require attention',
-    icon: CircleAlert,
-    tone: 'text-rose-700 bg-rose-500/10',
-  },
-];
+// apps/payments and apps/disputes are still empty stubs), so "Pending
+// Vehicle Approvals" has no AdminOverview field to source from and stays
+// hardcoded, rendering as a non-interactive, aria-disabled card with its
+// own always-on Sample data badge rather than a link to a route that
+// doesn't exist on disk — the same precedent already used for the
+// sidebar's Fleet Approvals/Financial Oversight items
+// (components/admin/app-sidebar.tsx).
+//
+// The other five cards below ARE backed by AdminOverview (getOverview(),
+// wired up in app/admin/page.tsx) and share one page-level Sample data
+// badge keyed off `isSample`, rather than a per-card badge tied to
+// whether the card happens to have an href — that was the bug: the two
+// cards that link somewhere (Pending Driver Approvals, Online Drivers)
+// rendered with no badge at all, reading as live platform state.
 const revenue = [
   { day: 'Mon', value: 1.2 },
   { day: 'Tue', value: 1.45 },
@@ -119,12 +104,68 @@ const tripsConfig = {
   completed: { label: 'Completed trips', color: '#4059aa' },
 } satisfies ChartConfig;
 
-export function DashboardOverview() {
+export function DashboardOverview({
+  overview,
+  isSample,
+}: DashboardOverviewProps) {
+  const stats = [
+    {
+      label: 'Pending Driver Approvals',
+      value: String(overview.pending_approvals),
+      icon: UserRoundCheck,
+      href: '/admin/drivers',
+      tone: 'text-amber-700 bg-amber-500/10',
+      alwaysSample: false,
+    },
+    {
+      label: 'Pending Vehicle Approvals',
+      value: '12',
+      icon: CarFront,
+      href: undefined,
+      tone: 'text-blue-700 bg-blue-500/10',
+      alwaysSample: true,
+    },
+    {
+      label: 'Online Drivers',
+      value: String(overview.online_drivers),
+      icon: Radio,
+      href: '/admin/drivers',
+      tone: 'text-emerald-700 bg-emerald-500/10',
+      alwaysSample: false,
+    },
+    {
+      label: 'Active Trips',
+      value: String(overview.active_trips),
+      icon: Truck,
+      href: undefined,
+      tone: 'text-violet-700 bg-violet-500/10',
+      alwaysSample: false,
+    },
+    {
+      label: 'Today’s Revenue',
+      value: formatXaf(overview.revenue_last_24h_fcfa),
+      icon: CreditCard,
+      href: undefined,
+      tone: 'text-primary bg-primary/10',
+      alwaysSample: false,
+    },
+    {
+      label: 'Open Disputes',
+      value: String(overview.open_disputes),
+      icon: CircleAlert,
+      href: undefined,
+      tone: 'text-rose-700 bg-rose-500/10',
+      alwaysSample: false,
+    },
+  ];
+
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm text-muted-foreground">Monday, July 27, 2026</p>
+          <p className="text-sm text-muted-foreground">
+            {GREETING_DATE_FORMATTER.format(new Date(overview.as_of))}
+          </p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight">
             Good morning, Admin
           </h1>
@@ -137,67 +178,85 @@ export function DashboardOverview() {
         </Button>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-        {stats.map((stat) => {
-          const cardBody = (
-            <Card
-              size="sm"
-              className={
-                stat.href
-                  ? 'h-full transition-shadow group-hover:shadow-md'
-                  : 'h-full'
-              }
-            >
-              <CardHeader>
-                <CardDescription className="flex flex-wrap items-center gap-1.5">
-                  {stat.label}
-                  {!stat.href && <SampleDataBadge />}
-                </CardDescription>
-                <CardAction>
-                  <span
-                    className={`grid size-8 place-items-center rounded-lg ${stat.tone}`}
-                  >
-                    <stat.icon className="size-4" aria-hidden="true" />
-                  </span>
-                </CardAction>
-                <CardTitle className="mt-2 text-xl tabular-nums">
-                  {stat.value}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex items-center gap-1 text-xs text-muted-foreground">
-                <ArrowUpRight
-                  className="size-3 text-emerald-600"
-                  aria-hidden="true"
-                />
-                {stat.detail}
-              </CardContent>
-            </Card>
-          );
+      <section className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-sm font-medium text-muted-foreground">
+            Platform overview
+          </h2>
+          {isSample && <SampleDataBadge />}
+        </div>
 
-          if (!stat.href) {
-            return (
-              <div key={stat.label} aria-disabled="true" className="rounded-xl">
-                {cardBody}
-              </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+          {stats.map((stat) => {
+            const cardBody = (
+              <Card
+                size="sm"
+                className={
+                  stat.href
+                    ? 'h-full transition-shadow group-hover:shadow-md'
+                    : 'h-full'
+                }
+              >
+                <CardHeader>
+                  <CardDescription className="flex flex-wrap items-center gap-1.5">
+                    {stat.label}
+                    {stat.alwaysSample && <SampleDataBadge />}
+                  </CardDescription>
+                  <CardAction>
+                    <span
+                      className={`grid size-8 place-items-center rounded-lg ${stat.tone}`}
+                    >
+                      <stat.icon className="size-4" aria-hidden="true" />
+                    </span>
+                  </CardAction>
+                  <CardTitle className="mt-2 text-xl tabular-nums">
+                    {stat.value}
+                  </CardTitle>
+                </CardHeader>
+                {stat.alwaysSample && (
+                  <CardContent className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <ArrowUpRight
+                      className="size-3 text-emerald-600"
+                      aria-hidden="true"
+                    />
+                    3 awaiting insurance
+                  </CardContent>
+                )}
+              </Card>
             );
-          }
 
-          return (
-            <Link
-              href={stat.href}
-              key={stat.label}
-              className="group outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
-            >
-              {cardBody}
-            </Link>
-          );
-        })}
+            if (!stat.href) {
+              return (
+                <div
+                  key={stat.label}
+                  aria-disabled="true"
+                  className="rounded-xl"
+                >
+                  {cardBody}
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                href={stat.href}
+                key={stat.label}
+                className="group outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
+              >
+                {cardBody}
+              </Link>
+            );
+          })}
+        </div>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-3">
           <CardHeader>
-            <CardTitle>Revenue overview</CardTitle>
+            <CardTitle className="flex flex-wrap items-center gap-1.5">
+              Revenue overview
+              <SampleDataBadge />
+            </CardTitle>
             <CardDescription>
               Gross platform revenue over the last 7 days
             </CardDescription>
@@ -254,7 +313,10 @@ export function DashboardOverview() {
         </Card>
         <Card className="xl:col-span-2">
           <CardHeader>
-            <CardTitle>Platform health</CardTitle>
+            <CardTitle className="flex flex-wrap items-center gap-1.5">
+              Platform health
+              <SampleDataBadge />
+            </CardTitle>
             <CardDescription>Live service indicators</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
@@ -286,7 +348,10 @@ export function DashboardOverview() {
       <section className="grid gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-2">
           <CardHeader>
-            <CardTitle>Trip volume</CardTitle>
+            <CardTitle className="flex flex-wrap items-center gap-1.5">
+              Trip volume
+              <SampleDataBadge />
+            </CardTitle>
             <CardDescription>Completed trips this week</CardDescription>
           </CardHeader>
           <CardContent>
@@ -310,7 +375,10 @@ export function DashboardOverview() {
         </Card>
         <Card className="xl:col-span-3">
           <CardHeader>
-            <CardTitle>Pending approvals</CardTitle>
+            <CardTitle className="flex flex-wrap items-center gap-1.5">
+              Pending approvals
+              <SampleDataBadge />
+            </CardTitle>
             <CardDescription>
               Items that need a decision from your team
             </CardDescription>
@@ -371,7 +439,10 @@ export function DashboardOverview() {
       <section className="grid gap-4 xl:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Recent activity</CardTitle>
+            <CardTitle className="flex flex-wrap items-center gap-1.5">
+              Recent activity
+              <SampleDataBadge />
+            </CardTitle>
             <CardDescription>
               Latest actions across the platform
             </CardDescription>
@@ -422,7 +493,10 @@ export function DashboardOverview() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Recent transactions</CardTitle>
+            <CardTitle className="flex flex-wrap items-center gap-1.5">
+              Recent transactions
+              <SampleDataBadge />
+            </CardTitle>
             <CardDescription>
               Latest completed payments and payouts
             </CardDescription>
