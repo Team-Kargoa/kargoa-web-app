@@ -78,7 +78,10 @@ export default async function FleetDashboardPage() {
         />
       </section>
 
-      <PerformanceChart data={performance.data} isSample={performance.isSample} />
+      <PerformanceChart
+        data={performance.data}
+        isSample={performance.isSample}
+      />
 
       <DriverTable drivers={drivers.data} isSample={drivers.isSample} />
     </main>

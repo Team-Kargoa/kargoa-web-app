@@ -85,12 +85,8 @@ describe('Navbar', () => {
 
       const link = screen.getByRole('link', { name: /dashboard/i });
       expect(link).toHaveTextContent('Dashboard');
-      expect(
-        screen.queryByText('+237 6 74 62 88 17'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(user.phone_number),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('+237 6 74 62 88 17')).not.toBeInTheDocument();
+      expect(screen.queryByText(user.phone_number)).not.toBeInTheDocument();
     });
 
     it('gives the dashboard link a meaningful accessible name even with no name on file', () => {

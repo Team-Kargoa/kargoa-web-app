@@ -99,9 +99,7 @@ describe('FleetRegistrationPage', () => {
     // wrong door. The toggle must be a real control that swaps the form
     // in place, not navigation away from this screen.
     render(<FleetRegistrationPage />);
-    expect(
-      screen.getByRole('button', { name: 'Sign in' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Sign in' })).toBeInTheDocument();
     expect(
       screen.queryByRole('link', { name: /sign in/i }),
     ).not.toBeInTheDocument();
@@ -236,9 +234,7 @@ describe('FleetRegistrationPage', () => {
       // and an undefined-valued key compare equal — assert on the raw
       // pushed string instead, and on URLSearchParams.has(), so a
       // role=undefined regression would actually fail this.
-      expect(pushedUrl).toBe(
-        '/verify?phone=%2B237691234567&purpose=login',
-      );
+      expect(pushedUrl).toBe('/verify?phone=%2B237691234567&purpose=login');
       const params = new URL(pushedUrl, 'http://localhost').searchParams;
       expect(params.has('role')).toBe(false);
       expect(Object.fromEntries(params.entries())).toEqual({
