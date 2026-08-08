@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { redirect } from 'next/navigation';
 import FleetRevenuePage from './page';
 import { getAccessToken } from '@/lib/session';
 import {
@@ -10,9 +11,15 @@ import {
   SETTLEMENT_TRANSACTIONS_FIXTURE,
 } from '@/lib/api/fixtures/payments';
 
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(() => {
+    throw new Error('NEXT_REDIRECT');
+  }),
+}));
 jest.mock('@/lib/session');
 jest.mock('@/lib/api/payments');
 
+const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
   typeof getAccessToken
 >;
@@ -132,10 +139,13 @@ describe('FleetRevenuePage', () => {
     expect(mockedGetSettlementTransactions).toHaveBeenCalledWith('jwt-abc');
   });
 
-  it('falls back to an empty token string when the session has none', async () => {
+  it('redirects to /signin when there is no access token, without calling the API', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
-    render(await FleetRevenuePage());
-    expect(mockedGetRevenueSummary).toHaveBeenCalledWith('');
+
+    await expect(FleetRevenuePage()).rejects.toThrow('NEXT_REDIRECT');
+
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+    expect(mockedGetRevenueSummary).not.toHaveBeenCalled();
   });
 
   it('shows a Sample data badge on both the revenue summary and settlement breakdown sections when both are sample data', async () => {

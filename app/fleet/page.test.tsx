@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { redirect } from 'next/navigation';
 import FleetDashboardPage from './page';
 import { getAccessToken } from '@/lib/session';
 import { getWallet } from '@/lib/api/payments';
@@ -14,6 +15,11 @@ import {
 } from '@/lib/api/fixtures/fleet';
 import { WALLET_FIXTURE } from '@/lib/api/fixtures/payments';
 
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(() => {
+    throw new Error('NEXT_REDIRECT');
+  }),
+}));
 jest.mock('@/lib/session');
 jest.mock('@/lib/api/payments');
 jest.mock('@/lib/api/fleet');
@@ -33,6 +39,7 @@ jest.mock('recharts', () => ({
   Tooltip: () => null,
 }));
 
+const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
   typeof getAccessToken
 >;
@@ -135,10 +142,13 @@ describe('FleetDashboardPage', () => {
     expect(mockedGetActiveDrivers).toHaveBeenCalledWith('jwt-abc');
   });
 
-  it('falls back to an empty token string when the session has none', async () => {
+  it('redirects to /signin when there is no access token, without calling the API', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
-    render(await FleetDashboardPage());
-    expect(mockedGetWallet).toHaveBeenCalledWith('');
+
+    await expect(FleetDashboardPage()).rejects.toThrow('NEXT_REDIRECT');
+
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+    expect(mockedGetWallet).not.toHaveBeenCalled();
   });
 
   it('shows a Sample data badge on every section when every source is sample data', async () => {

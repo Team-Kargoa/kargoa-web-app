@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { redirect } from 'next/navigation';
 import FleetDriversPage from './page';
 import { getAccessToken } from '@/lib/session';
 import { getDriverRoster, getVehicleRoster } from '@/lib/api/fleet';
@@ -7,9 +8,15 @@ import {
   VEHICLE_ROSTER_FIXTURE,
 } from '@/lib/api/fixtures/fleet';
 
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(() => {
+    throw new Error('NEXT_REDIRECT');
+  }),
+}));
 jest.mock('@/lib/session');
 jest.mock('@/lib/api/fleet');
 
+const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
   typeof getAccessToken
 >;
@@ -174,10 +181,13 @@ describe('FleetDriversPage', () => {
     expect(mockedGetVehicleRoster).toHaveBeenCalledWith('jwt-abc');
   });
 
-  it('falls back to an empty token string when the session has none', async () => {
+  it('redirects to /signin when there is no access token, without calling the API', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
-    render(await FleetDriversPage());
-    expect(mockedGetDriverRoster).toHaveBeenCalledWith('');
+
+    await expect(FleetDriversPage()).rejects.toThrow('NEXT_REDIRECT');
+
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+    expect(mockedGetDriverRoster).not.toHaveBeenCalled();
   });
 
   it('shows the Sample data badge on the drivers tab when the driver roster is sample data', async () => {
