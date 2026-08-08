@@ -93,13 +93,26 @@ describe('FleetRegistrationPage', () => {
     expect(links[0]).toHaveAccessibleName(/back to home/i);
   });
 
-  it('renders the login link for existing accounts with a real destination', () => {
+  it('renders a Sign in toggle control instead of a link to the Admin Portal', () => {
+    // Regression guard: a Link to /signin here sent fleet owners to the
+    // Admin Portal screen — different branding, different copy, the
+    // wrong door. The toggle must be a real control that swaps the form
+    // in place, not navigation away from this screen.
     render(<FleetRegistrationPage />);
     expect(
-      screen.getByRole('link', {
-        name: 'Login if you already have an account',
-      }),
-    ).toHaveAttribute('href', '/signin');
+      screen.getByRole('button', { name: 'Sign in' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: /sign in/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('never links anywhere to /signin', () => {
+    render(<FleetRegistrationPage />);
+    const hrefs = screen
+      .getAllByRole('link')
+      .map((link) => link.getAttribute('href'));
+    expect(hrefs).not.toContain('/signin');
   });
 
   it('renders a visible text label beside each trust icon', () => {
@@ -159,5 +172,97 @@ describe('FleetRegistrationPage', () => {
       await screen.findByText('Enter a valid Cameroon phone number.'),
     ).toBeInTheDocument();
     expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  describe('sign-in mode', () => {
+    it('swaps the form to sign-in copy without navigating away, and back again', () => {
+      render(<FleetRegistrationPage />);
+
+      expect(
+        screen.getByRole('heading', { name: 'Partner with KmerCargo' }),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+
+      expect(
+        screen.queryByRole('heading', { name: 'Partner with KmerCargo' }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /continue to sign in/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Register' }),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+      expect(
+        screen.getByRole('heading', { name: 'Partner with KmerCargo' }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /continue to registration/i }),
+      ).toBeInTheDocument();
+    });
+
+    it('submits sendOtp with purpose=login after toggling to sign in', async () => {
+      render(<FleetRegistrationPage />);
+      fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+
+      const input = screen.getByLabelText('Business Phone Number');
+      fireEvent.change(input, { target: { value: '+237691234567' } });
+      fireEvent.click(
+        screen.getByRole('button', { name: /continue to sign in/i }),
+      );
+
+      await waitFor(() => expect(mockedSendOtp).toHaveBeenCalledTimes(1));
+      const [, formData] = mockedSendOtp.mock.calls[0];
+      expect(formData.get('phone_number')).toBe('+237691234567');
+      expect(formData.get('purpose')).toBe('login');
+    });
+
+    it('redirects to /verify with phone and purpose=login, omitting role entirely — not just as an undefined value', async () => {
+      render(<FleetRegistrationPage />);
+      fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+
+      const input = screen.getByLabelText('Business Phone Number');
+      fireEvent.change(input, { target: { value: '+237691234567' } });
+      fireEvent.click(
+        screen.getByRole('button', { name: /continue to sign in/i }),
+      );
+
+      await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1));
+      const pushedUrl = mockPush.mock.calls[0][0] as string;
+      // toHaveBeenCalledWith uses toEqual semantics, where a missing key
+      // and an undefined-valued key compare equal — assert on the raw
+      // pushed string instead, and on URLSearchParams.has(), so a
+      // role=undefined regression would actually fail this.
+      expect(pushedUrl).toBe(
+        '/verify?phone=%2B237691234567&purpose=login',
+      );
+      const params = new URL(pushedUrl, 'http://localhost').searchParams;
+      expect(params.has('role')).toBe(false);
+      expect(Object.fromEntries(params.entries())).toEqual({
+        phone: '+237691234567',
+        purpose: 'login',
+      });
+    });
+
+    it('still redirects with role=fleet_owner when staying in register mode', async () => {
+      render(<FleetRegistrationPage />);
+      const input = screen.getByLabelText('Business Phone Number');
+      fireEvent.change(input, { target: { value: '+237691234567' } });
+      fireEvent.click(
+        screen.getByRole('button', { name: /continue to registration/i }),
+      );
+
+      await waitFor(() =>
+        expect(mockPush).toHaveBeenCalledWith(
+          '/verify?phone=%2B237691234567&purpose=registration&role=fleet_owner',
+        ),
+      );
+      const pushedUrl = mockPush.mock.calls[0][0] as string;
+      const params = new URL(pushedUrl, 'http://localhost').searchParams;
+      expect(params.has('role')).toBe(true);
+    });
   });
 });
