@@ -127,10 +127,9 @@ describe('AdminDriverDetailPage', () => {
   it('renders all four documents as links to their real URLs', async () => {
     render(await AdminDriverDetailPage({ params: paramsWith(APPLICATION.id) }));
 
-    expect(screen.getByRole('link', { name: /license document/i })).toHaveAttribute(
-      'href',
-      APPLICATION.license_document,
-    );
+    expect(
+      screen.getByRole('link', { name: /license document/i }),
+    ).toHaveAttribute('href', APPLICATION.license_document);
     expect(
       screen.getByRole('link', { name: /national id document/i }),
     ).toHaveAttribute('href', APPLICATION.national_id_document);
@@ -145,10 +144,9 @@ describe('AdminDriverDetailPage', () => {
 
   it('renders a link back to the driver queue that resolves to a real route', async () => {
     render(await AdminDriverDetailPage({ params: paramsWith(APPLICATION.id) }));
-    expect(screen.getByRole('link', { name: /back to queue/i })).toHaveAttribute(
-      'href',
-      '/admin/drivers',
-    );
+    expect(
+      screen.getByRole('link', { name: /back to queue/i }),
+    ).toHaveAttribute('href', '/admin/drivers');
   });
 
   it('renders the approve and reject controls, wired to this application id', async () => {
@@ -156,9 +154,7 @@ describe('AdminDriverDetailPage', () => {
     expect(screen.getByTestId('approve-form')).toHaveTextContent(
       APPLICATION.id,
     );
-    expect(screen.getByTestId('reject-form')).toHaveTextContent(
-      APPLICATION.id,
-    );
+    expect(screen.getByTestId('reject-form')).toHaveTextContent(APPLICATION.id);
   });
 
   it('shows the rejection reason when the application was previously rejected', async () => {

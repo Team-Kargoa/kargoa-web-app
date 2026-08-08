@@ -91,9 +91,7 @@ describe('AppSidebar', () => {
 
     LABEL_ITEMS.forEach((name) => {
       expect(screen.getByText(name)).toBeInTheDocument();
-      expect(
-        screen.queryByRole('link', { name }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('link', { name })).not.toBeInTheDocument();
     });
   });
 
@@ -101,7 +99,9 @@ describe('AppSidebar', () => {
     mockUsePathname.mockReturnValue('/admin/drivers');
     renderSidebar();
 
-    const activeLink = screen.getByRole('link', { name: 'Driver Verification' });
+    const activeLink = screen.getByRole('link', {
+      name: 'Driver Verification',
+    });
     expect(activeLink).toHaveAttribute('aria-current', 'page');
     // A visible non-colour signal (bold weight) accompanies the colour cue.
     expect(activeLink.className).toMatch(/font-semibold|font-bold/);

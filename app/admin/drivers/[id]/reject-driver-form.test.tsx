@@ -29,7 +29,9 @@ describe('RejectDriverForm', () => {
 
   it('reveals the reason textarea and a disabled confirm button after clicking Reject Application — a single click cannot submit', () => {
     render(<RejectDriverForm id="drv-1" />);
-    fireEvent.click(screen.getByRole('button', { name: /reject application/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /reject application/i }),
+    );
 
     expect(screen.getByLabelText(/reason for rejection/i)).toBeInTheDocument();
     const confirm = screen.getByRole('button', { name: /confirm rejection/i });
@@ -38,7 +40,9 @@ describe('RejectDriverForm', () => {
 
   it('keeps the confirm button disabled for a whitespace-only reason', () => {
     render(<RejectDriverForm id="drv-1" />);
-    fireEvent.click(screen.getByRole('button', { name: /reject application/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /reject application/i }),
+    );
     fireEvent.change(screen.getByLabelText(/reason for rejection/i), {
       target: { value: '   ' },
     });
@@ -50,7 +54,9 @@ describe('RejectDriverForm', () => {
 
   it('enables the confirm button once a non-blank reason is entered, and submits it', async () => {
     render(<RejectDriverForm id="drv-1" />);
-    fireEvent.click(screen.getByRole('button', { name: /reject application/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /reject application/i }),
+    );
     fireEvent.change(screen.getByLabelText(/reason for rejection/i), {
       target: { value: 'Blurry documents' },
     });
@@ -69,7 +75,9 @@ describe('RejectDriverForm', () => {
 
   it('the reason textarea is required and capped at 500 characters, matching the server limit', () => {
     render(<RejectDriverForm id="drv-1" />);
-    fireEvent.click(screen.getByRole('button', { name: /reject application/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /reject application/i }),
+    );
     const textarea = screen.getByLabelText(/reason for rejection/i);
     expect(textarea).toBeRequired();
     expect(textarea).toHaveAttribute('maxLength', '500');
@@ -77,7 +85,9 @@ describe('RejectDriverForm', () => {
 
   it('returns to the collapsed trigger when Cancel is clicked, discarding the entered reason', () => {
     render(<RejectDriverForm id="drv-1" />);
-    fireEvent.click(screen.getByRole('button', { name: /reject application/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /reject application/i }),
+    );
     fireEvent.change(screen.getByLabelText(/reason for rejection/i), {
       target: { value: 'Blurry documents' },
     });
@@ -94,7 +104,9 @@ describe('RejectDriverForm', () => {
   it('surfaces the server 422 validation error returned by the action', async () => {
     mockedRejectDriverAction.mockResolvedValue({ error: 'Validation failed.' });
     render(<RejectDriverForm id="drv-1" />);
-    fireEvent.click(screen.getByRole('button', { name: /reject application/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /reject application/i }),
+    );
     fireEvent.change(screen.getByLabelText(/reason for rejection/i), {
       target: { value: 'Blurry documents' },
     });

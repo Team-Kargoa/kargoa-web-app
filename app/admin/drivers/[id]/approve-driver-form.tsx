@@ -25,7 +25,10 @@ export function ApproveDriverForm({ id }: ApproveDriverFormProps) {
   );
 
   return (
-    <form action={formAction} className="flex flex-1 flex-col gap-2 md:flex-[2]">
+    <form
+      action={formAction}
+      className="flex flex-1 flex-col gap-2 md:flex-[2]"
+    >
       <button
         type="submit"
         disabled={pending}

@@ -118,25 +118,46 @@ export function DriverApplicationQueue({
           <table className="w-full text-left">
             <thead className="border-b border-border bg-muted/50">
               <tr>
-                <th scope="col" className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Name
                 </th>
-                <th scope="col" className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Phone
                 </th>
-                <th scope="col" className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Plate
                 </th>
-                <th scope="col" className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Vehicle Category
                 </th>
-                <th scope="col" className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Status
                 </th>
-                <th scope="col" className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Submitted
                 </th>
-                <th scope="col" className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Action
                 </th>
               </tr>
@@ -144,7 +165,10 @@ export function DriverApplicationQueue({
             <tbody className="divide-y divide-border">
               {applications.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-sm text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-10 text-center text-sm text-muted-foreground"
+                  >
                     No driver applications match this filter.
                   </td>
                 </tr>

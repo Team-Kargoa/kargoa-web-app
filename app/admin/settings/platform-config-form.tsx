@@ -33,9 +33,7 @@ export function PlatformConfigForm({ config }: PlatformConfigFormProps) {
           {config.value_type}
         </span>
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {config.description}
-      </p>
+      <p className="mt-1 text-sm text-muted-foreground">{config.description}</p>
       <p className="mt-2 text-xs text-muted-foreground">
         Last updated {formatDate(config.updated_at)}
         {config.updated_by ? (

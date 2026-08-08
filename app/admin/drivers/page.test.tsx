@@ -18,9 +18,7 @@ const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
   typeof getAccessToken
 >;
 const mockedListDriverApplications =
-  listDriverApplications as jest.MockedFunction<
-    typeof listDriverApplications
-  >;
+  listDriverApplications as jest.MockedFunction<typeof listDriverApplications>;
 
 const APPLICATIONS: DriverApplication[] = [
   {
@@ -91,7 +89,9 @@ describe('AdminDriversPage', () => {
 
   it('passes the status query param through to listDriverApplications', async () => {
     render(
-      await AdminDriversPage({ searchParams: searchParams({ status: 'pending' }) }),
+      await AdminDriversPage({
+        searchParams: searchParams({ status: 'pending' }),
+      }),
     );
     expect(mockedListDriverApplications).toHaveBeenCalledWith('jwt-abc', {
       status: 'pending',
@@ -100,7 +100,9 @@ describe('AdminDriversPage', () => {
   });
 
   it('passes the page query param through to listDriverApplications, parsed as a number', async () => {
-    render(await AdminDriversPage({ searchParams: searchParams({ page: '2' }) }));
+    render(
+      await AdminDriversPage({ searchParams: searchParams({ page: '2' }) }),
+    );
     expect(mockedListDriverApplications).toHaveBeenCalledWith('jwt-abc', {
       status: undefined,
       page: 2,
@@ -136,10 +138,9 @@ describe('AdminDriversPage', () => {
 
   it('links each row to its detail screen at /admin/drivers/{id}', async () => {
     render(await AdminDriversPage({ searchParams: searchParams() }));
-    expect(screen.getByRole('link', { name: /view jean-paul ndi/i })).toHaveAttribute(
-      'href',
-      '/admin/drivers/app-1',
-    );
+    expect(
+      screen.getByRole('link', { name: /view jean-paul ndi/i }),
+    ).toHaveAttribute('href', '/admin/drivers/app-1');
     expect(
       screen.getByRole('link', { name: /view \+237 6 70 00 00 00/i }),
     ).toHaveAttribute('href', '/admin/drivers/app-2');
@@ -147,12 +148,16 @@ describe('AdminDriversPage', () => {
 
   it('shows the applicant count from meta.count in the SHOWING line', async () => {
     render(await AdminDriversPage({ searchParams: searchParams() }));
-    expect(screen.getByText(/SHOWING 1-2 OF 2 APPLICATIONS/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/SHOWING 1-2 OF 2 APPLICATIONS/i),
+    ).toBeInTheDocument();
   });
 
   it('renders the status filters as links, marking the active one with aria-current', async () => {
     render(
-      await AdminDriversPage({ searchParams: searchParams({ status: 'pending' }) }),
+      await AdminDriversPage({
+        searchParams: searchParams({ status: 'pending' }),
+      }),
     );
     const all = screen.getByRole('link', { name: 'All' });
     const pending = screen.getByRole('link', { name: 'Pending' });
@@ -172,7 +177,11 @@ describe('AdminDriversPage', () => {
       applications: [],
       meta: { count: 0, page: 1, page_size: 20, total_pages: 0 },
     });
-    render(await AdminDriversPage({ searchParams: searchParams({ status: 'approved' }) }));
+    render(
+      await AdminDriversPage({
+        searchParams: searchParams({ status: 'approved' }),
+      }),
+    );
     expect(
       screen.getByText(/no driver applications match this filter/i),
     ).toBeInTheDocument();
@@ -185,7 +194,9 @@ describe('AdminDriversPage', () => {
     });
     render(await AdminDriversPage({ searchParams: searchParams() }));
 
-    expect(screen.queryByRole('link', { name: /previous page/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: /previous page/i }),
+    ).not.toBeInTheDocument();
     const next = screen.getByRole('link', { name: /next page/i });
     expect(next).toHaveAttribute('href', '/admin/drivers?page=2');
   });
@@ -195,9 +206,13 @@ describe('AdminDriversPage', () => {
       applications: APPLICATIONS,
       meta: { count: 40, page: 2, page_size: 20, total_pages: 2 },
     });
-    render(await AdminDriversPage({ searchParams: searchParams({ page: '2' }) }));
+    render(
+      await AdminDriversPage({ searchParams: searchParams({ page: '2' }) }),
+    );
 
-    expect(screen.queryByRole('link', { name: /next page/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: /next page/i }),
+    ).not.toBeInTheDocument();
     const prev = screen.getByRole('link', { name: /previous page/i });
     expect(prev).toHaveAttribute('href', '/admin/drivers');
   });
@@ -208,7 +223,9 @@ describe('AdminDriversPage', () => {
       meta: { count: 40, page: 1, page_size: 20, total_pages: 2 },
     });
     render(
-      await AdminDriversPage({ searchParams: searchParams({ status: 'pending' }) }),
+      await AdminDriversPage({
+        searchParams: searchParams({ status: 'pending' }),
+      }),
     );
     expect(screen.getByRole('link', { name: /next page/i })).toHaveAttribute(
       'href',

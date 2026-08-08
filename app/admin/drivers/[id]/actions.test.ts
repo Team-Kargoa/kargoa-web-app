@@ -59,9 +59,7 @@ describe('approveDriverAction', () => {
 
     expect(mockedApproveDriver).toHaveBeenCalledWith('jwt-abc', 'drv-1');
     expect(mockedRevalidatePath).toHaveBeenCalledWith('/admin/drivers');
-    expect(mockedRevalidatePath).toHaveBeenCalledWith(
-      '/admin/drivers/drv-1',
-    );
+    expect(mockedRevalidatePath).toHaveBeenCalledWith('/admin/drivers/drv-1');
     expect(mockedRedirect).toHaveBeenCalledWith('/admin/drivers');
   });
 
@@ -117,6 +115,22 @@ describe('rejectDriverAction', () => {
     expect(mockedRejectDriver).not.toHaveBeenCalled();
   });
 
+  it('rejects a submission with no reason field at all, not just an empty one', async () => {
+    // formData.get('reason') returns null (not '') when the field was never
+    // set — distinct from formDataWith('') and exercises the `?? ''` fallback
+    // that normalizes that null before the blank check runs.
+    const result = await rejectDriverAction(
+      'drv-1',
+      { error: null },
+      formDataWith(),
+    );
+
+    expect(result).toEqual({
+      error: 'Enter a reason for rejecting this application.',
+    });
+    expect(mockedRejectDriver).not.toHaveBeenCalled();
+  });
+
   it('rejects a reason over 500 characters without calling the API', async () => {
     const result = await rejectDriverAction(
       'drv-1',
@@ -134,7 +148,11 @@ describe('rejectDriverAction', () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
 
     await expect(
-      rejectDriverAction('drv-1', { error: null }, formDataWith('Blurry documents')),
+      rejectDriverAction(
+        'drv-1',
+        { error: null },
+        formDataWith('Blurry documents'),
+      ),
     ).rejects.toThrow('NEXT_REDIRECT');
 
     expect(mockedRedirect).toHaveBeenCalledWith('/signin');
@@ -156,9 +174,7 @@ describe('rejectDriverAction', () => {
       'Blurry documents',
     );
     expect(mockedRevalidatePath).toHaveBeenCalledWith('/admin/drivers');
-    expect(mockedRevalidatePath).toHaveBeenCalledWith(
-      '/admin/drivers/drv-1',
-    );
+    expect(mockedRevalidatePath).toHaveBeenCalledWith('/admin/drivers/drv-1');
     expect(mockedRedirect).toHaveBeenCalledWith('/admin/drivers');
   });
 

@@ -55,7 +55,9 @@ export async function rejectDriverAction(
     return { error: 'Enter a reason for rejecting this application.' };
   }
   if (reason.length > REASON_MAX_LENGTH) {
-    return { error: `Reason must be ${REASON_MAX_LENGTH} characters or fewer.` };
+    return {
+      error: `Reason must be ${REASON_MAX_LENGTH} characters or fewer.`,
+    };
   }
 
   const token = await getAccessToken();

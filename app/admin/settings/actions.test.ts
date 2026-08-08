@@ -52,6 +52,24 @@ describe('updatePlatformConfigAction', () => {
     expect(mockedUpdatePlatformConfig).not.toHaveBeenCalled();
   });
 
+  it('treats a submission with no value field as an empty string rather than throwing', async () => {
+    // formData.get('value') returns null (not '') when the field was never
+    // set — exercises the `?? ''` fallback that normalizes that null before
+    // the length check and the update call run.
+    const result = await updatePlatformConfigAction(
+      'max_active_trips',
+      { error: null },
+      new FormData(),
+    );
+
+    expect(mockedUpdatePlatformConfig).toHaveBeenCalledWith(
+      'jwt-abc',
+      'max_active_trips',
+      '',
+    );
+    expect(result).toEqual({ error: null });
+  });
+
   it('redirects to /signin without updating when there is no session token', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
 

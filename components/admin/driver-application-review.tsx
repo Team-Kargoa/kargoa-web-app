@@ -21,7 +21,9 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 function statusLabel(status: string): string {
-  return STATUS_LABEL[status] ?? status.charAt(0).toUpperCase() + status.slice(1);
+  return (
+    STATUS_LABEL[status] ?? status.charAt(0).toUpperCase() + status.slice(1)
+  );
 }
 
 type Document = {
@@ -142,7 +144,10 @@ export function DriverApplicationReview({
               rel="noopener noreferrer"
               className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
             >
-              <document.icon className="size-5 text-primary" aria-hidden="true" />
+              <document.icon
+                className="size-5 text-primary"
+                aria-hidden="true"
+              />
               <span className="font-semibold text-foreground">
                 {document.label}
               </span>
