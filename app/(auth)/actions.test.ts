@@ -1,8 +1,13 @@
 import { redirect } from 'next/navigation';
-import { requestOtp, verifyOtp } from '../../lib/api/auth';
+import { requestOtp, verifyOtp, logout } from '../../lib/api/auth';
 import { ApiError } from '../../lib/api/client';
-import { createSession } from '../../lib/session';
-import { sendOtp, confirmOtp } from './actions';
+import {
+  createSession,
+  destroySession,
+  getAccessToken,
+  getRefreshToken,
+} from '../../lib/session';
+import { sendOtp, confirmOtp, signOut } from './actions';
 import type { AuthState } from './actions';
 import type { UserSummary } from '../../lib/api/types';
 
@@ -16,8 +21,18 @@ jest.mock('next/navigation', () => ({
 
 const mockedRequestOtp = requestOtp as jest.MockedFunction<typeof requestOtp>;
 const mockedVerifyOtp = verifyOtp as jest.MockedFunction<typeof verifyOtp>;
+const mockedLogout = logout as jest.MockedFunction<typeof logout>;
 const mockedCreateSession = createSession as jest.MockedFunction<
   typeof createSession
+>;
+const mockedDestroySession = destroySession as jest.MockedFunction<
+  typeof destroySession
+>;
+const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
+  typeof getAccessToken
+>;
+const mockedGetRefreshToken = getRefreshToken as jest.MockedFunction<
+  typeof getRefreshToken
 >;
 const mockedRedirect = redirect as unknown as jest.Mock;
 
@@ -61,14 +76,30 @@ describe('sendOtp', () => {
     expect(mockedRequestOtp).toHaveBeenCalledWith('+237691234567', 'login');
   });
 
-  it('maps a thrown ApiError to its message', async () => {
-    mockedRequestOtp.mockRejectedValue(new ApiError('Too many requests.', 429));
+  it('maps a thrown non-429 ApiError to its own message, untouched', async () => {
+    mockedRequestOtp.mockRejectedValue(
+      new ApiError('Invalid phone number.', 400),
+    );
     const formData = new FormData();
     formData.set('phone_number', '+237691234567');
     formData.set('purpose', 'login');
 
     await expect(sendOtp(initialState, formData)).resolves.toEqual({
-      error: 'Too many requests.',
+      error: 'Invalid phone number.',
+    });
+  });
+
+  it('replaces a 429 ApiError message with the concrete rate-limit copy', async () => {
+    mockedRequestOtp.mockRejectedValue(
+      new ApiError('Too many requests. Try again later.', 429),
+    );
+    const formData = new FormData();
+    formData.set('phone_number', '+237691234567');
+    formData.set('purpose', 'login');
+
+    await expect(sendOtp(initialState, formData)).resolves.toEqual({
+      error:
+        'You can request a maximum of 3 codes per phone number every 10 minutes. Please wait before trying again.',
     });
   });
 
@@ -199,6 +230,20 @@ describe('confirmOtp', () => {
     expect(mockedRedirect).not.toHaveBeenCalled();
   });
 
+  it('replaces a 429 ApiError message with the concrete rate-limit copy', async () => {
+    mockedVerifyOtp.mockRejectedValue(
+      new ApiError('Too many requests. Try again later.', 429),
+    );
+    const formData = makeFormData();
+
+    await expect(confirmOtp(initialState, formData)).resolves.toEqual({
+      error:
+        'You can request a maximum of 3 codes per phone number every 10 minutes. Please wait before trying again.',
+    });
+    expect(mockedCreateSession).not.toHaveBeenCalled();
+    expect(mockedRedirect).not.toHaveBeenCalled();
+  });
+
   it('maps an unexpected error to a generic message', async () => {
     mockedVerifyOtp.mockRejectedValue(new Error('ECONNRESET'));
     const formData = makeFormData();
@@ -207,5 +252,47 @@ describe('confirmOtp', () => {
       error: 'Something went wrong. Please try again.',
     });
     expect(mockedCreateSession).not.toHaveBeenCalled();
+  });
+});
+
+describe('signOut', () => {
+  beforeEach(() => {
+    mockedGetAccessToken.mockResolvedValue('access-tok');
+    mockedGetRefreshToken.mockResolvedValue('refresh-tok');
+  });
+
+  it('invalidates the refresh token server-side, destroys the local session, and redirects to /signin', async () => {
+    mockedLogout.mockResolvedValue(undefined);
+
+    await expect(signOut()).rejects.toThrow('REDIRECT:/signin');
+
+    expect(mockedLogout).toHaveBeenCalledWith('access-tok', 'refresh-tok');
+    // redirect() throws — a no-op mock would let code after it keep
+    // running and this assertion would pass for the wrong reason even if
+    // destroySession were never called. Assert the call directly.
+    expect(mockedDestroySession).toHaveBeenCalled();
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+  });
+
+  it('still destroys the session and redirects to /signin when the backend logout call fails', async () => {
+    mockedLogout.mockRejectedValue(new ApiError('Server error.', 500));
+
+    await expect(signOut()).rejects.toThrow('REDIRECT:/signin');
+
+    // A backend hiccup must never trap someone in a session they asked to
+    // leave.
+    expect(mockedDestroySession).toHaveBeenCalled();
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+  });
+
+  it('skips the backend logout call but still destroys the session and redirects when there are no tokens to invalidate', async () => {
+    mockedGetAccessToken.mockResolvedValue(undefined);
+    mockedGetRefreshToken.mockResolvedValue(undefined);
+
+    await expect(signOut()).rejects.toThrow('REDIRECT:/signin');
+
+    expect(mockedLogout).not.toHaveBeenCalled();
+    expect(mockedDestroySession).toHaveBeenCalled();
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
   });
 });

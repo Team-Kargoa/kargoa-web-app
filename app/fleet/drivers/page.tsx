@@ -12,7 +12,12 @@ export default async function FleetDriversPage() {
 
   return (
     <main className="p-4 md:p-8 pb-24 md:pb-8">
-      <DriverVehicleManager drivers={drivers} vehicles={vehicles} />
+      <DriverVehicleManager
+        drivers={drivers.data}
+        vehicles={vehicles.data}
+        isDriversSample={drivers.isSample}
+        isVehiclesSample={vehicles.isSample}
+      />
     </main>
   );
 }

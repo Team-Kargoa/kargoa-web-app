@@ -48,8 +48,12 @@ describe('landing page', () => {
     expect(
       screen.getByRole('link', { name: 'Get Started Now' }),
     ).toHaveAttribute('href', '/register');
+  });
+
+  it('does not render a network map button — no such feature exists', () => {
+    render(<HomePage />);
     expect(
-      screen.getByRole('link', { name: 'View Network Map' }),
-    ).toHaveAttribute('href', '#role-selection');
+      screen.queryByRole('link', { name: /network map/i }),
+    ).not.toBeInTheDocument();
   });
 });

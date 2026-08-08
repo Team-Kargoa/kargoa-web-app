@@ -1,16 +1,28 @@
-import { render, screen, within } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import { usePathname } from 'next/navigation';
 import { FleetNav } from './fleet-nav';
+import { signOut } from '@/app/(auth)/actions';
 
 jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
 }));
+jest.mock('@/app/(auth)/actions', () => ({
+  signOut: jest.fn(async () => {}),
+}));
 
 const mockUsePathname = usePathname as jest.Mock;
+const mockedSignOut = signOut as jest.Mock;
 
 describe('FleetNav', () => {
   beforeEach(() => {
     mockUsePathname.mockReturnValue('/fleet');
+    jest.clearAllMocks();
   });
 
   it('renders the same three destinations in both the desktop sidebar and the mobile bottom bar', () => {
@@ -104,6 +116,41 @@ describe('FleetNav', () => {
     render(<FleetNav />);
     ['Dashboard', 'Drivers', 'Revenue'].forEach((label) => {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0);
+    });
+  });
+
+  // Deleting a JSX element loses no branch, so coverage alone can't catch
+  // a vanished control — assert it renders directly. There was previously
+  // no way to log out of the fleet portal at all.
+  describe('sign out', () => {
+    it('renders a working "Sign out" control in both the desktop sidebar and the mobile header, once each', () => {
+      render(<FleetNav />);
+      const buttons = screen.getAllByRole('button', { name: /sign out/i });
+      expect(buttons).toHaveLength(2);
+    });
+
+    it('submits the signOut server action when activated', async () => {
+      render(<FleetNav />);
+      const [button] = screen.getAllByRole('button', { name: /sign out/i });
+      fireEvent.click(button);
+      await waitFor(() => expect(mockedSignOut).toHaveBeenCalled());
+    });
+
+    it('pairs the sign-out icon with a visible text label and marks the icon decorative', () => {
+      render(<FleetNav />);
+      screen.getAllByRole('button', { name: /sign out/i }).forEach((button) => {
+        expect(button).toHaveTextContent('Sign out');
+        const icon = button.querySelector('svg');
+        expect(icon).not.toBeNull();
+        expect(icon).toHaveAttribute('aria-hidden', 'true');
+      });
+    });
+
+    it('uses rounded-xl on the sign-out buttons', () => {
+      render(<FleetNav />);
+      screen.getAllByRole('button', { name: /sign out/i }).forEach((button) => {
+        expect(button.className).toMatch(/rounded-xl/);
+      });
     });
   });
 });

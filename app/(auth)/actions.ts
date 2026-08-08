@@ -1,9 +1,15 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { requestOtp, verifyOtp } from '../../lib/api/auth';
+import { requestOtp, verifyOtp, logout } from '../../lib/api/auth';
 import { ApiError } from '../../lib/api/client';
-import { createSession } from '../../lib/session';
+import { OTP_RATE_LIMIT, OTP_RATE_WINDOW_MINUTES } from '../../lib/config';
+import {
+  createSession,
+  destroySession,
+  getAccessToken,
+  getRefreshToken,
+} from '../../lib/session';
 import type { OtpPurpose, Role, TokenPair } from '../../lib/api/types';
 
 export type AuthState = { error: string | null };
@@ -11,9 +17,13 @@ export type AuthState = { error: string | null };
 const PHONE_REGEX = /^\+237[62][0-9]{8}$/;
 const CODE_REGEX = /^[0-9]{6}$/;
 const GENERIC_ERROR = 'Something went wrong. Please try again.';
+const RATE_LIMIT_ERROR = `You can request a maximum of ${OTP_RATE_LIMIT} codes per phone number every ${OTP_RATE_WINDOW_MINUTES} minutes. Please wait before trying again.`;
 
 function errorMessage(error: unknown): string {
-  if (error instanceof ApiError) return error.message;
+  if (error instanceof ApiError) {
+    if (error.status === 429) return RATE_LIMIT_ERROR;
+    return error.message;
+  }
   return GENERIC_ERROR;
 }
 
@@ -85,4 +95,31 @@ export async function confirmOtp(
 
   await createSession(tokens);
   redirect(redirectTarget(userRole));
+}
+
+/**
+ * Signs the current user out. Bound directly as a form action
+ * (`<form action={signOut}>`) so it works without client JavaScript.
+ *
+ * Invalidating the refresh token server-side is best-effort: if the
+ * backend call fails (network blip, backend hiccup), the local session is
+ * destroyed anyway — a failed API call must never trap someone in a
+ * session they explicitly asked to leave.
+ */
+export async function signOut(): Promise<void> {
+  const [accessToken, refreshToken] = await Promise.all([
+    getAccessToken(),
+    getRefreshToken(),
+  ]);
+
+  if (accessToken && refreshToken) {
+    try {
+      await logout(accessToken, refreshToken);
+    } catch {
+      // Continue anyway — see doc comment above.
+    }
+  }
+
+  await destroySession();
+  redirect('/signin');
 }

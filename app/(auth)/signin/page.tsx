@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Truck, LogIn, Loader2, ArrowRight } from 'lucide-react';
+import { Truck, LogIn, Loader2 } from 'lucide-react';
 import { sendOtp } from '../actions';
 import { PhoneField } from '@/components/auth/phone-field';
 import { BackToHomeLink } from '@/components/auth/back-to-home-link';
@@ -29,7 +29,7 @@ export default function SignInPage() {
   return (
     <>
       <header className="w-full sticky top-0 bg-surface z-50">
-        <div className="flex items-center justify-end px-4 md:px-8 py-4 max-w-7xl mx-auto">
+        <div className="flex items-center justify-start px-4 md:px-8 py-4 max-w-7xl mx-auto">
           <BackToHomeLink />
         </div>
       </header>
@@ -98,19 +98,18 @@ export default function SignInPage() {
             </form>
 
             <div className="flex flex-col items-center gap-4 border-t border-border pt-6">
-              <Link
-                href="/contact"
-                className="font-sans text-sm font-semibold text-primary hover:underline flex items-center gap-2 group"
-              >
+              {/* Admins can't self-register — the registration role enum
+                  deliberately excludes admin, so there is no /contact
+                  endpoint to link to. Non-interactive text rather than a
+                  dead link, following the onboarding forms' precedent for
+                  unbuilt destinations. */}
+              <span className="font-sans text-sm font-semibold text-text-secondary">
                 Request Admin Access
-                <ArrowRight
-                  aria-hidden="true"
-                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                />
-              </Link>
+              </span>
               <p className="font-sans text-xs text-text-secondary text-center px-4">
-                Strictly for authorized logistics personnel and fleet managers
-                in Cameroon.
+                Admin accounts are provisioned by a platform administrator —
+                contact one to request access. Strictly for authorized logistics
+                personnel and fleet managers in Cameroon.
               </p>
             </div>
           </div>

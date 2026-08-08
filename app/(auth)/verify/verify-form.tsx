@@ -43,13 +43,13 @@ export function VerifyForm({ phone, purpose, role }: VerifyFormProps) {
     <>
       <header className="w-full sticky top-0 bg-surface z-50">
         <div className="flex items-center justify-between px-4 md:px-8 py-4 max-w-7xl mx-auto">
+          <BackToHomeLink />
           <h1>
             <BrandLink
               size="lg"
               className="text-primary hover:opacity-90 transition"
             />
           </h1>
-          <BackToHomeLink />
         </div>
       </header>
 

@@ -1,4 +1,10 @@
-import { formatXaf, formatPhone, maskPhone, getInitials } from './format';
+import {
+  formatXaf,
+  formatPhone,
+  maskPhone,
+  getInitials,
+  formatDate,
+} from './format';
 
 describe('formatXaf', () => {
   it('groups thousands and appends the currency code', () => {
@@ -53,5 +59,15 @@ describe('getInitials', () => {
 
   it('returns an empty string for an empty name', () => {
     expect(getInitials('')).toBe('');
+  });
+});
+
+describe('formatDate', () => {
+  it('formats an ISO timestamp as a short UTC date', () => {
+    expect(formatDate('2026-08-01T10:00:00Z')).toBe('Aug 1, 2026');
+  });
+
+  it('returns the original string for an unparseable date', () => {
+    expect(formatDate('not-a-date')).toBe('not-a-date');
   });
 });

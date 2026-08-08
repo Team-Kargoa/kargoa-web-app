@@ -54,14 +54,14 @@ export default function FleetRegistrationPage() {
     <>
       <header className="w-full sticky top-0 bg-surface z-50">
         <div className="flex items-center justify-between px-4 md:px-8 py-4 max-w-7xl mx-auto">
-          <h1>
-            <BrandLink
-              size="lg"
-              className="text-primary hover:opacity-90 transition"
-            />
-          </h1>
+          <BackToHomeLink />
           <div className="flex items-center gap-4">
-            <BackToHomeLink />
+            <h1>
+              <BrandLink
+                size="lg"
+                className="text-primary hover:opacity-90 transition"
+              />
+            </h1>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs text-text-secondary hidden md:block">
                 CAMEROON OPS

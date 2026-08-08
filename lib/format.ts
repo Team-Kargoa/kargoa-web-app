@@ -31,6 +31,26 @@ export function formatPhone(e164: string): string {
  * screen: reveals just the leading digit and the final pair, enough for
  * the owner to recognise their own number without exposing it in full.
  */
+const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+
+/**
+ * Formats an ISO timestamp (e.g. a DriverApplication's submitted_at or a
+ * PlatformConfig's updated_at) as a short, locale-independent date.
+ * Pinned to UTC so the rendered string doesn't drift with the server's
+ * timezone. Falls back to the raw string for unparseable input rather than
+ * rendering "Invalid Date".
+ */
+export function formatDate(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return DATE_FORMATTER.format(date);
+}
+
 export function maskPhone(e164: string): string {
   const match = CAMEROON_E164.exec(e164);
   if (!match) return e164;

@@ -1,5 +1,6 @@
 import { apiRequest } from './client';
 import type {
+  AccessTokenRefresh,
   OtpPurpose,
   OtpRequestResult,
   Role,
@@ -39,8 +40,10 @@ export function getProfile(token: string): Promise<UserSummary> {
   return apiRequest<UserSummary>('/auth/profile', { token });
 }
 
-export function refreshTokens(refreshToken: string): Promise<TokenPair> {
-  return apiRequest<TokenPair>('/auth/token/refresh', {
+export function refreshTokens(
+  refreshToken: string,
+): Promise<AccessTokenRefresh> {
+  return apiRequest<AccessTokenRefresh>('/auth/token/refresh', {
     method: 'POST',
     body: { refresh_token: refreshToken },
   });

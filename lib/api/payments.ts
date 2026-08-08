@@ -1,7 +1,14 @@
-// FIXTURE-BACKED. apps/payments has no routes yet (verified 2026-08-04).
-// When /payments/wallet ships, replace these bodies with apiRequest calls.
-// Signatures must not change — screens depend on them.
+// LIVE-WITH-FALLBACK. apps/payments has no routes yet (verified
+// 2026-08-04) — every function below attempts its guessed /payments/*
+// path via withFallback and only falls back to its fixture when that call
+// errors or returns something empty. The fixture disappears on its own,
+// with no code change needed here, the moment apps/payments actually
+// serves the route. Signatures now return Sourced<T> (`{ data, isSample }`)
+// instead of T — callers must read `.data` and may read `.isSample` to
+// show that a section is showing sample data.
 
+import { apiRequest } from './client';
+import { withFallback, type Sourced } from './with-fallback';
 import {
   WALLET_FIXTURE,
   SETTLEMENTS_FIXTURE,
@@ -17,14 +24,18 @@ export type Settlement = {
   status: 'paid' | 'pending';
 };
 
-export function getWallet(token: string): Promise<Wallet> {
-  void token;
-  return Promise.resolve(WALLET_FIXTURE);
+export function getWallet(token: string): Promise<Sourced<Wallet>> {
+  return withFallback(
+    () => apiRequest<Wallet>('/payments/wallet', { token }),
+    WALLET_FIXTURE,
+  );
 }
 
-export function getSettlements(token: string): Promise<Settlement[]> {
-  void token;
-  return Promise.resolve(SETTLEMENTS_FIXTURE);
+export function getSettlements(token: string): Promise<Sourced<Settlement[]>> {
+  return withFallback(
+    () => apiRequest<Settlement[]>('/payments/settlements', { token }),
+    SETTLEMENTS_FIXTURE,
+  );
 }
 
 // --- /fleet/revenue (Revenue Tracking & Settlements) ---
@@ -55,14 +66,23 @@ export type SettlementTransaction = {
   ownerNetAmount: string;
 };
 
-export function getRevenueSummary(token: string): Promise<RevenueSummary> {
-  void token;
-  return Promise.resolve(REVENUE_SUMMARY_FIXTURE);
+export function getRevenueSummary(
+  token: string,
+): Promise<Sourced<RevenueSummary>> {
+  return withFallback(
+    () => apiRequest<RevenueSummary>('/payments/revenue-summary', { token }),
+    REVENUE_SUMMARY_FIXTURE,
+  );
 }
 
 export function getSettlementTransactions(
   token: string,
-): Promise<SettlementTransaction[]> {
-  void token;
-  return Promise.resolve(SETTLEMENT_TRANSACTIONS_FIXTURE);
+): Promise<Sourced<SettlementTransaction[]>> {
+  return withFallback(
+    () =>
+      apiRequest<SettlementTransaction[]>('/payments/settlement-transactions', {
+        token,
+      }),
+    SETTLEMENT_TRANSACTIONS_FIXTURE,
+  );
 }

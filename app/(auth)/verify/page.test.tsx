@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  within,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import VerifyPage from './page';
 import { confirmOtp, sendOtp } from '../actions';
 
@@ -51,6 +57,13 @@ describe('VerifyPage', () => {
       'href',
       '/',
     );
+  });
+
+  it('renders the back-to-home link as the first interactive element in the header', async () => {
+    await renderVerify({ phone: '+237691234567', purpose: 'login' });
+    const header = screen.getByRole('banner');
+    const links = within(header).getAllByRole('link');
+    expect(links[0]).toHaveAccessibleName(/back to home/i);
   });
 
   it('renders the KmerCargo brand in the header as a link back to the landing page', async () => {

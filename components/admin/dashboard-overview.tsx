@@ -39,7 +39,15 @@ import {
   type ChartConfig,
 } from '@/components/ui/chart';
 import { Separator } from '@/components/ui/separator';
+import { SampleDataBadge } from '@/components/sample-data-badge';
 
+// Vehicles, trips, payments and disputes have no backend endpoint yet (the
+// admin_api app only exposes drivers, platform configs and audit logs —
+// apps/payments and apps/disputes are still empty stubs), so those four
+// stat cards omit `href` and render as non-interactive, aria-disabled cards
+// with the shared Sample data badge rather than link to a route that
+// doesn't exist on disk — the same precedent already used for the sidebar's
+// Fleet Approvals/Financial Oversight items (components/admin/app-sidebar.tsx).
 const stats = [
   {
     label: 'Pending Driver Approvals',
@@ -54,7 +62,6 @@ const stats = [
     value: '12',
     detail: '3 awaiting insurance',
     icon: CarFront,
-    href: '/admin/vehicles',
     tone: 'text-blue-700 bg-blue-500/10',
   },
   {
@@ -70,7 +77,6 @@ const stats = [
     value: '186',
     detail: '24 near completion',
     icon: Truck,
-    href: '/admin/trips',
     tone: 'text-violet-700 bg-violet-500/10',
   },
   {
@@ -78,7 +84,6 @@ const stats = [
     value: 'XAF 2.48M',
     detail: '+18.2% from yesterday',
     icon: CreditCard,
-    href: '/admin/payments',
     tone: 'text-primary bg-primary/10',
   },
   {
@@ -86,7 +91,6 @@ const stats = [
     value: '4',
     detail: '2 require attention',
     icon: CircleAlert,
-    href: '/admin/disputes',
     tone: 'text-rose-700 bg-rose-500/10',
   },
 ];
@@ -134,23 +138,26 @@ export function DashboardOverview() {
       </section>
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-        {stats.map((stat) => (
-          <Link
-            href={stat.href}
-            key={stat.label}
-            className="group outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
-          >
+        {stats.map((stat) => {
+          const cardBody = (
             <Card
               size="sm"
-              className="h-full transition-shadow group-hover:shadow-md"
+              className={
+                stat.href
+                  ? 'h-full transition-shadow group-hover:shadow-md'
+                  : 'h-full'
+              }
             >
               <CardHeader>
-                <CardDescription>{stat.label}</CardDescription>
+                <CardDescription className="flex flex-wrap items-center gap-1.5">
+                  {stat.label}
+                  {!stat.href && <SampleDataBadge />}
+                </CardDescription>
                 <CardAction>
                   <span
                     className={`grid size-8 place-items-center rounded-lg ${stat.tone}`}
                   >
-                    <stat.icon className="size-4" />
+                    <stat.icon className="size-4" aria-hidden="true" />
                   </span>
                 </CardAction>
                 <CardTitle className="mt-2 text-xl tabular-nums">
@@ -158,12 +165,33 @@ export function DashboardOverview() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex items-center gap-1 text-xs text-muted-foreground">
-                <ArrowUpRight className="size-3 text-emerald-600" />
+                <ArrowUpRight
+                  className="size-3 text-emerald-600"
+                  aria-hidden="true"
+                />
                 {stat.detail}
               </CardContent>
             </Card>
-          </Link>
-        ))}
+          );
+
+          if (!stat.href) {
+            return (
+              <div key={stat.label} aria-disabled="true" className="rounded-xl">
+                {cardBody}
+              </div>
+            );
+          }
+
+          return (
+            <Link
+              href={stat.href}
+              key={stat.label}
+              className="group outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
+            >
+              {cardBody}
+            </Link>
+          );
+        })}
       </section>
 
       <section className="grid gap-4 xl:grid-cols-5">
@@ -399,8 +427,11 @@ export function DashboardOverview() {
               Latest completed payments and payouts
             </CardDescription>
             <CardAction>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/admin/payments">View all</Link>
+              {/* /admin/payments does not exist yet (apps/payments is still
+                  an empty stub) — see the stats grid above for the same
+                  precedent: no link to a route that isn't on disk. */}
+              <Button variant="ghost" size="sm" disabled aria-disabled="true">
+                View all
               </Button>
             </CardAction>
           </CardHeader>

@@ -3,93 +3,56 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  BarChart3,
-  CarFront,
-  CreditCard,
-  FileSearch,
-  Gauge,
+  ClipboardCheck,
   LayoutDashboard,
-  MessageSquareWarning,
-  Settings2,
+  Settings,
   ShieldCheck,
-  Star,
-  Truck,
-  Users,
-  WalletCards,
+  Wallet,
 } from 'lucide-react';
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { BrandLink } from '@/components/brand-link';
+import { Separator } from '@/components/ui/separator';
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
-type NavigationItem = {
-  title: string;
-  href: string;
-  icon: typeof LayoutDashboard;
-  badge?: string;
-};
+type NavigationItem =
+  | { title: string; href: string; icon: typeof LayoutDashboard }
+  | { title: string; href?: undefined; icon: typeof LayoutDashboard };
 
-const primaryItems: NavigationItem[] = [
+// admin_fleet_approval_queue/code.html + screen.png: the design's sidebar
+// has exactly five items. Only three are backed by a real endpoint today
+// (/admin, /admin/drivers, /admin/settings — see task 4.3). Fleet Approvals
+// and Financial Oversight have no backend route yet — getFleetApplications
+// and the payments module both still fall back to fixtures — so they omit
+// `href` and render as non-interactive labels below rather than links to a
+// route that doesn't exist on disk. That would be the fifth dead-link
+// incident on this project.
+const NAV_ITEMS: NavigationItem[] = [
   { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { title: 'Operations', href: '/admin/operations', icon: Gauge },
+  { title: 'Fleet Approvals', icon: ClipboardCheck },
+  { title: 'Driver Verification', href: '/admin/drivers', icon: ShieldCheck },
+  { title: 'Financial Oversight', icon: Wallet },
+  { title: 'Settings', href: '/admin/settings', icon: Settings },
 ];
-const managementItems: NavigationItem[] = [
-  { title: 'Drivers', href: '/admin/drivers', icon: Users },
-  { title: 'Vehicles', href: '/admin/vehicles', icon: CarFront },
-  { title: 'Customers', href: '/admin/customers', icon: Users },
-  { title: 'Trips', href: '/admin/trips', icon: Truck },
-  { title: 'Payments', href: '/admin/payments', icon: CreditCard },
-  { title: 'Wallets', href: '/admin/wallets', icon: WalletCards },
-  {
-    title: 'Disputes',
-    href: '/admin/disputes',
-    icon: MessageSquareWarning,
-    badge: '4',
-  },
-  { title: 'Reviews', href: '/admin/reviews', icon: Star },
-];
-const systemItems: NavigationItem[] = [
-  { title: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
-  { title: 'Platform Settings', href: '/admin/settings', icon: Settings2 },
-  { title: 'Audit Logs', href: '/admin/audit', icon: FileSearch },
-  { title: 'Administrators', href: '/admin/administrators', icon: ShieldCheck },
-];
+
+/**
+ * A route is active on an exact match for /admin (the shell root), or as a
+ * prefix for every other section so a nested route (e.g. a future
+ * /admin/drivers/[id] detail page) keeps its parent nav item highlighted.
+ * Same rule as components/Navbar.tsx's isNavLinkActive.
+ */
+function isActiveRoute(pathname: string, href: string): boolean {
+  return href === '/admin' ? pathname === href : pathname.startsWith(href);
+}
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === '/admin' ? pathname === href : pathname.startsWith(href);
-  const renderItems = (items: NavigationItem[]) =>
-    items.map((item) => (
-      <SidebarMenuItem key={item.href}>
-        <SidebarMenuButton asChild isActive={isActive(item.href)}>
-          <Link href={item.href}>
-            <item.icon className="size-4" />
-            <span className="flex-1 truncate">{item.title}</span>
-            {item.badge && (
-              <Badge
-                variant="secondary"
-                className="h-5 min-w-5 justify-center px-1 text-[10px]"
-              >
-                {item.badge}
-              </Badge>
-            )}
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    ));
 
   return (
     <Sidebar>
@@ -98,34 +61,45 @@ export function AppSidebar() {
       </SidebarHeader>
       <Separator />
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>{renderItems(primaryItems)}</SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
-          <SidebarMenu>{renderItems(managementItems)}</SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Platform</SidebarGroupLabel>
-          <SidebarMenu>{renderItems(systemItems)}</SidebarMenu>
-        </SidebarGroup>
+        <nav aria-label="Admin sections">
+          <SidebarMenu>
+            {NAV_ITEMS.map((item) => {
+              if (!item.href) {
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <div
+                      aria-disabled="true"
+                      className="flex h-9 w-full items-center gap-3 rounded-md px-2.5 text-sm font-medium text-muted-foreground/60"
+                    >
+                      <item.icon className="size-4" aria-hidden="true" />
+                      <span className="flex-1 truncate">{item.title}</span>
+                    </div>
+                  </SidebarMenuItem>
+                );
+              }
+
+              const active = isActiveRoute(pathname, item.href);
+              return (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={active}
+                    className="data-[active=true]:bg-secondary-container/40 data-[active=true]:font-semibold data-[active=true]:text-secondary-container-foreground"
+                  >
+                    <Link
+                      href={item.href}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      <item.icon className="size-4" aria-hidden="true" />
+                      <span className="flex-1 truncate">{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </nav>
       </SidebarContent>
-      <SidebarFooter>
-        <Separator className="mb-3" />
-        <div className="flex items-center gap-2 px-2 py-1">
-          <Avatar className="size-7">
-            <AvatarFallback className="bg-primary/10 text-[10px] text-primary">
-              AO
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 text-xs">
-            <p className="truncate font-medium text-foreground">Admin Office</p>
-            <p className="truncate text-muted-foreground">
-              Super administrator
-            </p>
-          </div>
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 }

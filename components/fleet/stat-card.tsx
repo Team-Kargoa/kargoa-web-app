@@ -1,4 +1,5 @@
 import { TrendingUp, type LucideIcon } from 'lucide-react';
+import { SampleDataBadge } from '@/components/sample-data-badge';
 
 export type StatCardTone = 'neutral' | 'gradient' | 'danger';
 
@@ -21,6 +22,9 @@ export type StatCardProps = {
   badge?: string;
   avatars?: StatCardAvatar[];
   footnote?: string;
+  /** Shows the shared SampleDataBadge when this card's data came from a
+   * lib/api fallback fixture rather than the real endpoint. */
+  isSample?: boolean;
 };
 
 const CARD_TONE_CLASSES: Record<StatCardTone, string> = {
@@ -67,6 +71,7 @@ export function StatCard({
   badge,
   avatars,
   footnote,
+  isSample,
 }: StatCardProps) {
   return (
     <div className={CARD_TONE_CLASSES[tone]}>
@@ -76,11 +81,14 @@ export function StatCard({
         </div>
       )}
 
-      <p
-        className={`font-sans text-sm mb-1 uppercase tracking-wider ${LABEL_TONE_CLASSES[tone]}`}
-      >
-        {label}
-      </p>
+      <div className="mb-1 flex flex-wrap items-center gap-2">
+        <p
+          className={`font-sans text-sm uppercase tracking-wider ${LABEL_TONE_CLASSES[tone]}`}
+        >
+          {label}
+        </p>
+        {isSample && <SampleDataBadge />}
+      </div>
 
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-baseline gap-2">

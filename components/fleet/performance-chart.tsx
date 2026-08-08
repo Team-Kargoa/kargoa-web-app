@@ -11,9 +11,13 @@ import {
 } from 'recharts';
 import { formatXaf } from '@/lib/format';
 import type { FleetPerformanceDay } from '@/lib/api/fleet';
+import { SampleDataBadge } from '@/components/sample-data-badge';
 
 export type PerformanceChartProps = {
   data: FleetPerformanceDay[];
+  /** Shows the shared SampleDataBadge when this data came from a lib/api
+   * fallback fixture rather than the real endpoint. */
+  isSample?: boolean;
 };
 
 type Range = 'weekly' | 'monthly';
@@ -23,7 +27,7 @@ const RANGES: { key: Range; label: string }[] = [
   { key: 'monthly', label: 'Monthly' },
 ];
 
-export function PerformanceChart({ data }: PerformanceChartProps) {
+export function PerformanceChart({ data, isSample }: PerformanceChartProps) {
   const [range, setRange] = useState<Range>('weekly');
   const peakAmount = Math.max(...data.map((entry) => entry.amount));
 
@@ -31,9 +35,12 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
     <div className="bg-surface border border-border rounded-xl p-6 md:p-8 mb-8 shadow-sm">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h3 className="font-heading text-2xl text-text-primary">
-            Fleet Performance
-          </h3>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-heading text-2xl text-text-primary">
+              Fleet Performance
+            </h3>
+            {isSample && <SampleDataBadge />}
+          </div>
           <p className="text-text-secondary text-sm">
             Weekly revenue trends across all active routes
           </p>

@@ -1,15 +1,28 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { UserSummary } from '@/lib/api/types';
 import { formatPhone, getInitials } from '@/lib/format';
 import { BrandLink } from '@/components/brand-link';
 
 const NAV_LINKS = [
   { label: 'Registration', href: '/register' },
-  { label: 'Support', href: '/support' },
+  { label: 'Support', href: '/contact' },
   { label: 'Help', href: '/help' },
 ];
+
+/**
+ * A link is active on an exact pathname match, or on a nested route below
+ * it (e.g. /register/fleet activates the /register "Registration" link).
+ * The root path is deliberately excluded from the nested-route check —
+ * without it, href: '/' would prefix-match every route in the app.
+ */
+function isNavLinkActive(pathname: string, href: string): boolean {
+  if (pathname === href) return true;
+  if (href === '/') return false;
+  return pathname.startsWith(`${href}/`);
+}
 
 export type NavbarProps = {
   /**
@@ -23,6 +36,8 @@ export type NavbarProps = {
 };
 
 export default function Navbar({ user }: NavbarProps) {
+  const pathname = usePathname();
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-5">
@@ -30,15 +45,23 @@ export default function Navbar({ user }: NavbarProps) {
           <BrandLink />
 
           <nav className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className="text-sm font-medium text-gray-700 hover:text-black transition"
-              >
-                {label}
-              </Link>
-            ))}
+            {NAV_LINKS.map(({ label, href }) => {
+              const active = isNavLinkActive(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? 'page' : undefined}
+                  className={`text-sm font-medium border-b-2 pb-1 transition ${
+                    active
+                      ? 'text-text-primary border-primary-container'
+                      : 'text-gray-700 hover:text-black border-transparent'
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
           <div className="flex items-center gap-3">
             {user ? (

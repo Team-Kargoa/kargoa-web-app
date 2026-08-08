@@ -1,6 +1,13 @@
 import { render, screen } from '@testing-library/react';
+import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import type { UserSummary } from '@/lib/api/types';
+
+jest.mock('next/navigation', () => ({
+  usePathname: jest.fn(),
+}));
+
+const mockUsePathname = usePathname as jest.Mock;
 
 function makeUser(overrides: Partial<UserSummary> = {}): UserSummary {
   return {
@@ -16,6 +23,10 @@ function makeUser(overrides: Partial<UserSummary> = {}): UserSummary {
 }
 
 describe('Navbar', () => {
+  beforeEach(() => {
+    mockUsePathname.mockReturnValue('/');
+  });
+
   it('renders the KmerCargo brand as a link back to the landing page', () => {
     render(<Navbar user={null} />);
     expect(screen.getByRole('link', { name: 'KmerCargo' })).toHaveAttribute(
@@ -26,7 +37,7 @@ describe('Navbar', () => {
 
   it.each([
     ['Registration', '/register'],
-    ['Support', '/support'],
+    ['Support', '/contact'],
     ['Help', '/help'],
   ])('links %s to %s', (label, href) => {
     render(<Navbar user={null} />);
@@ -117,6 +128,43 @@ describe('Navbar', () => {
         'href',
         '/fleet',
       );
+    });
+  });
+
+  describe('active page indicator', () => {
+    const ALL_LABELS = ['Registration', 'Support', 'Help'];
+
+    it.each([
+      ['/register', 'Registration'],
+      ['/contact', 'Support'],
+      ['/help', 'Help'],
+      ['/register/fleet', 'Registration'],
+    ])(
+      'marks the right nav link active with aria-current="page" when on %s',
+      (pathname, activeLabel) => {
+        mockUsePathname.mockReturnValue(pathname);
+        render(<Navbar user={null} />);
+
+        ALL_LABELS.forEach((label) => {
+          const link = screen.getByRole('link', { name: label });
+          if (label === activeLabel) {
+            expect(link).toHaveAttribute('aria-current', 'page');
+          } else {
+            expect(link).not.toHaveAttribute('aria-current');
+          }
+        });
+      },
+    );
+
+    it('marks no nav link active on the root path, rather than matching everything', () => {
+      mockUsePathname.mockReturnValue('/');
+      render(<Navbar user={null} />);
+
+      ALL_LABELS.forEach((label) => {
+        expect(screen.getByRole('link', { name: label })).not.toHaveAttribute(
+          'aria-current',
+        );
+      });
     });
   });
 });

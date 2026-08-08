@@ -27,12 +27,11 @@ export default async function FleetDashboardPage() {
     getActiveDrivers(token),
   ]);
 
-  const avatars: StatCardAvatar[] = summary.pendingVerificationInitials.map(
-    (initials, index) => ({
+  const avatars: StatCardAvatar[] =
+    summary.data.pendingVerificationInitials.map((initials, index) => ({
       initials,
       tone: AVATAR_TONES[index % AVATAR_TONES.length],
-    }),
-  );
+    }));
 
   return (
     <>
@@ -82,38 +81,44 @@ export default async function FleetDashboardPage() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatCard
             label="Active Trucks"
-            value={String(summary.activeTrucks)}
-            valueSuffix={`/ ${summary.totalTrucks}`}
+            value={String(summary.data.activeTrucks)}
+            valueSuffix={`/ ${summary.data.totalTrucks}`}
             icon={Truck}
             tone="neutral"
             progress={{
-              current: summary.activeTrucks,
-              max: summary.totalTrucks,
+              current: summary.data.activeTrucks,
+              max: summary.data.totalTrucks,
             }}
-            footnote={`${summary.offlineForMaintenance} Vehicles currently offline for maintenance`}
+            footnote={`${summary.data.offlineForMaintenance} Vehicles currently offline for maintenance`}
+            isSample={summary.isSample}
           />
 
           <StatCard
             label="Total Fleet Earnings"
-            value={formatXaf(wallet.balance)}
+            value={formatXaf(wallet.data.balance)}
             icon={WalletIcon}
             tone="gradient"
-            trend={summary.earningsTrend}
+            trend={summary.data.earningsTrend}
+            isSample={wallet.isSample}
           />
 
           <StatCard
             label="Pending Verifications"
-            value={String(summary.pendingVerifications).padStart(2, '0')}
+            value={String(summary.data.pendingVerifications).padStart(2, '0')}
             tone="danger"
             badge="Requires Action"
             avatars={avatars}
             footnote="Driver documents expiring in < 7 days"
+            isSample={summary.isSample}
           />
         </section>
 
-        <PerformanceChart data={performance} />
+        <PerformanceChart
+          data={performance.data}
+          isSample={performance.isSample}
+        />
 
-        <DriverTable drivers={drivers} />
+        <DriverTable drivers={drivers.data} isSample={drivers.isSample} />
       </main>
     </>
   );

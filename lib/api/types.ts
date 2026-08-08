@@ -23,6 +23,15 @@ export type TokenPair = {
   user: UserSummary;
 };
 
+// POST /auth/token/refresh returns only a fresh access token — the
+// refresh token is not rotated, and no user is returned. Do not reuse
+// TokenPair for this: that shape belongs to /auth/otp/verify and having
+// refreshTokens() claim it is what let middleware.ts read a `refresh_token`
+// field that the real endpoint never sends.
+export type AccessTokenRefresh = {
+  access_token: string;
+};
+
 export type OtpRequestResult = {
   dev_otp?: string;
 };

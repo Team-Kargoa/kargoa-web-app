@@ -180,4 +180,14 @@ describe('StatCard', () => {
     );
     expect(container.firstChild).toHaveClass('from-primary');
   });
+
+  it('renders the sample data badge when isSample is true', () => {
+    render(<StatCard label="Active Trucks" value="8" icon={Truck} isSample />);
+    expect(screen.getByText('Sample data')).toBeInTheDocument();
+  });
+
+  it('omits the sample data badge when isSample is false or omitted', () => {
+    render(<StatCard label="Active Trucks" value="8" icon={Truck} />);
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+  });
 });
