@@ -1,9 +1,8 @@
 'use client';
 
-import { useActionState, useEffect, useRef } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   UserCircle,
   ArrowRight,
@@ -19,8 +18,38 @@ import { BackToHomeLink } from '@/components/auth/back-to-home-link';
 import { BrandLink } from '@/components/brand-link';
 import Footer from '@/components/Footer';
 
-const PURPOSE = 'registration';
 const ROLE = 'fleet_owner';
+
+type Mode = 'register' | 'signin';
+
+const COPY: Record<
+  Mode,
+  {
+    purpose: 'registration' | 'login';
+    heading: string;
+    body: string;
+    submitLabel: string;
+    toggleLead: string;
+    toggleAction: string;
+  }
+> = {
+  register: {
+    purpose: 'registration',
+    heading: 'Partner with KmerCargo',
+    body: 'Enter your phone number to start managing your fleet across Cameroon.',
+    submitLabel: 'Continue to Registration',
+    toggleLead: 'Already have an account?',
+    toggleAction: 'Sign in',
+  },
+  signin: {
+    purpose: 'login',
+    heading: 'Sign in to KmerCargo',
+    body: 'Enter your phone number to sign in to your fleet account.',
+    submitLabel: 'Continue to Sign In',
+    toggleLead: 'Need an account?',
+    toggleAction: 'Register',
+  },
+};
 
 const STATS = [
   { value: '500+', label: 'Active Fleets' },
@@ -35,20 +64,30 @@ const TRUST_ICONS = [
 ];
 
 export default function FleetRegistrationPage() {
+  const [mode, setMode] = useState<Mode>('register');
   const [state, formAction, pending] = useActionState(sendOtp, {
     error: null,
   });
   const router = useRouter();
   const phoneRef = useRef('');
   const submittedRef = useRef(false);
+  const copy = COPY[mode];
 
   useEffect(() => {
     if (submittedRef.current && !pending && state.error === null) {
-      router.push(
-        `/verify?phone=${encodeURIComponent(phoneRef.current)}&purpose=${PURPOSE}&role=${ROLE}`,
-      );
+      // In sign-in mode the role param is omitted entirely (not sent as
+      // empty/undefined) — an existing account keeps whatever role it
+      // already has. confirmOtp already only sends `role` to the API when
+      // purpose === 'registration'; this keeps the redirect consistent
+      // with that.
+      const params = new URLSearchParams({
+        phone: phoneRef.current,
+        purpose: COPY[mode].purpose,
+      });
+      if (mode === 'register') params.set('role', ROLE);
+      router.push(`/verify?${params.toString()}`);
     }
-  }, [state, pending, router]);
+  }, [state, pending, router, mode]);
 
   return (
     <>
@@ -118,12 +157,9 @@ export default function FleetRegistrationPage() {
           <div className="bg-surface border border-border rounded-xl p-8 md:p-10 shadow-sm">
             <div className="mb-8">
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-text-primary mb-2">
-                Partner with KmerCargo
+                {copy.heading}
               </h2>
-              <p className="text-text-secondary font-sans">
-                Enter your phone number to start managing your fleet across
-                Cameroon.
-              </p>
+              <p className="text-text-secondary font-sans">{copy.body}</p>
             </div>
 
             <form
@@ -135,7 +171,7 @@ export default function FleetRegistrationPage() {
                 phoneRef.current = formData.get('phone_number') as string;
               }}
             >
-              <input type="hidden" name="purpose" value={PURPOSE} />
+              <input type="hidden" name="purpose" value={copy.purpose} />
               <div className="space-y-2">
                 <PhoneField name="phone_number" label="Business Phone Number" />
                 <p className="text-xs font-sans text-text-secondary italic">
@@ -155,7 +191,7 @@ export default function FleetRegistrationPage() {
                 disabled={pending}
                 className="w-full h-14 bg-primary-container text-on-primary-container font-sans font-semibold rounded-xl flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm disabled:opacity-80 disabled:cursor-not-allowed"
               >
-                <span>Continue to Registration</span>
+                <span>{copy.submitLabel}</span>
                 {pending ? (
                   <Loader2
                     aria-hidden="true"
@@ -169,13 +205,16 @@ export default function FleetRegistrationPage() {
 
             <div className="mt-8 pt-8 border-t border-border flex flex-col items-center gap-4">
               <p className="text-text-secondary font-sans text-sm text-center">
-                Already have an account?{' '}
-                <Link
-                  href="/signin"
+                {copy.toggleLead}{' '}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMode(mode === 'register' ? 'signin' : 'register')
+                  }
                   className="text-primary font-bold hover:underline"
                 >
-                  Login if you already have an account
-                </Link>
+                  {copy.toggleAction}
+                </button>
               </p>
               <div className="flex flex-wrap justify-center gap-4 opacity-60">
                 {TRUST_ICONS.map(({ icon: Icon, label }) => (

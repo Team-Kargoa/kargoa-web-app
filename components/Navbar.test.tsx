@@ -79,13 +79,21 @@ describe('Navbar', () => {
       expect(screen.getByText('AO')).toBeInTheDocument();
     });
 
-    it('falls back to the formatted phone number, in font-mono, when full_name is empty', () => {
+    it('shows the word "Dashboard" instead of the phone number when full_name is empty — the app never collects a name, so every OTP-registered account would otherwise leak its own phone number into the navbar', () => {
       const user = makeUser({ role: 'fleet_owner', full_name: '' });
       render(<Navbar user={user} />);
 
       const link = screen.getByRole('link', { name: /dashboard/i });
-      expect(link).toHaveTextContent('+237 6 74 62 88 17');
-      expect(screen.getByText('+237 6 74 62 88 17')).toHaveClass('font-mono');
+      expect(link).toHaveTextContent('Dashboard');
+      expect(screen.queryByText('+237 6 74 62 88 17')).not.toBeInTheDocument();
+      expect(screen.queryByText(user.phone_number)).not.toBeInTheDocument();
+    });
+
+    it('gives the dashboard link a meaningful accessible name even with no name on file', () => {
+      const user = makeUser({ role: 'fleet_owner', full_name: '' });
+      render(<Navbar user={user} />);
+      const link = screen.getByRole('link', { name: 'Dashboard' });
+      expect(link).toBeInTheDocument();
     });
 
     it('renders the last two digits of the phone number as the avatar initials when full_name is empty', () => {

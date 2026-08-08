@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Users, Wallet } from 'lucide-react';
+import { Home, LogOut, Users, Wallet } from 'lucide-react';
+import { signOut } from '@/app/(auth)/actions';
 import { BrandLink } from '@/components/brand-link';
 
 // The dashboard design (fleet_owner_dashboard_overview/code.html) has a
@@ -34,8 +35,9 @@ export function FleetNav() {
           header is the opposite visibility (`md:hidden`), not nested
           inside the sidebar, so it renders regardless of the sidebar's
           own display. */}
-      <header className="md:hidden sticky top-0 z-40 flex items-center border-b border-border bg-surface-container-low px-4 py-3">
+      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between border-b border-border bg-surface-container-low px-4 py-3">
         <BrandLink size="sm" className="text-primary" />
+        <SignOutButton />
       </header>
 
       <aside
@@ -68,6 +70,9 @@ export function FleetNav() {
             );
           })}
         </nav>
+        <div className="mt-auto pt-2">
+          <SignOutButton />
+        </div>
       </aside>
 
       <nav
@@ -94,5 +99,23 @@ export function FleetNav() {
         })}
       </nav>
     </>
+  );
+}
+
+// A plain <form action={signOut}> submit button so signing out works
+// without client JavaScript. Rendered once in the mobile top header and
+// once in the desktop sidebar footer — the mobile bottom tab bar has no
+// room to spare for it (it's already a tight three-item nav).
+function SignOutButton() {
+  return (
+    <form action={signOut}>
+      <button
+        type="submit"
+        className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-sans text-text-secondary transition-all hover:bg-surface-container-high"
+      >
+        <LogOut aria-hidden="true" className="h-4 w-4" />
+        <span>Sign out</span>
+      </button>
+    </form>
   );
 }

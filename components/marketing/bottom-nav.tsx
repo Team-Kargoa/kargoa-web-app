@@ -8,7 +8,7 @@ const LINKS = [
     icon: ClipboardList,
     active: true,
   },
-  { label: 'Support', href: '/support', icon: Headset, active: false },
+  { label: 'Support', href: '/contact', icon: Headset, active: false },
   { label: 'Help', href: '/help', icon: CircleHelp, active: false },
 ];
 

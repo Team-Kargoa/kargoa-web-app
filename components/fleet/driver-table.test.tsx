@@ -108,4 +108,14 @@ describe('DriverTable', () => {
     render(<DriverTable drivers={DRIVERS} />);
     expect(screen.getAllByRole('row')).toHaveLength(DRIVERS.length + 1); // + header row
   });
+
+  it('renders the sample data badge when isSample is true', () => {
+    render(<DriverTable drivers={DRIVERS} isSample />);
+    expect(screen.getByText('Sample data')).toBeInTheDocument();
+  });
+
+  it('omits the sample data badge when isSample is false or omitted', () => {
+    render(<DriverTable drivers={DRIVERS} />);
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+  });
 });

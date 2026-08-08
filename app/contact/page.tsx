@@ -1,11 +1,10 @@
 // Placeholder page. There is no support desk or contact form built yet —
 // this exists only so the footer's link resolves instead of hitting
-// Next.js's raw 404. The email below is real (api_spec.yaml's
+// Next.js's raw 404. The default email is real (api_spec.yaml's
 // info.contact.email); replace the rest of this file with finished
 // contact copy before launch.
 import Link from 'next/link';
-
-const SUPPORT_EMAIL = 'engineering@kmercargo.cm';
+import { SUPPORT_EMAIL } from '@/lib/config';
 
 export default function ContactPage() {
   return (

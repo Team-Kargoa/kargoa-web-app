@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { redirect } from 'next/navigation';
 import FleetDashboardPage from './page';
 import { getAccessToken } from '@/lib/session';
 import { getWallet } from '@/lib/api/payments';
@@ -14,6 +15,11 @@ import {
 } from '@/lib/api/fixtures/fleet';
 import { WALLET_FIXTURE } from '@/lib/api/fixtures/payments';
 
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(() => {
+    throw new Error('NEXT_REDIRECT');
+  }),
+}));
 jest.mock('@/lib/session');
 jest.mock('@/lib/api/payments');
 jest.mock('@/lib/api/fleet');
@@ -33,6 +39,7 @@ jest.mock('recharts', () => ({
   Tooltip: () => null,
 }));
 
+const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
   typeof getAccessToken
 >;
@@ -50,19 +57,26 @@ const mockedGetActiveDrivers = getActiveDrivers as jest.MockedFunction<
 beforeEach(() => {
   jest.clearAllMocks();
   mockedGetAccessToken.mockResolvedValue('jwt-abc');
-  mockedGetWallet.mockResolvedValue(WALLET_FIXTURE);
-  mockedGetFleetSummary.mockResolvedValue(FLEET_SUMMARY_FIXTURE);
-  mockedGetWeeklyPerformance.mockResolvedValue(WEEKLY_PERFORMANCE_FIXTURE);
-  mockedGetActiveDrivers.mockResolvedValue(ACTIVE_DRIVERS_FIXTURE);
+  mockedGetWallet.mockResolvedValue({ data: WALLET_FIXTURE, isSample: true });
+  mockedGetFleetSummary.mockResolvedValue({
+    data: FLEET_SUMMARY_FIXTURE,
+    isSample: true,
+  });
+  mockedGetWeeklyPerformance.mockResolvedValue({
+    data: WEEKLY_PERFORMANCE_FIXTURE,
+    isSample: true,
+  });
+  mockedGetActiveDrivers.mockResolvedValue({
+    data: ACTIVE_DRIVERS_FIXTURE,
+    isSample: true,
+  });
 });
 
 describe('FleetDashboardPage', () => {
-  it('renders the Fleet Operations heading', async () => {
-    render(await FleetDashboardPage());
-    expect(
-      screen.getByRole('heading', { name: /fleet operations/i }),
-    ).toBeInTheDocument();
-  });
+  // The "Fleet Operations" heading and signed-in identity moved to
+  // FleetHeader, rendered by app/fleet/layout.tsx — see
+  // components/fleet/fleet-header.test.tsx and app/fleet/layout.test.tsx.
+  // This page no longer renders a heading of its own.
 
   it('renders the active trucks stat card', async () => {
     render(await FleetDashboardPage());
@@ -103,19 +117,18 @@ describe('FleetDashboardPage', () => {
     expect(screen.getByText('AA')).toBeInTheDocument();
   });
 
-  it('renders the header nav items from the design, with no href since their routes do not exist yet', async () => {
+  // Issue 4: the page used to render its own second header underneath
+  // FleetNav, with dead "Dashboard / Fleet / Reports" spans and a
+  // hardcoded "AU" / "Admin Profile" / "Logistics Ops" chip shown to a
+  // real signed-in fleet owner. That header (and the real user identity
+  // + sign-out control that replaced it) now lives in app/fleet/layout.tsx
+  // as FleetHeader — see components/fleet/fleet-header.test.tsx and
+  // app/fleet/layout.test.tsx.
+  it('renders no second header of its own — FleetNav and the layout-level FleetHeader are the only chrome', async () => {
     render(await FleetDashboardPage());
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Fleet')).toBeInTheDocument();
-    expect(screen.getByText('Reports')).toBeInTheDocument();
-    expect(screen.queryAllByRole('link')).toHaveLength(0);
-  });
-
-  it('renders the admin profile chip', async () => {
-    render(await FleetDashboardPage());
-    expect(screen.getByText('Admin Profile')).toBeInTheDocument();
-    expect(screen.getByText('Logistics Ops')).toBeInTheDocument();
-    expect(screen.getByText('AU')).toBeInTheDocument();
+    expect(screen.queryByText('Admin Profile')).not.toBeInTheDocument();
+    expect(screen.queryByText('Logistics Ops')).not.toBeInTheDocument();
+    expect(screen.queryAllByRole('banner')).toHaveLength(0);
   });
 
   it('fetches with the access token from the session', async () => {
@@ -126,9 +139,51 @@ describe('FleetDashboardPage', () => {
     expect(mockedGetActiveDrivers).toHaveBeenCalledWith('jwt-abc');
   });
 
-  it('falls back to an empty token string when the session has none', async () => {
+  it('redirects to /signin when there is no access token, without calling the API', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
+
+    await expect(FleetDashboardPage()).rejects.toThrow('NEXT_REDIRECT');
+
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+    expect(mockedGetWallet).not.toHaveBeenCalled();
+  });
+
+  it('shows a Sample data badge on every section when every source is sample data', async () => {
     render(await FleetDashboardPage());
-    expect(mockedGetWallet).toHaveBeenCalledWith('');
+    // Earnings StatCard, Active Trucks StatCard, Pending Verifications
+    // StatCard, PerformanceChart, DriverTable.
+    expect(screen.getAllByText('Sample data')).toHaveLength(5);
+  });
+
+  it('shows no Sample data badge when every source is real data', async () => {
+    mockedGetWallet.mockResolvedValue({
+      data: WALLET_FIXTURE,
+      isSample: false,
+    });
+    mockedGetFleetSummary.mockResolvedValue({
+      data: FLEET_SUMMARY_FIXTURE,
+      isSample: false,
+    });
+    mockedGetWeeklyPerformance.mockResolvedValue({
+      data: WEEKLY_PERFORMANCE_FIXTURE,
+      isSample: false,
+    });
+    mockedGetActiveDrivers.mockResolvedValue({
+      data: ACTIVE_DRIVERS_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetDashboardPage());
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+  });
+
+  it('shows the badge only on the sections still backed by sample data', async () => {
+    mockedGetWallet.mockResolvedValue({
+      data: WALLET_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetDashboardPage());
+    // Fleet summary (2 cards), performance chart, driver table remain
+    // sample; wallet-backed earnings card is now real.
+    expect(screen.getAllByText('Sample data')).toHaveLength(4);
   });
 });

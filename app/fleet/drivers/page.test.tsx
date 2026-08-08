@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { redirect } from 'next/navigation';
 import FleetDriversPage from './page';
 import { getAccessToken } from '@/lib/session';
 import { getDriverRoster, getVehicleRoster } from '@/lib/api/fleet';
@@ -7,9 +8,15 @@ import {
   VEHICLE_ROSTER_FIXTURE,
 } from '@/lib/api/fixtures/fleet';
 
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(() => {
+    throw new Error('NEXT_REDIRECT');
+  }),
+}));
 jest.mock('@/lib/session');
 jest.mock('@/lib/api/fleet');
 
+const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
   typeof getAccessToken
 >;
@@ -23,8 +30,14 @@ const mockedGetVehicleRoster = getVehicleRoster as jest.MockedFunction<
 beforeEach(() => {
   jest.clearAllMocks();
   mockedGetAccessToken.mockResolvedValue('jwt-abc');
-  mockedGetDriverRoster.mockResolvedValue(DRIVER_ROSTER_FIXTURE);
-  mockedGetVehicleRoster.mockResolvedValue(VEHICLE_ROSTER_FIXTURE);
+  mockedGetDriverRoster.mockResolvedValue({
+    data: DRIVER_ROSTER_FIXTURE,
+    isSample: true,
+  });
+  mockedGetVehicleRoster.mockResolvedValue({
+    data: VEHICLE_ROSTER_FIXTURE,
+    isSample: true,
+  });
 });
 
 describe('FleetDriversPage', () => {
@@ -168,9 +181,44 @@ describe('FleetDriversPage', () => {
     expect(mockedGetVehicleRoster).toHaveBeenCalledWith('jwt-abc');
   });
 
-  it('falls back to an empty token string when the session has none', async () => {
+  it('redirects to /signin when there is no access token, without calling the API', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
+
+    await expect(FleetDriversPage()).rejects.toThrow('NEXT_REDIRECT');
+
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+    expect(mockedGetDriverRoster).not.toHaveBeenCalled();
+  });
+
+  it('shows the Sample data badge on the drivers tab when the driver roster is sample data', async () => {
     render(await FleetDriversPage());
-    expect(mockedGetDriverRoster).toHaveBeenCalledWith('');
+    expect(screen.getByText('Sample data')).toBeInTheDocument();
+  });
+
+  it('shows the Sample data badge on the vehicles tab when the vehicle roster is sample data', async () => {
+    mockedGetDriverRoster.mockResolvedValue({
+      data: DRIVER_ROSTER_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetDriversPage());
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('tab', { name: /vehicles/i }));
+    expect(screen.getByText('Sample data')).toBeInTheDocument();
+  });
+
+  it('shows no Sample data badge when both rosters are real data', async () => {
+    mockedGetDriverRoster.mockResolvedValue({
+      data: DRIVER_ROSTER_FIXTURE,
+      isSample: false,
+    });
+    mockedGetVehicleRoster.mockResolvedValue({
+      data: VEHICLE_ROSTER_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetDriversPage());
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: /vehicles/i }));
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
   });
 });

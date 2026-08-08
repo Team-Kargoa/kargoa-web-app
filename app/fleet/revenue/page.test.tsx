@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { redirect } from 'next/navigation';
 import FleetRevenuePage from './page';
 import { getAccessToken } from '@/lib/session';
 import {
@@ -10,9 +11,15 @@ import {
   SETTLEMENT_TRANSACTIONS_FIXTURE,
 } from '@/lib/api/fixtures/payments';
 
+jest.mock('next/navigation', () => ({
+  redirect: jest.fn(() => {
+    throw new Error('NEXT_REDIRECT');
+  }),
+}));
 jest.mock('@/lib/session');
 jest.mock('@/lib/api/payments');
 
+const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
   typeof getAccessToken
 >;
@@ -27,10 +34,14 @@ const mockedGetSettlementTransactions =
 beforeEach(() => {
   jest.clearAllMocks();
   mockedGetAccessToken.mockResolvedValue('jwt-abc');
-  mockedGetRevenueSummary.mockResolvedValue(REVENUE_SUMMARY_FIXTURE);
-  mockedGetSettlementTransactions.mockResolvedValue(
-    SETTLEMENT_TRANSACTIONS_FIXTURE,
-  );
+  mockedGetRevenueSummary.mockResolvedValue({
+    data: REVENUE_SUMMARY_FIXTURE,
+    isSample: true,
+  });
+  mockedGetSettlementTransactions.mockResolvedValue({
+    data: SETTLEMENT_TRANSACTIONS_FIXTURE,
+    isSample: true,
+  });
 });
 
 describe('FleetRevenuePage', () => {
@@ -128,9 +139,39 @@ describe('FleetRevenuePage', () => {
     expect(mockedGetSettlementTransactions).toHaveBeenCalledWith('jwt-abc');
   });
 
-  it('falls back to an empty token string when the session has none', async () => {
+  it('redirects to /signin when there is no access token, without calling the API', async () => {
     mockedGetAccessToken.mockResolvedValue(undefined);
+
+    await expect(FleetRevenuePage()).rejects.toThrow('NEXT_REDIRECT');
+
+    expect(mockedRedirect).toHaveBeenCalledWith('/signin');
+    expect(mockedGetRevenueSummary).not.toHaveBeenCalled();
+  });
+
+  it('shows a Sample data badge on both the revenue summary and settlement breakdown sections when both are sample data', async () => {
     render(await FleetRevenuePage());
-    expect(mockedGetRevenueSummary).toHaveBeenCalledWith('');
+    expect(screen.getAllByText('Sample data')).toHaveLength(2);
+  });
+
+  it('shows no Sample data badge when both sources are real data', async () => {
+    mockedGetRevenueSummary.mockResolvedValue({
+      data: REVENUE_SUMMARY_FIXTURE,
+      isSample: false,
+    });
+    mockedGetSettlementTransactions.mockResolvedValue({
+      data: SETTLEMENT_TRANSACTIONS_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetRevenuePage());
+    expect(screen.queryByText('Sample data')).not.toBeInTheDocument();
+  });
+
+  it('shows the badge only on the section still backed by sample data', async () => {
+    mockedGetRevenueSummary.mockResolvedValue({
+      data: REVENUE_SUMMARY_FIXTURE,
+      isSample: false,
+    });
+    render(await FleetRevenuePage());
+    expect(screen.getAllByText('Sample data')).toHaveLength(1);
   });
 });

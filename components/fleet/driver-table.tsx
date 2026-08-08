@@ -1,8 +1,12 @@
 import { MoreVertical } from 'lucide-react';
 import type { FleetDriver, FleetDriverStatus } from '@/lib/api/fleet';
+import { SampleDataBadge } from '@/components/sample-data-badge';
 
 export type DriverTableProps = {
   drivers: FleetDriver[];
+  /** Shows the shared SampleDataBadge when this data came from a lib/api
+   * fallback fixture rather than the real endpoint. */
+  isSample?: boolean;
 };
 
 const STATUS_META: Record<
@@ -38,13 +42,16 @@ function getInitials(name: string): string {
   return `${first}${last}`.toUpperCase();
 }
 
-export function DriverTable({ drivers }: DriverTableProps) {
+export function DriverTable({ drivers, isSample }: DriverTableProps) {
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden shadow-sm">
       <div className="p-6 border-b border-border flex items-center justify-between">
-        <h3 className="font-heading text-2xl text-text-primary">
-          Active Drivers
-        </h3>
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="font-heading text-2xl text-text-primary">
+            Active Drivers
+          </h3>
+          {isSample && <SampleDataBadge />}
+        </div>
         <button
           type="button"
           className="text-primary font-bold text-sm hover:underline"

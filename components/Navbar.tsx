@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { UserSummary } from '@/lib/api/types';
-import { formatPhone, getInitials } from '@/lib/format';
+import { getInitials } from '@/lib/format';
 import { BrandLink } from '@/components/brand-link';
 
 const NAV_LINKS = [
@@ -102,16 +102,24 @@ function dashboardHref(role: UserSummary['role']): string {
 
 function DashboardLink({ user }: { user: UserSummary }) {
   const trimmedName = user.full_name.trim();
-  const displayName = trimmedName || formatPhone(user.phone_number);
+  // The app never collects a name — OTP registration only asks for a
+  // phone number, and the backend returns full_name: "" for every account
+  // created that way. Falling back to formatPhone() here used to show
+  // every signed-in fleet owner their own phone number in the navbar.
+  // "Dashboard" describes what the slot does instead of who they are; an
+  // account seeded with a real name (e.g. directly in Django) still shows
+  // that name.
+  const displayName = trimmedName || 'Dashboard';
   const initials = trimmedName
     ? getInitials(trimmedName)
     : user.phone_number.replace(/\D/g, '').slice(-2);
   const href = dashboardHref(user.role);
+  const ariaLabel = trimmedName ? `${trimmedName} — Dashboard` : 'Dashboard';
 
   return (
     <Link
       href={href}
-      aria-label={`${displayName} — Dashboard`}
+      aria-label={ariaLabel}
       className="flex items-center gap-2 pl-1 pr-4 py-1 text-sm font-medium bg-primary-container text-on-primary-container rounded-xl hover:opacity-90 transition"
     >
       <span
@@ -120,9 +128,7 @@ function DashboardLink({ user }: { user: UserSummary }) {
       >
         {initials}
       </span>
-      <span className={trimmedName ? undefined : 'font-mono'}>
-        {displayName}
-      </span>
+      <span>{displayName}</span>
     </Link>
   );
 }

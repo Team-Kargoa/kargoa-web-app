@@ -92,6 +92,42 @@ describe('SiteChrome', () => {
     },
   );
 
+  // Both onboarding forms (app/onboarding/business, app/onboarding/vehicle)
+  // render their own fixed OnboardingHeader — the same bug already fixed
+  // for /fleet, missed here, stacked the marketing Navbar on top of it.
+  it.each(['/onboarding/business', '/onboarding/vehicle'])(
+    'renders only the page content on the onboarding route %s, which supplies its own header',
+    (pathname) => {
+      mockUsePathname.mockReturnValue(pathname);
+
+      render(
+        <SiteChrome user={null}>
+          <p>onboarding content</p>
+        </SiteChrome>,
+      );
+
+      expect(screen.queryByRole('banner')).not.toBeInTheDocument();
+      expect(screen.getByText('onboarding content')).toBeInTheDocument();
+    },
+  );
+
+  // CHROMELESS_ROUTES used bare pathname.startsWith(route), so a future
+  // route sharing a prefix (e.g. /fleets alongside /fleet) would wrongly
+  // lose its navbar. /fleetops is a stand-in for that shape today: it
+  // starts with /fleet but is not /fleet or nested under it, so it must
+  // keep the navbar, matching components/Navbar.tsx's isNavLinkActive rule.
+  it("keeps the navbar on a route that merely starts with a chromeless route's name, e.g. /fleetops", () => {
+    mockUsePathname.mockReturnValue('/fleetops');
+
+    render(
+      <SiteChrome user={null}>
+        <p>fleetops content</p>
+      </SiteChrome>,
+    );
+
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+  });
+
   it('threads a signed-in user down into the navbar so it can show their dashboard link', () => {
     mockUsePathname.mockReturnValue('/');
 

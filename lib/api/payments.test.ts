@@ -4,7 +4,7 @@ import {
   getRevenueSummary,
   getSettlementTransactions,
 } from './payments';
-import { apiRequest } from './client';
+import { apiRequest, ApiError } from './client';
 import {
   WALLET_FIXTURE,
   SETTLEMENTS_FIXTURE,
@@ -12,59 +12,126 @@ import {
   SETTLEMENT_TRANSACTIONS_FIXTURE,
 } from './fixtures/payments';
 
-jest.mock('./client');
+jest.mock('./client', () => ({
+  __esModule: true,
+  ...jest.requireActual('./client'),
+  apiRequest: jest.fn(),
+}));
 const mockedRequest = apiRequest as jest.MockedFunction<typeof apiRequest>;
 
 beforeEach(() => mockedRequest.mockReset());
 
 describe('getWallet', () => {
-  it('resolves the wallet fixture', async () => {
-    await expect(getWallet('jwt-abc')).resolves.toEqual(WALLET_FIXTURE);
+  it('requests /payments/wallet and returns live data with isSample: false', async () => {
+    const live = { ...WALLET_FIXTURE, balance: '999.00' };
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(getWallet('jwt-abc')).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
+    expect(mockedRequest).toHaveBeenCalledWith('/payments/wallet', {
+      token: 'jwt-abc',
+    });
   });
 
-  it('never calls apiRequest — tripwire for when /payments/wallet ships', async () => {
-    // apps/payments has no live routes yet. If this test ever fails, the
-    // fixture must be deleted and getWallet rewired to call apiRequest.
-    await getWallet('jwt-abc');
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the wallet fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(getWallet('jwt-abc')).resolves.toEqual({
+      data: WALLET_FIXTURE,
+      isSample: true,
+    });
   });
 });
 
 describe('getSettlements', () => {
-  it('resolves the settlements fixture', async () => {
-    await expect(getSettlements('jwt-abc')).resolves.toEqual(
-      SETTLEMENTS_FIXTURE,
-    );
+  it('requests /payments/settlements and returns live data with isSample: false', async () => {
+    const live = [SETTLEMENTS_FIXTURE[0]];
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(getSettlements('jwt-abc')).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
+    expect(mockedRequest).toHaveBeenCalledWith('/payments/settlements', {
+      token: 'jwt-abc',
+    });
   });
 
-  it('never calls apiRequest — tripwire for when /payments/settlements ships', async () => {
-    await getSettlements('jwt-abc');
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the settlements fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(getSettlements('jwt-abc')).resolves.toEqual({
+      data: SETTLEMENTS_FIXTURE,
+      isSample: true,
+    });
+  });
+
+  it('falls back to the fixture with isSample: true when the endpoint returns an empty array', async () => {
+    mockedRequest.mockResolvedValue([]);
+
+    await expect(getSettlements('jwt-abc')).resolves.toEqual({
+      data: SETTLEMENTS_FIXTURE,
+      isSample: true,
+    });
   });
 });
 
 describe('getRevenueSummary', () => {
-  it('resolves the revenue summary fixture', async () => {
-    await expect(getRevenueSummary('jwt-abc')).resolves.toEqual(
-      REVENUE_SUMMARY_FIXTURE,
-    );
+  it('requests /payments/revenue-summary and returns live data with isSample: false', async () => {
+    const live = { ...REVENUE_SUMMARY_FIXTURE, monthGross: '999.00' };
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(getRevenueSummary('jwt-abc')).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
+    expect(mockedRequest).toHaveBeenCalledWith('/payments/revenue-summary', {
+      token: 'jwt-abc',
+    });
   });
 
-  it('never calls apiRequest — tripwire for when a real revenue-summary endpoint ships', async () => {
-    await getRevenueSummary('jwt-abc');
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the revenue summary fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(getRevenueSummary('jwt-abc')).resolves.toEqual({
+      data: REVENUE_SUMMARY_FIXTURE,
+      isSample: true,
+    });
   });
 });
 
 describe('getSettlementTransactions', () => {
-  it('resolves the settlement transactions fixture', async () => {
-    await expect(getSettlementTransactions('jwt-abc')).resolves.toEqual(
-      SETTLEMENT_TRANSACTIONS_FIXTURE,
+  it('requests /payments/settlement-transactions and returns live data with isSample: false', async () => {
+    const live = [SETTLEMENT_TRANSACTIONS_FIXTURE[0]];
+    mockedRequest.mockResolvedValue(live);
+
+    await expect(getSettlementTransactions('jwt-abc')).resolves.toEqual({
+      data: live,
+      isSample: false,
+    });
+    expect(mockedRequest).toHaveBeenCalledWith(
+      '/payments/settlement-transactions',
+      { token: 'jwt-abc' },
     );
   });
 
-  it('never calls apiRequest — tripwire for when a real settlement-transactions endpoint ships', async () => {
-    await getSettlementTransactions('jwt-abc');
-    expect(apiRequest).not.toHaveBeenCalled();
+  it('falls back to the settlement transactions fixture with isSample: true when the endpoint 404s', async () => {
+    mockedRequest.mockRejectedValue(new ApiError('Not found.', 404));
+
+    await expect(getSettlementTransactions('jwt-abc')).resolves.toEqual({
+      data: SETTLEMENT_TRANSACTIONS_FIXTURE,
+      isSample: true,
+    });
+  });
+
+  it('falls back to the fixture with isSample: true when the endpoint returns an empty array', async () => {
+    mockedRequest.mockResolvedValue([]);
+
+    await expect(getSettlementTransactions('jwt-abc')).resolves.toEqual({
+      data: SETTLEMENT_TRANSACTIONS_FIXTURE,
+      isSample: true,
+    });
   });
 });

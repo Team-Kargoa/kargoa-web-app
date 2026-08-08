@@ -3,8 +3,9 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bell, Check, Moon, Search, Sun } from 'lucide-react';
+import { Bell, Check, LogOut, Moon, Search, Sun } from 'lucide-react';
 
+import { signOut } from '@/app/(auth)/actions';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Breadcrumb,
@@ -24,29 +25,37 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import type { UserSummary } from '@/lib/api/types';
+import { formatPhone, getInitials } from '@/lib/format';
 
+// Remnants of a deleted app/admin/[section] catch-all route used to live
+// here too (operations, vehicles, customers, trips, payments, wallets,
+// disputes, reviews, analytics, audit, administrators) — none of those
+// routes exist on disk. Only admin, drivers and settings are real pages.
 const labels: Record<string, string> = {
   admin: 'Dashboard',
-  operations: 'Operations',
   drivers: 'Drivers',
-  vehicles: 'Vehicles',
-  customers: 'Customers',
-  trips: 'Trips',
-  payments: 'Payments',
-  wallets: 'Wallets',
-  disputes: 'Disputes',
-  reviews: 'Reviews',
-  analytics: 'Analytics',
   settings: 'Platform Settings',
-  audit: 'Audit Logs',
-  administrators: 'Administrators',
 };
 
-export function AdminHeader() {
+export type AdminHeaderProps = {
+  /**
+   * The signed-in admin, or null if the session cookie is missing,
+   * expired, or belongs to a role with no admin dashboard. Resolved
+   * server-side in app/admin/layout.tsx via lib/current-user.ts — the
+   * access token lives in an httpOnly cookie this Client Component
+   * cannot read itself, so the layout (a Server Component) resolves it
+   * and passes it down. Mirrors components/Navbar.tsx's DashboardLink.
+   */
+  user: UserSummary | null;
+};
+
+export function AdminHeader({ user }: AdminHeaderProps) {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean).slice(1);
   const pageTitle = labels[segments.at(-1) ?? 'admin'] ?? 'Dashboard';
   const [dark, setDark] = useTheme();
+  const identity = adminIdentity(user);
 
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/75 md:px-6">
@@ -129,31 +138,77 @@ export function AdminHeader() {
             <Button variant="ghost" className="h-9 gap-2 px-1.5">
               <Avatar className="size-7">
                 <AvatarFallback className="bg-primary text-[10px] text-primary-foreground">
-                  AO
+                  {identity.initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="hidden text-sm md:inline">Admin Office</span>
+              <span
+                className={`hidden text-sm md:inline ${identity.isPhone ? 'font-mono' : ''}`}
+              >
+                {identity.displayName}
+              </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuLabel>
-              <p>Admin Office</p>
-              <p className="font-normal text-muted-foreground">
-                admin@kmercargo.com
+              <p className={identity.isPhone ? 'font-mono' : undefined}>
+                {identity.displayName}
               </p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Account settings</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
-              Sign out
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <form action={signOut}>
+          <Button
+            type="submit"
+            variant="ghost"
+            className="h-9 gap-1.5 rounded-xl px-2.5 text-destructive hover:text-destructive"
+          >
+            <LogOut aria-hidden="true" />
+            <span>Sign out</span>
+          </Button>
+        </form>
       </div>
     </header>
   );
+}
+
+type AdminIdentity = {
+  displayName: string;
+  initials: string;
+  isPhone: boolean;
+};
+
+/**
+ * Derives what the identity block shows: the signed-in admin's full name
+ * when set, otherwise their formatted phone number (isPhone: true renders
+ * it in font-mono — it's a number, not a name). Mirrors
+ * components/Navbar.tsx's DashboardLink so the same rules apply
+ * consistently everywhere a signed-in identity is shown. A null user
+ * (missing/expired session) renders a "Signed out" fallback instead of
+ * crashing — this header can't assume app/admin/layout.tsx always
+ * resolved someone.
+ */
+function adminIdentity(user: UserSummary | null): AdminIdentity {
+  if (!user) {
+    return { displayName: 'Signed out', initials: '--', isPhone: false };
+  }
+
+  const trimmedName = user.full_name.trim();
+  if (trimmedName) {
+    return {
+      displayName: trimmedName,
+      initials: getInitials(trimmedName),
+      isPhone: false,
+    };
+  }
+
+  return {
+    displayName: formatPhone(user.phone_number),
+    initials: user.phone_number.replace(/\D/g, '').slice(-2),
+    isPhone: true,
+  };
 }
 
 function useTheme() {

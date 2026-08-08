@@ -15,10 +15,17 @@ import type {
 } from '@/lib/api/payments';
 import { formatXaf } from '@/lib/format';
 import { StatCard } from './stat-card';
+import { SampleDataBadge } from '@/components/sample-data-badge';
 
 export type RevenueBreakdownProps = {
   summary: RevenueSummary;
   transactions: SettlementTransaction[];
+  /** Shows the shared SampleDataBadge on the balance hero card and the
+   * "This Month's Gross" stat when `summary` came from a lib/api fallback
+   * fixture rather than the real endpoint. */
+  isSummarySample?: boolean;
+  /** Same, but for the Settlement Breakdown table below. */
+  isTransactionsSample?: boolean;
 };
 
 const STATUS_META: Record<
@@ -42,6 +49,8 @@ const STATUS_META: Record<
 export function RevenueBreakdown({
   summary,
   transactions,
+  isSummarySample,
+  isTransactionsSample,
 }: RevenueBreakdownProps) {
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-8">
@@ -58,9 +67,12 @@ export function RevenueBreakdown({
           <div>
             <div className="flex justify-between items-start gap-4">
               <div>
-                <span className="font-sans text-sm opacity-80 uppercase tracking-widest">
-                  Available Balance
-                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-sans text-sm opacity-80 uppercase tracking-widest">
+                    Available Balance
+                  </span>
+                  {isSummarySample && <SampleDataBadge />}
+                </div>
                 <div className="flex items-baseline gap-2 mt-2">
                   <span className="font-mono text-4xl font-bold">
                     {formatXaf(summary.availableBalance)}
@@ -99,6 +111,8 @@ export function RevenueBreakdown({
             of 100) and the trip-volume line rides `trend`. Commission has no
             dedicated prop, so it's folded into `footnote` as one combined
             string rather than the original two-column row. */}
+        {/* Same `summary` source as the hero card above — the badge for
+            this section lives there once rather than repeating per card. */}
         <StatCard
           label="This Month's Gross"
           value={formatXaf(summary.monthGross)}
@@ -111,9 +125,12 @@ export function RevenueBreakdown({
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h3 className="font-heading text-xl text-text-primary">
-            Settlement Breakdown
-          </h3>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-heading text-xl text-text-primary">
+              Settlement Breakdown
+            </h3>
+            {isTransactionsSample && <SampleDataBadge />}
+          </div>
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <div className="relative flex-1 md:flex-none">
               <Search
