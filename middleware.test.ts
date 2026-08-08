@@ -101,11 +101,25 @@ describe('middleware', () => {
     // pages instead of getting stuck.
     expect(response.headers.get('x-middleware-next')).toBe('1');
 
-    const accessCookie = response.cookies.get(ACCESS_TOKEN_COOKIE);
-    const refreshCookie = response.cookies.get(REFRESH_TOKEN_COOKIE);
-    // A cleared cookie is set with an empty value and a max-age of 0 (or
-    // an equivalent past expiry) so the browser deletes it.
-    expect(accessCookie?.value ?? '').toBe('');
-    expect(refreshCookie?.value ?? '').toBe('');
+    // `.has()`, not `.get()?.value ?? ''`: if the two `response.cookies
+    // .delete(...)` calls in middleware.ts were removed entirely, the
+    // cookie jar would never have been touched, `response.cookies.get(...)`
+    // would return undefined, and `undefined?.value ?? ''` would still
+    // equal '' — the assertion would pass for the wrong reason and this
+    // test could never fail. `.has()` only becomes true once the response
+    // actually carries a Set-Cookie for that name.
+    expect(response.cookies.has(ACCESS_TOKEN_COOKIE)).toBe(true);
+    expect(response.cookies.has(REFRESH_TOKEN_COOKIE)).toBe(true);
+
+    // A cleared cookie is set with an empty value and an expiry in the
+    // past (delete() sets expires: new Date(0)) so the browser deletes it.
+    expect(response.cookies.get(ACCESS_TOKEN_COOKIE)).toMatchObject({
+      value: '',
+      expires: new Date(0),
+    });
+    expect(response.cookies.get(REFRESH_TOKEN_COOKIE)).toMatchObject({
+      value: '',
+      expires: new Date(0),
+    });
   });
 });
