@@ -1,0 +1,440 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Fleet Partner Review | KmerCargo Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "bg-light": "#F8FAFC",
+                    "on-secondary-fixed": "#00164e",
+                    "tertiary-fixed": "#c0e8ff",
+                    "surface": "#fff8f4",
+                    "on-primary-fixed-variant": "#683d00",
+                    "inverse-on-surface": "#ffeee0",
+                    "surface-container-low": "#fff1e7",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed": "#001e2b",
+                    "on-primary": "#ffffff",
+                    "surface-container-high": "#f6e5d7",
+                    "secondary-fixed-dim": "#b6c4ff",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#ffdcbc",
+                    "text-primary-light": "#0F172A",
+                    "tertiary": "#006686",
+                    "surface-variant": "#f0e0d2",
+                    "secondary-container": "#8fa7fe",
+                    "primary": "#895100",
+                    "tertiary-container": "#00c3fd",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#221a12",
+                    "surface-container-highest": "#f0e0d2",
+                    "primary-fixed-dim": "#ffb86b",
+                    "on-background": "#221a12",
+                    "background": "#fff8f4",
+                    "on-tertiary-fixed-variant": "#004d66",
+                    "border-light": "#E2E8F0",
+                    "on-primary-fixed": "#2c1700",
+                    "surface-container": "#fcebdd",
+                    "text-primary-dark": "#F8FAFC",
+                    "success-momo": "#10B981",
+                    "primary-container": "#ff9f1c",
+                    "on-tertiary-container": "#004d66",
+                    "text-secondary-light": "#64748B",
+                    "border-dark": "#334155",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#1d3989",
+                    "secondary": "#4059aa",
+                    "surface-tint": "#895100",
+                    "tertiary-fixed-dim": "#70d2ff",
+                    "surface-dim": "#e8d7ca",
+                    "on-surface-variant": "#544434",
+                    "inverse-surface": "#382f25",
+                    "text-secondary-dark": "#94A3B8",
+                    "outline": "#877462",
+                    "outline-variant": "#dac2ae",
+                    "on-primary-container": "#683c00",
+                    "on-secondary-fixed-variant": "#264191",
+                    "secondary-fixed": "#dce1ff",
+                    "bg-dark": "#0F172A",
+                    "surface-bright": "#fff8f4",
+                    "inverse-primary": "#ffb86b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "touch-target-min": "56px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "gutter": "16px",
+                    "margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "button": ["Inter"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "body-sm": ["Inter"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "h2-mobile": ["Plus Jakarta Sans"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "data-label": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "data-display": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-bg-light font-body-md text-on-surface selection:bg-primary-container">
+<!-- Sidebar Navigation -->
+<aside class="h-full w-64 fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-margin-desktop z-40 hidden md:flex">
+<div class="px-6 mb-10">
+<h1 class="font-h2 text-h2 text-on-surface">Logistics Management</h1>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center gap-base p-4 cursor-pointer hover:bg-surface-variant transition-all text-on-surface-variant mx-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</div>
+<div class="flex items-center gap-base p-4 cursor-pointer bg-secondary-container text-on-secondary-container font-bold mx-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-body-md">Fleet Approvals</span>
+</div>
+<div class="flex items-center gap-base p-4 cursor-pointer hover:bg-surface-variant transition-all text-on-surface-variant mx-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-body-md">Driver Verification</span>
+</div>
+<div class="flex items-center gap-base p-4 cursor-pointer hover:bg-surface-variant transition-all text-on-surface-variant mx-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-body-md">Financial Oversight</span>
+</div>
+<div class="mt-auto flex items-center gap-base p-4 cursor-pointer hover:bg-surface-variant transition-all text-on-surface-variant mx-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</div>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-30 bg-surface-container border-b border-outline-variant flex justify-between items-center h-touch-target-min px-margin-desktop">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+<span class="font-h2 text-h2 text-primary font-bold">KmerCargo Admin</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end hidden sm:flex">
+<span class="font-body-sm font-bold text-on-surface">Jean-Pierre N.</span>
+<span class="text-[10px] uppercase tracking-wider text-on-surface-variant">Super Admin</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden border-2 border-primary">
+<img alt="Admin" class="w-full h-full object-cover" data-alt="A professional close-up portrait of a West African male administrator in his 40s wearing a clean, modern white shirt. The lighting is soft and corporate, set against a blurred office background with warm wood accents. The overall aesthetic is professional, reliable, and high-trust, matching a modern logistics headquarters vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFcOz1bKSNXdDUQjXHYuZx4_ucOFOMWf9t0Phpp-EWyDDycrSZ0UTx27fJRk-9AujLztoE2hxUdtlL_dmpXXz93-hsZOZwOIh48ZrXLF8wuYYLTJpe2dRcnEbZP44_5YnEDJ6sHrXhyHrC52hcobDGMwdPM6qTZ7qgoQXQknOye9m4lg_hIArpVdZ8xqBxb9fHEOSxnIgIN2Lvv-Ukz0c8AVxMK3stRrSuK3y9lP4fFTZikkWKbFKIblrPgpYkc2bZ5BlIg9agmng">
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-margin-mobile md:p-margin-desktop flex-1 space-y-gutter pb-32">
+<!-- Breadcrumbs / Header Action -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+<div>
+<div class="flex items-center gap-2 text-on-surface-variant mb-2">
+<span class="font-data-label text-data-label">FLEET APPROVALS</span>
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+<span class="font-data-label text-data-label text-primary">APP_ID: KC-2024-8842</span>
+</div>
+<h2 class="font-h1 text-h1-mobile md:text-h1 text-on-surface">Review Fleet Partner</h2>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full font-bold flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-secondary-container animate-pulse"></span>
+                        Pending Review
+                    </span>
+</div>
+</div>
+<!-- Bento Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Left Column: Business & Identity -->
+<div class="lg:col-span-2 space-y-gutter">
+<!-- Business Info Card -->
+<section class="bg-white rounded-xl border border-outline-variant p-6 shadow-sm overflow-hidden relative">
+<div class="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[128px]" data-icon="business">business</span>
+</div>
+<h3 class="font-h2 text-h2-mobile text-on-surface mb-6 border-b border-surface-variant pb-2">Business Information</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<div>
+<p class="text-on-surface-variant font-body-sm mb-1">Legal Company Name</p>
+<p class="font-h2 text-h2-mobile text-on-surface">Logistique Express du Littoral SARL</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-body-sm mb-1">Tax ID (NIU)</p>
+<p class="font-data-display text-data-display bg-surface-container px-3 py-1 rounded inline-block">M032212456789P</p>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<p class="text-on-surface-variant font-body-sm mb-1">Owner Identity (CNI)</p>
+<p class="font-body-md font-bold text-on-surface">Amadou Oumarou Talla</p>
+</div>
+<div class="flex gap-3 mt-4">
+<button class="flex-1 h-12 px-4 rounded-lg border-2 border-primary text-primary font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                                        View RCCM
+                                    </button>
+<button class="flex-1 h-12 px-4 rounded-lg border-2 border-primary text-primary font-bold flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+                                        View CNI
+                                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Vehicles List Section -->
+<section class="bg-white rounded-xl border border-outline-variant p-6 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-h2 text-h2-mobile text-on-surface">Registered Vehicles (3)</h3>
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="info" title="All vehicles must pass technical inspection">info</span>
+</div>
+<div class="overflow-x-auto no-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant border-b border-outline-variant">
+<th class="p-4 font-data-label text-data-label">MODEL</th>
+<th class="p-4 font-data-label text-data-label">LICENSE PLATE</th>
+<th class="p-4 font-data-label text-data-label">CAPACITY</th>
+<th class="p-4 font-data-label text-data-label">STATUS</th>
+<th class="p-4 font-data-label text-data-label">DOCS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="truck_speed">brush_spark</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Toyota Dyna 300</p>
+<p class="text-xs text-on-surface-variant">2019 • White</p>
+</div>
+</div>
+</td>
+<td class="p-4 font-data-display text-data-display">LT-142-KI</td>
+<td class="p-4 text-on-surface">3.5 Tons</td>
+<td class="p-4">
+<span class="bg-success-momo/10 text-success-momo text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Verified</span>
+</td>
+<td class="p-4">
+<button class="text-primary hover:underline font-bold text-sm">View Carte Grise</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Iveco Eurocargo</p>
+<p class="text-xs text-on-surface-variant">2021 • Yellow</p>
+</div>
+</div>
+</td>
+<td class="p-4 font-data-display text-data-display">CE-889-OA</td>
+<td class="p-4 text-on-surface">7.0 Tons</td>
+<td class="p-4">
+<span class="bg-success-momo/10 text-success-momo text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Verified</span>
+</td>
+<td class="p-4">
+<button class="text-primary hover:underline font-bold text-sm">View Carte Grise</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="box">box</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Renault Master Van</p>
+<p class="text-xs text-on-surface-variant">2018 • Silver</p>
+</div>
+</div>
+</td>
+<td class="p-4 font-data-display text-data-display">SW-221-PR</td>
+<td class="p-4 text-on-surface">1.5 Tons</td>
+<td class="p-4">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Pending</span>
+</td>
+<td class="p-4">
+<button class="text-primary hover:underline font-bold text-sm">View Carte Grise</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Column: Verification Metadata & Summary -->
+<div class="space-y-gutter">
+<!-- Partner Stats Card -->
+<section class="bg-primary text-white rounded-xl p-6 shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-data-label text-data-label text-primary-fixed mb-4">APPLICATION SUMMARY</h4>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/10 p-3 rounded-lg backdrop-blur-md">
+<p class="text-2xl font-bold">12</p>
+<p class="text-[10px] uppercase opacity-70">Routes Served</p>
+</div>
+<div class="bg-white/10 p-3 rounded-lg backdrop-blur-md">
+<p class="text-2xl font-bold">4.8</p>
+<p class="text-[10px] uppercase opacity-70">Trust Score</p>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-white/20">
+<p class="text-sm opacity-90 leading-relaxed italic">
+                                    "Partner has been operational in the Douala-Yaoundé corridor for 5 years with a clean record."
+                                </p>
+</div>
+</div>
+<!-- Background Pattern -->
+<div class="absolute -bottom-4 -right-4 opacity-10">
+<span class="material-symbols-outlined text-[160px]" data-icon="verified">verified</span>
+</div>
+</section>
+<!-- Verification Steps Card -->
+<section class="bg-white rounded-xl border border-outline-variant p-6 shadow-sm">
+<h3 class="font-h2 text-h2-mobile text-on-surface mb-6">Internal Checklist</h3>
+<div class="space-y-4">
+<label class="flex items-start gap-3 p-3 bg-surface-container rounded-lg cursor-pointer">
+<input checked="" class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox">
+<div>
+<p class="font-bold text-sm">RCCM Authenticity</p>
+<p class="text-xs text-on-surface-variant">Cross-checked with national database</p>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3 bg-surface-container rounded-lg cursor-pointer">
+<input checked="" class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox">
+<div>
+<p class="font-bold text-sm">CNI Validity</p>
+<p class="text-xs text-on-surface-variant">Passport valid until June 2026</p>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3 bg-surface-container-low rounded-lg cursor-pointer">
+<input class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox">
+<div>
+<p class="font-bold text-sm">Insurance Verification</p>
+<p class="text-xs text-on-surface-variant">Awaiting confirmation from Chanas</p>
+</div>
+</label>
+</div>
+</section>
+<!-- Maps View Placeholder -->
+<div class="h-48 rounded-xl bg-surface-variant relative overflow-hidden border border-outline-variant">
+<img alt="Map Location" class="w-full h-full object-cover grayscale brightness-75" data-location="Yaoundé" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmHFhNHJ4r-gsg1v_LtWDXeMkdM5nAGnZcnvOtl7h9odjwIK1qig5INwabVxnZFKNTylGqeQe-bkkaM3MqFv2IxQdio4jKN5MGVkCREsVDaZS8tYcoWopkScCTRe4RWw8dPwpHy_0ti4ahtuNYRk_cwcg-qXe0DBnKoO-6Qmy1GyEwoSGylETAQl3x-xOHOF5NGuY4bpZuJJ0Gb7k0v7HNo7mkpPyZA_BLJgC0UUEF7tyWqvlE0umsT019J8I0yWAlmLvxaopnaQo">
+<div class="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+<div class="absolute inset-0 flex items-center justify-center flex-col text-white">
+<span class="material-symbols-outlined text-4xl animate-bounce" data-icon="location_on">location_on</span>
+<span class="bg-black/50 px-3 py-1 rounded-full text-xs font-bold mt-2 backdrop-blur-md">HQ: Bastos, Yaoundé</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer Action Bar -->
+<footer class="fixed bottom-0 right-0 left-0 md:left-64 h-24 bg-white border-t border-outline-variant px-margin-desktop flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-40">
+<div class="hidden lg:block">
+<p class="text-on-surface-variant font-body-sm">Assigned Reviewer</p>
+<p class="font-bold text-on-surface">Jean-Pierre Nkoumou</p>
+</div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<button class="flex-1 md:flex-none h-touch-target-min px-8 rounded-lg border-2 border-outline text-on-surface font-button text-button hover:bg-surface-variant transition-all active:scale-95">
+                    Request More Info
+                </button>
+<button class="flex-1 md:flex-none h-touch-target-min px-12 rounded-lg bg-primary-container text-on-primary-container font-button text-button hover:bg-primary-container/90 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2" onclick="approveApplication()">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                    Approve Application
+                </button>
+</div>
+</footer>
+</main>
+<!-- Success Modal Interaction -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300" id="success-modal">
+<div class="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 text-center transform transition-transform duration-300 scale-90">
+<div class="w-20 h-20 bg-success-momo rounded-full flex items-center justify-center mx-auto mb-6">
+<span class="material-symbols-outlined text-white text-5xl" data-icon="verified_user">verified_user</span>
+</div>
+<h2 class="font-h1 text-h1-mobile mb-2">Partner Approved!</h2>
+<p class="text-on-surface-variant mb-8">The partner has been notified and can now start accepting loads. Welcome to the fleet!</p>
+<button class="w-full h-touch-target-min bg-primary text-white rounded-lg font-button" onclick="closeModal()">Great, Continue</button>
+</div>
+</div>
+<script>
+        function approveApplication() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                modal.querySelector('div').classList.remove('scale-90');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('opacity-100');
+            modal.querySelector('div').classList.add('scale-90');
+            modal.querySelector('div').classList.remove('scale-100');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Add a subtle hover effect to table rows
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseover', () => {
+                row.style.transform = "translateX(4px)";
+                row.style.transition = "transform 0.2s ease";
+            });
+            row.addEventListener('mouseout', () => {
+                row.style.transform = "translateX(0)";
+            });
+        });
+    </script>
+</body></html>

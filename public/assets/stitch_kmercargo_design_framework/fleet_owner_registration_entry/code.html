@@ -1,0 +1,251 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>KmerCargo | Partner Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#ffeee0",
+                    "bg-dark": "#0F172A",
+                    "primary-fixed": "#ffdcbc",
+                    "on-secondary-fixed-variant": "#264191",
+                    "surface-dim": "#e8d7ca",
+                    "text-primary-light": "#0F172A",
+                    "text-secondary-dark": "#94A3B8",
+                    "surface-container-low": "#fff1e7",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#ffb86b",
+                    "secondary-fixed": "#dce1ff",
+                    "on-tertiary-fixed": "#001e2b",
+                    "surface-container-high": "#f6e5d7",
+                    "outline": "#877462",
+                    "on-surface-variant": "#544434",
+                    "on-secondary": "#ffffff",
+                    "border-dark": "#334155",
+                    "error": "#ba1a1a",
+                    "bg-light": "#F8FAFC",
+                    "on-background": "#221a12",
+                    "tertiary-fixed-dim": "#70d2ff",
+                    "tertiary-container": "#00c3fd",
+                    "outline-variant": "#dac2ae",
+                    "primary": "#895100",
+                    "secondary-container": "#8fa7fe",
+                    "surface-variant": "#f0e0d2",
+                    "surface-tint": "#895100",
+                    "on-primary-container": "#683c00",
+                    "surface-container": "#fcebdd",
+                    "on-primary-fixed": "#2c1700",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#fff8f4",
+                    "error-container": "#ffdad6",
+                    "text-primary-dark": "#F8FAFC",
+                    "on-tertiary-container": "#004d66",
+                    "tertiary-fixed": "#c0e8ff",
+                    "primary-container": "#ff9f1c",
+                    "primary-fixed-dim": "#ffb86b",
+                    "inverse-surface": "#382f25",
+                    "surface-container-highest": "#f0e0d2",
+                    "on-secondary-container": "#1d3989",
+                    "on-primary": "#ffffff",
+                    "background": "#fff8f4",
+                    "secondary-fixed-dim": "#b6c4ff",
+                    "secondary": "#4059aa",
+                    "border-light": "#E2E8F0",
+                    "on-primary-fixed-variant": "#683d00",
+                    "text-secondary-light": "#64748B",
+                    "success-momo": "#10B981",
+                    "on-tertiary-fixed-variant": "#004d66",
+                    "on-surface": "#221a12",
+                    "on-secondary-fixed": "#00164e",
+                    "tertiary": "#006686",
+                    "on-error": "#ffffff",
+                    "surface": "#fff8f4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "touch-target-min": "56px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "h2-mobile": ["Plus Jakarta Sans"],
+                    "data-display": ["JetBrains Mono"],
+                    "data-label": ["JetBrains Mono"],
+                    "h1": ["Plus Jakarta Sans"],
+                    "h1-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "button": ["Inter"],
+                    "h2": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                    "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hero-pattern {
+            background-image: radial-gradient(circle at 2px 2px, rgba(137, 81, 0, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-bg-dark z-50">
+<div class="flex items-center justify-between px-margin-mobile md:px-margin-desktop py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-container" style="font-size: 28px;">local_shipping</span>
+<h1 class="font-h2-mobile text-h2-mobile font-bold tracking-tight text-primary dark:text-primary-container">FLEET LOGISTICS</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-data-label text-data-label text-on-surface-variant hidden md:block">CAMEROON OPS</span>
+<span class="material-symbols-outlined text-primary dark:text-primary-container">account_circle</span>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col md:flex-row max-w-7xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-8 md:py-12 gap-12 items-center">
+<!-- Left Column: Branding & Image -->
+<div class="w-full md:w-1/2 flex flex-col gap-8">
+<div class="relative rounded-xl overflow-hidden shadow-md border border-outline-variant aspect-[4/3] md:aspect-auto md:h-[500px]">
+<img alt="Fleet Hub" class="w-full h-full object-cover" data-alt="A professional and highly detailed wide shot of a modern logistics terminal in Douala, Cameroon during the golden hour. A fleet of heavy-duty white semi-trucks are perfectly aligned in a high-visibility, clean asphalt lot. The lighting is warm and authoritative, casting long shadows that emphasize the scale and security of the operations. The visual style is crisp and corporate, utilizing a palette of deep slates and safety ambers to convey institutional trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzJxhzZbPyNWZLh-YAZGo5ky-MBYB7ncf8j2WBUva7zOnfrNJsYNCwxFzxGwoTD7IBpRjgoGPktUipVWbTt6JpwOMOipjUG6dHtfkDWBXwnf9J3BbIPxdHWAryiFhHzj2bBBTwE_9-A7e0hq9Glu7UvpSXnJH5NsIDw2GXL-dNgx1EX4dGH8GZIiFheKnY46ezPgB6y8Vp8wpBiKsCaSewLK5aOWvTogbN2t9JnunJDNQetPDw7w7HFH_a59l-A2gNAbR0vGkwKYQ">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-8">
+<div class="bg-primary-container text-on-primary-container inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit mb-4">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-data-label text-data-label">INSTITUTIONAL GRADE SECURITY</span>
+</div>
+<p class="text-white font-h2 text-h2 leading-tight">Optimizing heavy-haulage across the CEMAC region.</p>
+</div>
+</div>
+<div class="hidden md:grid grid-cols-3 gap-4">
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant">
+<span class="font-h1 text-primary block">500+</span>
+<span class="font-data-label text-on-surface-variant">Active Fleets</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant">
+<span class="font-h1 text-primary block">10M+</span>
+<span class="font-data-label text-on-surface-variant">KM Tracked</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant">
+<span class="font-h1 text-primary block">24/7</span>
+<span class="font-data-label text-on-surface-variant">Support</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Registration Card -->
+<div class="w-full md:w-1/2 flex flex-col max-w-md mx-auto md:mx-0">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-8 md:p-10 shadow-sm relative hero-pattern">
+<div class="mb-8">
+<h2 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 text-on-surface mb-2">Partner with KmerCargo</h2>
+<p class="text-on-surface-variant font-body-md text-body-md">Enter your phone number to start managing your fleet across Cameroon.</p>
+</div>
+<form class="space-y-6" onsubmit="event.preventDefault();">
+<div class="space-y-2">
+<label class="font-data-label text-data-label text-primary uppercase tracking-wider" for="phone">Business Phone Number</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+<span class="font-data-display text-data-display text-on-surface-variant border-r border-outline-variant pr-3">+237</span>
+</div>
+<input class="w-full h- touch-target-min pl-24 pr-4 bg-surface border-2 border-outline-variant rounded-lg focus:ring-primary focus:border-primary font-data-display text-data-display transition-all" id="phone" name="phone" placeholder="6XX XXX XXX" required="" type="tel">
+</div>
+<p class="text-[11px] font-data-label text-on-surface-variant/70 italic">Security: We will send a 6-digit verification code to this number.</p>
+</div>
+<button class="w-full h-[56px] bg-primary-container text-on-primary-container font-button text-button rounded-xl flex items-center justify-center gap-2 hover:bg-primary hover:text-on-primary transition-all active:scale-95 shadow-sm" type="submit">
+                        Continue to Registration
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</form>
+<div class="mt-8 pt-8 border-t border-outline-variant flex flex-col items-center gap-4">
+<p class="text-on-surface-variant font-body-sm text-body-sm">
+                        Already have an account? 
+                        <a class="text-secondary font-bold hover:underline" href="#">Login if you already have an account</a>
+</p>
+<div class="flex gap-6 mt-2 opacity-60">
+<span class="material-symbols-outlined text-on-surface-variant" title="Secure Payment">shield_lock</span>
+<span class="material-symbols-outlined text-on-surface-variant" title="Real-time Tracking">distance</span>
+<span class="material-symbols-outlined text-on-surface-variant" title="Compliance Verified">assignment_turned_in</span>
+</div>
+</div>
+</div>
+<div class="mt-8 flex items-center justify-between px-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-success-momo animate-pulse"></div>
+<span class="font-data-label text-[10px] text-on-surface-variant">SERVER STATUS: OPTIMAL</span>
+</div>
+<span class="font-data-label text-[10px] text-on-surface-variant">v4.2.1-Yaoundé</span>
+</div>
+</div>
+</main>
+<!-- Footer Meta -->
+<footer class="w-full mt-auto py-6 bg-surface-container-low border-t border-outline-variant">
+<div class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-data-label text-data-label text-on-surface-variant">© 2024 KmerCargo Logistics Solutions S.A.</p>
+<div class="flex gap-6">
+<a class="font-data-label text-[10px] hover:text-primary transition-colors" href="#">PRIVACY POLICY</a>
+<a class="font-data-label text-[10px] hover:text-primary transition-colors" href="#">PARTNER TERMS</a>
+<a class="font-data-label text-[10px] hover:text-primary transition-colors" href="#">HELP CENTER</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple input formatting for phone number
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 9) value = value.slice(0, 9);
+            
+            // Format: 6XX XXX XXX
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i === 3 || i === 6) formatted += ' ';
+                formatted += value[i];
+            }
+            e.target.value = formatted;
+        });
+
+        // Hover interaction for the button
+        const mainBtn = document.querySelector('button[type="submit"]');
+        mainBtn.addEventListener('mouseenter', () => {
+            mainBtn.querySelector('.material-symbols-outlined').style.transform = 'translateX(4px)';
+            mainBtn.querySelector('.material-symbols-outlined').style.transition = 'transform 0.2s ease';
+        });
+        mainBtn.addEventListener('mouseleave', () => {
+            mainBtn.querySelector('.material-symbols-outlined').style.transform = 'translateX(0)';
+        });
+    </script>
+</body></html>

@@ -1,52 +1,128 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import type { UserSummary } from '@/lib/api/types';
+import { formatPhone, getInitials } from '@/lib/format';
+import { BrandLink } from '@/components/brand-link';
 
-export default function Navbar() {
+const NAV_LINKS = [
+  { label: 'Registration', href: '/register' },
+  { label: 'Support', href: '/contact' },
+  { label: 'Help', href: '/help' },
+];
+
+/**
+ * A link is active on an exact pathname match, or on a nested route below
+ * it (e.g. /register/fleet activates the /register "Registration" link).
+ * The root path is deliberately excluded from the nested-route check —
+ * without it, href: '/' would prefix-match every route in the app.
+ */
+function isNavLinkActive(pathname: string, href: string): boolean {
+  if (pathname === href) return true;
+  if (href === '/') return false;
+  return pathname.startsWith(`${href}/`);
+}
+
+export type NavbarProps = {
+  /**
+   * The signed-in fleet owner or admin, or null if signed out (including
+   * when the session cookie is missing, expired, or belongs to a role
+   * with no dashboard here). Resolved server-side in app/layout.tsx via
+   * lib/current-user.ts and threaded down through SiteChrome, since this
+   * Client Component cannot read the httpOnly session cookie itself.
+   */
+  user: UserSummary | null;
+};
+
+export default function Navbar({ user }: NavbarProps) {
+  const pathname = usePathname();
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-5">
         <div className="flex items-center justify-between rounded-full border border-gray-200 bg-surface/80 backdrop-blur-md px-6 py-3 shadow-sm">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl font-black tracking-tight">KARGOA</span>
-          </Link>
+          <BrandLink />
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="#how-it-works"
-              className="text-sm font-medium text-gray-700 hover:text-black transition"
-            >
-              How It Works
-            </Link>
-
-            <Link
-              href="#features"
-              className="text-sm font-medium text-gray-700 hover:text-black transition"
-            >
-              Features
-            </Link>
-
-            <Link
-              href="#drivers"
-              className="text-sm font-medium text-gray-700 hover:text-black transition"
-            >
-              Drivers
-            </Link>
-
-            <Link
-              href="#faq"
-              className="text-sm font-medium text-gray-700 hover:text-black transition"
-            >
-              FAQ
-            </Link>
+            {NAV_LINKS.map(({ label, href }) => {
+              const active = isNavLinkActive(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? 'page' : undefined}
+                  className={`text-sm font-medium border-b-2 pb-1 transition ${
+                    active
+                      ? 'text-text-primary border-primary-container'
+                      : 'text-gray-700 hover:text-black border-transparent'
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
           <div className="flex items-center gap-3">
-            <button className="px-5 py-2 text-sm font-medium bg-primary text-white rounded-full hover:opacity-90 transition">
-              Download App
-            </button>
+            {user ? (
+              <DashboardLink user={user} />
+            ) : (
+              <Link
+                href="/register"
+                className="px-5 py-2 text-sm font-medium bg-primary-container text-on-primary-container rounded-xl hover:opacity-90 transition"
+              >
+                Get Started
+              </Link>
+            )}
           </div>
         </div>
       </div>
     </header>
+  );
+}
+
+/**
+ * Where the identity button sends each portal role. getCurrentUser only
+ * ever resolves fleet_owner/admin users into this component, but the
+ * UserSummary type doesn't statically guarantee that — spelled out as a
+ * switch, with a documented fallback, rather than a ternary that would
+ * silently send any future role to /fleet without anyone deciding that
+ * on purpose.
+ */
+function dashboardHref(role: UserSummary['role']): string {
+  switch (role) {
+    case 'admin':
+      return '/admin';
+    case 'fleet_owner':
+      return '/fleet';
+    default:
+      return '/fleet';
+  }
+}
+
+function DashboardLink({ user }: { user: UserSummary }) {
+  const trimmedName = user.full_name.trim();
+  const displayName = trimmedName || formatPhone(user.phone_number);
+  const initials = trimmedName
+    ? getInitials(trimmedName)
+    : user.phone_number.replace(/\D/g, '').slice(-2);
+  const href = dashboardHref(user.role);
+
+  return (
+    <Link
+      href={href}
+      aria-label={`${displayName} — Dashboard`}
+      className="flex items-center gap-2 pl-1 pr-4 py-1 text-sm font-medium bg-primary-container text-on-primary-container rounded-xl hover:opacity-90 transition"
+    >
+      <span
+        aria-hidden="true"
+        className="w-8 h-8 rounded-full bg-surface text-on-primary-container flex items-center justify-center text-xs font-bold"
+      >
+        {initials}
+      </span>
+      <span className={trimmedName ? undefined : 'font-mono'}>
+        {displayName}
+      </span>
+    </Link>
   );
 }

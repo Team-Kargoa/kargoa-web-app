@@ -1,0 +1,399 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>KmerCargo Fleet Operations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .data-gradient {
+            background: linear-gradient(135deg, #895100 0%, #ff9f1c 100%);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff8f4;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#8fa7fe",
+                        "primary": "#895100",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#fff8f4",
+                        "surface-container": "#fcebdd",
+                        "on-primary-fixed": "#2c1700",
+                        "text-primary-dark": "#F8FAFC",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#895100",
+                        "surface-variant": "#f0e0d2",
+                        "on-primary-container": "#683c00",
+                        "background": "#fff8f4",
+                        "secondary-fixed-dim": "#b6c4ff",
+                        "secondary": "#4059aa",
+                        "border-light": "#E2E8F0",
+                        "tertiary-fixed": "#c0e8ff",
+                        "primary-container": "#ff9f1c",
+                        "on-tertiary-container": "#004d66",
+                        "inverse-surface": "#382f25",
+                        "surface-container-highest": "#f0e0d2",
+                        "on-secondary-container": "#1d3989",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#ffb86b",
+                        "surface": "#fff8f4",
+                        "on-primary-fixed-variant": "#683d00",
+                        "text-secondary-light": "#64748B",
+                        "success-momo": "#10B981",
+                        "on-tertiary-fixed-variant": "#004d66",
+                        "on-surface": "#221a12",
+                        "on-secondary-fixed": "#00164e",
+                        "tertiary": "#006686",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#e8d7ca",
+                        "text-primary-light": "#0F172A",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ffeee0",
+                        "bg-dark": "#0F172A",
+                        "primary-fixed": "#ffdcbc",
+                        "on-secondary-fixed-variant": "#264191",
+                        "secondary-fixed": "#dce1ff",
+                        "on-tertiary-fixed": "#001e2b",
+                        "outline": "#877462",
+                        "on-surface-variant": "#544434",
+                        "surface-container-high": "#f6e5d7",
+                        "text-secondary-dark": "#94A3B8",
+                        "surface-container-low": "#fff1e7",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#ffb86b",
+                        "on-background": "#221a12",
+                        "on-secondary": "#ffffff",
+                        "border-dark": "#334155",
+                        "error": "#ba1a1a",
+                        "bg-light": "#F8FAFC",
+                        "outline-variant": "#dac2ae",
+                        "tertiary-fixed-dim": "#70d2ff",
+                        "tertiary-container": "#00c3fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "56px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Plus Jakarta Sans"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "data-display": ["JetBrains Mono"],
+                        "data-label": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+                        "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="w-full top-0 sticky bg-surface-container border-b border-outline-variant flex items-center justify-between px-margin-desktop h-20 w-full z-40">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="local_shipping">local_shipping</span>
+<h1 class="font-h1 text-h1 font-bold text-primary">Fleet Operations</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-4">
+<span class="text-primary font-bold cursor-pointer font-body-md text-body-md">Dashboard</span>
+<span class="text-on-surface-variant hover:bg-surface-variant transition-colors px-3 py-1 rounded cursor-pointer font-body-md text-body-md">Fleet</span>
+<span class="text-on-surface-variant hover:bg-surface-variant transition-colors px-3 py-1 rounded cursor-pointer font-body-md text-body-md">Reports</span>
+</div>
+<div class="flex items-center gap-3 bg-surface-container-low p-1 pr-4 rounded-full border border-outline-variant">
+<img alt="Admin User" class="w-10 h-10 rounded-full bg-primary-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_MHIGUU8wfIoEzpF8acAUJwDomN-_nFFzeQ3-XlF0xLHxKiA7-jMd821uC_Nx3ac49a0IYmN2x4xzQZ1aFG61NpetTsTZGw6ZIlH8wqN95k1pcjNr4G_867-Qa7YetmhAAjDJnoNog5EYClC4M3PzgA_d7XV_KO-L9ksURuO1m28o-I8KcDds6Ki8c1FlgnJ6pO5kAFM2t1WMXWX3nJ9qsZLiKsjsuaMPeYdOh4BO0n9gaaL6eDdqAYoXedNABVtkU1Bm-Ka-XH8">
+<div class="hidden sm:block">
+<p class="text-xs font-bold text-on-surface leading-tight">Admin Profile</p>
+<p class="text-[10px] text-on-surface-variant">Logistics Ops</p>
+</div>
+</div>
+</div>
+</header>
+<main class="flex min-h-screen">
+<!-- Sidebar for Desktop -->
+<aside class="hidden md:flex flex-col h-screen w-80 sticky top-20 bg-surface-container-low border-r border-outline-variant p-4 gap-2">
+<div class="mb-8 px-2">
+<h2 class="font-h2 text-h2 font-black text-primary">KmerCargo</h2>
+<p class="text-on-surface-variant font-body-sm text-body-sm">Yaoundé Hub • v2.1.0</p>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md text-body-md">Fleet Management</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-body-md text-body-md">Revenue Tracking</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Dashboard Content -->
+<section class="flex-1 p-margin-mobile md:p-margin-desktop pb-24 md:pb-8 max-w-7xl mx-auto w-full">
+<!-- Summary Section: Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<!-- Active Trucks -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl" data-icon="local_shipping">local_shipping</span>
+</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1 uppercase tracking-wider">Active Trucks</p>
+<div class="flex items-baseline gap-2">
+<span class="font-data-display text-4xl text-primary font-bold">8</span>
+<span class="font-data-display text-xl text-on-surface-variant">/ 12</span>
+</div>
+<div class="mt-4 w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 66%"></div>
+</div>
+<p class="mt-2 text-xs text-on-surface-variant">4 Vehicles currently offline for maintenance</p>
+</div>
+<!-- Total Earnings -->
+<div class="data-gradient rounded-xl p-6 shadow-sm relative overflow-hidden group border border-primary">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-white text-6xl" data-icon="payments">payments</span>
+</div>
+<p class="text-white/80 font-body-sm text-body-sm mb-1 uppercase tracking-wider">Total Fleet Earnings</p>
+<div class="flex items-baseline gap-2">
+<span class="font-data-display text-3xl text-white font-bold">1,240,000</span>
+<span class="font-data-display text-lg text-white/90">XAF</span>
+</div>
+<div class="mt-4 flex items-center gap-1 text-white text-xs font-bold bg-white/20 w-fit px-2 py-1 rounded">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span>+12.4% vs last week</span>
+</div>
+</div>
+<!-- Pending Verifications -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1 uppercase tracking-wider">Pending Verifications</p>
+<div class="flex items-center justify-between">
+<span class="font-data-display text-4xl text-error font-bold">03</span>
+<div class="bg-error-container text-on-error-container px-3 py-1 rounded-full text-xs font-bold">Requires Action</div>
+</div>
+<div class="mt-6 flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary-container flex items-center justify-center text-[10px] font-bold">JD</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-secondary-container flex items-center justify-center text-[10px] font-bold">SM</div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-tertiary-container flex items-center justify-center text-[10px] font-bold">AA</div>
+</div>
+<p class="mt-2 text-xs text-on-surface-variant">Driver documents expiring in &lt; 7 days</p>
+</div>
+</div>
+<!-- Middle Section: Performance Chart -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-8 mb-8 shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+<div>
+<h3 class="font-h2 text-h2 text-on-surface">Fleet Performance</h3>
+<p class="text-on-surface-variant font-body-sm text-body-sm">Weekly revenue trends across all active routes</p>
+</div>
+<div class="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant">
+<button class="px-4 py-1.5 rounded-md text-xs font-bold bg-white shadow-sm text-primary">Weekly</button>
+<button class="px-4 py-1.5 rounded-md text-xs font-bold text-on-surface-variant hover:text-on-surface">Monthly</button>
+</div>
+</div>
+<div class="h-64 w-full relative flex items-end justify-between gap-2 px-4 group">
+<!-- Fake Chart Bars -->
+<div class="flex-1 bg-surface-container-high rounded-t-lg relative group/bar transition-all hover:bg-primary/20" style="height: 40%">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 whitespace-nowrap transition-opacity">120k XAF</div>
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-data-label text-on-surface-variant">Mon</span>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-lg relative group/bar transition-all hover:bg-primary/20" style="height: 65%">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 whitespace-nowrap transition-opacity">185k XAF</div>
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-data-label text-on-surface-variant">Tue</span>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-lg relative group/bar transition-all hover:bg-primary/20" style="height: 55%">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 whitespace-nowrap transition-opacity">150k XAF</div>
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-data-label text-on-surface-variant">Wed</span>
+</div>
+<div class="flex-1 bg-primary rounded-t-lg relative group/bar shadow-lg" style="height: 90%">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-primary text-white text-[10px] py-1 px-2 rounded font-bold whitespace-nowrap">240k XAF (Peak)</div>
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-data-label text-on-surface font-bold">Thu</span>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-lg relative group/bar transition-all hover:bg-primary/20" style="height: 70%">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 whitespace-nowrap transition-opacity">190k XAF</div>
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-data-label text-on-surface-variant">Fri</span>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-lg relative group/bar transition-all hover:bg-primary/20" style="height: 45%">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 whitespace-nowrap transition-opacity">130k XAF</div>
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-data-label text-on-surface-variant">Sat</span>
+</div>
+<div class="flex-1 bg-surface-container-high rounded-t-lg relative group/bar transition-all hover:bg-primary/20" style="height: 30%">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 whitespace-nowrap transition-opacity">90k XAF</div>
+<span class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-data-label text-on-surface-variant">Sun</span>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Active Drivers List -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-h2 text-h2 text-on-surface">Active Drivers</h3>
+<button class="text-primary font-bold text-sm hover:underline">View All Drivers</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-6 py-4 font-data-label text-on-surface-variant uppercase text-xs">Driver Info</th>
+<th class="px-6 py-4 font-data-label text-on-surface-variant uppercase text-xs">Vehicle ID</th>
+<th class="px-6 py-4 font-data-label text-on-surface-variant uppercase text-xs">Current Route</th>
+<th class="px-6 py-4 font-data-label text-on-surface-variant uppercase text-xs">Status</th>
+<th class="px-6 py-4 font-data-label text-on-surface-variant uppercase text-xs text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Jean-Paul" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeFm0FB2Gq9tO8vOlXDTYcHB2eRJavwbECRecIMzv5FDDP7W421eMqIp2WGbMfng_eDVsPAww3qL577VR1b_D2avxJl4PXt0_LuYARUtbrh9sH8HaBVswDJzLsaTUOK6vjs07QPuzTnKF_rMrG7Dc-ErGdf4ElUJ2fhHXKkba51apnqXZOLsC3sBGpw1rxV80UgYG4vFHrMPGLb-4ECzokofEVeFuECSrBlLWfZCp4BxWQEbECz88dbSPYGMQSDk2ukfh5Aza645g">
+</div>
+<div>
+<p class="font-bold text-on-surface font-body-md">Jean-Paul N.</p>
+<p class="text-xs text-on-surface-variant font-data-label">Verified • Yaoundé</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-display text-on-surface-variant text-sm">CE-982-LU</td>
+<td class="px-6 py-4 text-sm text-on-surface">Yaoundé → Douala</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-[0_0_8px_#ff9f1c]"></span>
+<span class="text-xs font-bold text-primary">On-Trip</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Samuel" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-vyGv6PqR7aLe0ucNZyGIvJtyIgddK6zNEroh5gIaQs9lPAGtDGEkOMg1RgCvz5oapSihk1mdMMjlXR-lpvQjxYREI0wN5BfqE4N0hFIH-GEtkO1g1SDqjchCpkB_rr05pyyN4W3wZBr-QkQmdaPSyGi6uKvrnwHp4y0DmTc374zryCzgTRBL6huLe-qdD03Ut6hKrbmAvCTrdnWotFtpOnT8VlmsvC089pExGB1cT6LLUdsRQbMG4fZJUMBxiimXAgC0KXvOWGg">
+</div>
+<div>
+<p class="font-bold text-on-surface font-body-md">Samuel Eto'o</p>
+<p class="text-xs text-on-surface-variant font-data-label">Verified • Edéa</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-display text-on-surface-variant text-sm">LT-110-AA</td>
+<td class="px-6 py-4 text-sm text-on-surface">Idle (Rest Stop)</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-success-momo shadow-[0_0_8px_#10B981]"></span>
+<span class="text-xs font-bold text-success-momo">Online</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Moussa" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDayrfp4rz8h4uoXUoQrAx-Tkd_6Odp7EJ03bs9hn7SBuRXNVbF-iw8utcypYq1p5qGBR3c9mSU_-b0MyZ53KJZFzvEMw8iI1KX2vv6TIp52PEnLeupWWnLj5wNqV9-ls1wueHxNStNfIb2g4J1d-A4s45HPI61JTVKjjwzcaF6WXbQo6QO1j3QTaE99fRXmoILWsQTcHp8tCQFJ_-dMBm6v7ZoqwaglaXobFao9mrWWzGVzbdZE6tL8CFS6sC5JPoDLK0rgMRzNL0">
+</div>
+<div>
+<p class="font-bold text-on-surface font-body-md">Moussa Traoré</p>
+<p class="text-xs text-on-surface-variant font-data-label">Maintenance • Bafoussam</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-data-display text-on-surface-variant text-sm">OU-445-BB</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Not Assigned</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-outline shadow-[0_0_8px_#877462]"></span>
+<span class="text-xs font-bold text-on-surface-variant">Offline</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-surface border-t border-outline-variant shadow-lg z-50">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl p-2 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-data-label text-data-label">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 active:bg-surface-variant transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-data-label text-data-label">Drivers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 active:bg-surface-variant transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="minor_crash">minor_crash</span>
+<span class="font-data-label text-data-label">Vehicles</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 active:bg-surface-variant transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-data-label text-data-label">Alerts</span>
+</a>
+</nav>
+<!-- Floating Action Button: Contextual -->
+<button class="fixed bottom-24 right-6 md:bottom-8 md:right-8 bg-primary-container text-on-primary-container w-14 h-14 rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+<span class="absolute right-full mr-4 bg-on-surface text-white px-3 py-1.5 rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">Add Shipment</span>
+</button>
+<script>
+        // Simple micro-interaction for numbers incrementing or chart hover effects
+        document.querySelectorAll('.font-data-display').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                el.classList.add('text-secondary');
+            });
+            el.addEventListener('mouseleave', () => {
+                el.classList.remove('text-secondary');
+            });
+        });
+    </script>
+</body></html>

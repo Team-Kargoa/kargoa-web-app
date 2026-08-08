@@ -1,0 +1,402 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Document Inspector | KmerCargo Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "bg-light": "#F8FAFC",
+                        "on-secondary-fixed": "#00164e",
+                        "tertiary-fixed": "#c0e8ff",
+                        "surface": "#fff8f4",
+                        "on-primary-fixed-variant": "#683d00",
+                        "inverse-on-surface": "#ffeee0",
+                        "surface-container-low": "#fff1e7",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#001e2b",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#f6e5d7",
+                        "secondary-fixed-dim": "#b6c4ff",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#ffdcbc",
+                        "text-primary-light": "#0F172A",
+                        "tertiary": "#006686",
+                        "surface-variant": "#f0e0d2",
+                        "secondary-container": "#8fa7fe",
+                        "primary": "#895100",
+                        "tertiary-container": "#00c3fd",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#221a12",
+                        "surface-container-highest": "#f0e0d2",
+                        "primary-fixed-dim": "#ffb86b",
+                        "on-background": "#221a12",
+                        "background": "#fff8f4",
+                        "on-tertiary-fixed-variant": "#004d66",
+                        "border-light": "#E2E8F0",
+                        "on-primary-fixed": "#2c1700",
+                        "surface-container": "#fcebdd",
+                        "text-primary-dark": "#F8FAFC",
+                        "success-momo": "#10B981",
+                        "primary-container": "#ff9f1c",
+                        "on-tertiary-container": "#004d66",
+                        "text-secondary-light": "#64748B",
+                        "border-dark": "#334155",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#1d3989",
+                        "secondary": "#4059aa",
+                        "surface-tint": "#895100",
+                        "tertiary-fixed-dim": "#70d2ff",
+                        "surface-dim": "#e8d7ca",
+                        "on-surface-variant": "#544434",
+                        "inverse-surface": "#382f25",
+                        "text-secondary-dark": "#94A3B8",
+                        "outline": "#877462",
+                        "outline-variant": "#dac2ae",
+                        "on-primary-container": "#683c00",
+                        "on-secondary-fixed-variant": "#264191",
+                        "secondary-fixed": "#dce1ff",
+                        "bg-dark": "#0F172A",
+                        "surface-bright": "#fff8f4",
+                        "inverse-primary": "#ffb86b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target-min": "56px",
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "gutter": "16px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "button": ["Inter"],
+                        "h2": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "h1-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "h2-mobile": ["Plus Jakarta Sans"],
+                        "h1": ["Plus Jakarta Sans"],
+                        "data-label": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "data-display": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "h1-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "h2-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "h1": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "data-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "data-display": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .canvas-container {
+            cursor: grab;
+        }
+        .canvas-container:active {
+            cursor: grabbing;
+        }
+        .document-transition {
+            transition: filter 0.2s ease, transform 0.1s ease-out;
+        }
+        /* Custom scrollbar for data density */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dac2ae;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #877462;
+        }
+    </style>
+</head>
+<body class="bg-bg-light text-on-surface font-body-md overflow-hidden h-screen flex flex-col">
+<!-- TopAppBar Mapping -->
+<header class="w-full top-0 sticky bg-surface-container dark:bg-surface-container-high border-b border-outline-variant dark:border-border-dark flex justify-between items-center h-touch-target-min px-margin-desktop z-50">
+<div class="flex items-center gap-base">
+<button class="flex items-center gap-2 hover:bg-surface-variant transition-colors p-2 rounded-lg text-on-surface-variant font-bold" onclick="window.history.back()">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="font-button text-button">Back to Application</span>
+</button>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+<h1 class="font-h2 text-h2-mobile md:text-h2 text-on-surface">KmerCargo Admin</h1>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex flex-col items-end">
+<span class="font-data-label text-data-label text-on-surface-variant">DOC_ID: 99283-YDE</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Fleet Approval Desk</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden border-2 border-primary">
+<img alt="Admin" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFoiXm_mjuFBoo8-taTX-ODpe3lkCmKG-LKFEMX0nDUu8DtrztOyE15S8Chfd03yAXfqH-2B05JD0MK3LWuc05FCMSXaHeh67vRcXx9smMLLktX9P9XvWxEpX7RCWtE9kefMLAhUy_BXz1xpO_tofM2IZNzitYnY3o7F24dWWyDTiPlJIocSLR2QOvkTlsPPSoGfcJebnHxytnbHtqes5nZ5N3FsdmBC-GODY9RSn1RocmCFmzybVBBEJvDbJQHtmCvqF7Kot8WGg">
+</div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden">
+<!-- NavigationDrawer Implementation (Suppressed labels for focus, keeping icons/structure) -->
+<aside class="hidden md:flex flex-col h-full py-margin-desktop bg-surface dark:bg-bg-dark border-r border-outline-variant dark:border-border-dark w-20 items-center gap-6">
+<div class="p-2 hover:bg-surface-variant transition-all cursor-pointer rounded-lg text-on-surface-variant" title="Dashboard">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+</div>
+<div class="bg-secondary-container text-on-secondary-container p-2 rounded-lg font-bold shadow-sm" title="Fleet Approvals">
+<span class="material-symbols-outlined text-2xl">fact_check</span>
+</div>
+<div class="p-2 hover:bg-surface-variant transition-all cursor-pointer rounded-lg text-on-surface-variant" title="Driver Verification">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+</div>
+<div class="p-2 hover:bg-surface-variant transition-all cursor-pointer rounded-lg text-on-surface-variant" title="Financial Oversight">
+<span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
+</div>
+<div class="mt-auto p-2 hover:bg-surface-variant transition-all cursor-pointer rounded-lg text-on-surface-variant" title="Settings">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</div>
+</aside>
+<!-- Document Inspector Canvas -->
+<div class="flex-1 relative bg-slate-200 dark:bg-slate-900 flex flex-col overflow-hidden">
+<!-- Contextual Toolbar -->
+<div class="bg-surface/90 backdrop-blur-md px-6 py-3 flex items-center justify-between border-b border-outline-variant z-10">
+<div class="flex items-center gap-6">
+<div class="flex flex-col">
+<span class="font-data-label text-data-label text-on-surface-variant uppercase tracking-wider">Document Type</span>
+<span class="font-body-md font-bold text-on-surface">Vehicle Registration (Carte Grise)</span>
+</div>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-lg">
+<button class="p-1 hover:bg-outline-variant rounded transition-colors" onclick="adjustZoom(-0.1)"><span class="material-symbols-outlined text-xl">remove_circle</span></button>
+<span class="font-data-display text-data-display min-w-[3rem] text-center" id="zoomDisplay">100%</span>
+<button class="p-1 hover:bg-outline-variant rounded transition-colors" onclick="adjustZoom(0.1)"><span class="material-symbols-outlined text-xl">add_circle</span></button>
+</div>
+<div class="flex items-center gap-4 ml-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">brightness_6</span>
+<input class="w-24 h-1.5 bg-outline-variant rounded-lg appearance-none cursor-pointer accent-primary" id="brightnessRange" max="150" min="50" type="range" value="100">
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">contrast</span>
+<input class="w-24 h-1.5 bg-outline-variant rounded-lg appearance-none cursor-pointer accent-primary" id="contrastRange" max="150" min="50" type="range" value="100">
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 h-10 border-2 border-error text-error font-button text-button rounded-lg hover:bg-error/10 transition-colors flex items-center gap-2" id="rejectBtn">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">cancel</span>
+                        Reject
+                    </button>
+<button class="px-6 h-10 bg-success-momo text-white font-button text-button rounded-lg hover:opacity-90 shadow-lg shadow-success-momo/20 flex items-center gap-2" id="verifyBtn">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        Verify
+                    </button>
+</div>
+</div>
+<!-- Main Canvas Area -->
+<div class="flex-1 overflow-auto p-12 canvas-container flex items-center justify-center" id="scrollContainer">
+<div class="document-transition shadow-2xl relative bg-white ring-1 ring-black/5" id="documentWrapper" style="transform: scale(1);">
+<img class="max-w-[800px] w-full block" data-alt="A highly detailed professional scan of a logistics document or vehicle registration card placed on a clean grey studio background. The lighting is perfectly even and flat to highlight text legibility, following a clinical corporate utility aesthetic. The color palette is dominated by neutral whites and greys with high-contrast black text and official stamps in red and blue. The mood is administrative, professional, and secure." id="documentImage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS5e8E9AZeNoIFxk450h9vB00VlDTvw4oV6s05p6R6eEeCgV5dGaTOC7ihj48IKumHk5B-TvhTf5BS0LQnFxNagd0ZFL6wI8RouN2jmK22CqYeMJ-cTtImGfDzMU3OKF_uZBpNjeBEH2JBmq0rW5hf1bvsVV2fy0hLfTKw1jhzX10_NIBulZUQ-_uS0Lo-w1dyZ0JbtXxnR0ytsOaPteGh8fRHOMAR9UQrpJsdy30hbRuZv6CvX8-AxtRNvW7-sC4hYIL2zHOV1g8">
+<!-- Simulated Overlay for interactive feel -->
+<div class="absolute inset-0 pointer-events-none border-4 border-primary/20 opacity-0 transition-opacity hover:opacity-100"></div>
+</div>
+</div>
+<!-- Metadata Footer -->
+<div class="bg-surface-container-low px-margin-desktop py-4 border-t border-outline-variant flex justify-between items-center">
+<div class="flex gap-8">
+<div class="flex flex-col">
+<span class="font-data-label text-data-label text-on-surface-variant uppercase">File Size</span>
+<span class="font-data-display text-data-display text-on-surface">2.4 MB</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-label text-data-label text-on-surface-variant uppercase">Format</span>
+<span class="font-data-display text-data-display text-on-surface">JPEG (High Res)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-label text-data-label text-on-surface-variant uppercase">Uploaded At</span>
+<span class="font-data-display text-data-display text-on-surface">24 Oct 2023, 14:32:05</span>
+</div>
+<div class="flex flex-col">
+<span class="font-data-label text-data-label text-on-surface-variant uppercase">Camera Metadata</span>
+<span class="font-data-display text-data-display text-on-surface">TECNO Camon 19 • ISO 200</span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="p-2 hover:bg-surface-variant rounded-lg text-on-surface-variant" onclick="resetFilters()" title="Reset Filters">
+<span class="material-symbols-outlined">restart_alt</span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded-lg text-on-surface-variant" title="Download Original">
+<span class="material-symbols-outlined">download</span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded-lg text-on-surface-variant" title="Print View">
+<span class="material-symbols-outlined">print</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Side Panel: Annotations & Detail Check -->
+<aside class="w-80 bg-surface border-l border-outline-variant flex flex-col hidden xl:flex">
+<div class="p-6 border-b border-outline-variant">
+<h3 class="font-h2 text-h2-mobile text-on-surface mb-2">Checklist</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Verify critical document fields against system records.</p>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<input class="mt-1 w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox">
+<div>
+<span class="font-body-md font-bold block">License Plate Match</span>
+<span class="font-data-label text-data-label text-on-surface-variant">LT-223-YDE</span>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<input class="mt-1 w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox">
+<div>
+<span class="font-body-md font-bold block">Validity Period</span>
+<span class="font-data-label text-data-label text-on-surface-variant">Expires: 12/2025</span>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<input class="mt-1 w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox">
+<div>
+<span class="font-body-md font-bold block">Official Stamp Present</span>
+<span class="font-data-label text-data-label text-on-surface-variant">Delegation of Transport</span>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant">
+<label class="font-data-label text-data-label text-on-surface-variant uppercase block mb-2">Admin Notes</label>
+<textarea class="w-full bg-surface-container-low border-outline-variant rounded-lg p-3 text-body-sm focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Add observations here..." rows="4"></textarea>
+</div>
+</div>
+<div class="p-6 bg-surface-container-lowest mt-auto">
+<div class="p-4 rounded-xl border-2 border-dashed border-outline-variant bg-surface-variant/30 flex flex-col items-center text-center">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant mb-2">history</span>
+<span class="font-body-sm font-bold text-on-surface">View Version History</span>
+<span class="font-body-sm text-on-surface-variant">3 previous uploads rejected</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        const docWrapper = document.getElementById('documentWrapper');
+        const docImage = document.getElementById('documentImage');
+        const zoomDisplay = document.getElementById('zoomDisplay');
+        const brightnessInput = document.getElementById('brightnessRange');
+        const contrastInput = document.getElementById('contrastRange');
+        
+        let currentZoom = 1;
+        let brightness = 100;
+        let contrast = 100;
+
+        function updateFilters() {
+            docImage.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
+        }
+
+        function adjustZoom(delta) {
+            currentZoom = Math.min(Math.max(currentZoom + delta, 0.5), 3);
+            docWrapper.style.transform = `scale(${currentZoom})`;
+            zoomDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+        }
+
+        function resetFilters() {
+            currentZoom = 1;
+            brightness = 100;
+            contrast = 100;
+            brightnessInput.value = 100;
+            contrastInput.value = 100;
+            updateFilters();
+            adjustZoom(0);
+        }
+
+        brightnessInput.addEventListener('input', (e) => {
+            brightness = e.target.value;
+            updateFilters();
+        });
+
+        contrastInput.addEventListener('input', (e) => {
+            contrast = e.target.value;
+            updateFilters();
+        });
+
+        // Verification Toggles
+        const verifyBtn = document.getElementById('verifyBtn');
+        const rejectBtn = document.getElementById('rejectBtn');
+
+        verifyBtn.addEventListener('click', () => {
+            verifyBtn.innerHTML = `<span class="material-symbols-outlined">task_alt</span> Verified`;
+            verifyBtn.classList.replace('bg-success-momo', 'bg-slate-400');
+            verifyBtn.classList.add('cursor-default');
+            rejectBtn.style.display = 'none';
+        });
+
+        rejectBtn.addEventListener('click', () => {
+            const reason = prompt("Please provide a reason for rejection:");
+            if (reason) {
+                alert("Document rejected. Reason: " + reason);
+                window.history.back();
+            }
+        });
+
+        // Simple Drag Scroll for Canvas
+        let isDown = false;
+        let startX;
+        let startY;
+        let scrollLeft;
+        let scrollTop;
+        const scrollContainer = document.getElementById('scrollContainer');
+
+        scrollContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            scrollContainer.classList.add('active');
+            startX = e.pageX - scrollContainer.offsetLeft;
+            startY = e.pageY - scrollContainer.offsetTop;
+            scrollLeft = scrollContainer.scrollLeft;
+            scrollTop = scrollContainer.scrollTop;
+        });
+        scrollContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+        scrollContainer.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+        scrollContainer.addEventListener('mousemove', (e) => {
+            if(!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scrollContainer.offsetLeft;
+            const y = e.pageY - scrollContainer.offsetTop;
+            const walkX = (x - startX) * 2;
+            const walkY = (y - startY) * 2;
+            scrollContainer.scrollLeft = scrollLeft - walkX;
+            scrollContainer.scrollTop = scrollTop - walkY;
+        });
+    </script>
+</body></html>

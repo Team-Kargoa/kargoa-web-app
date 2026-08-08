@@ -1,0 +1,134 @@
+import { render, screen } from '@testing-library/react';
+import FleetDashboardPage from './page';
+import { getAccessToken } from '@/lib/session';
+import { getWallet } from '@/lib/api/payments';
+import {
+  getFleetSummary,
+  getWeeklyPerformance,
+  getActiveDrivers,
+} from '@/lib/api/fleet';
+import {
+  FLEET_SUMMARY_FIXTURE,
+  WEEKLY_PERFORMANCE_FIXTURE,
+  ACTIVE_DRIVERS_FIXTURE,
+} from '@/lib/api/fixtures/fleet';
+import { WALLET_FIXTURE } from '@/lib/api/fixtures/payments';
+
+jest.mock('@/lib/session');
+jest.mock('@/lib/api/payments');
+jest.mock('@/lib/api/fleet');
+
+// recharts does not render in jsdom — mocked to pass-through containers so
+// PerformanceChart (rendered inside the page) doesn't blow up the test.
+jest.mock('recharts', () => ({
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  BarChart: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  Bar: () => null,
+  Cell: () => null,
+  XAxis: () => null,
+  Tooltip: () => null,
+}));
+
+const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
+  typeof getAccessToken
+>;
+const mockedGetWallet = getWallet as jest.MockedFunction<typeof getWallet>;
+const mockedGetFleetSummary = getFleetSummary as jest.MockedFunction<
+  typeof getFleetSummary
+>;
+const mockedGetWeeklyPerformance = getWeeklyPerformance as jest.MockedFunction<
+  typeof getWeeklyPerformance
+>;
+const mockedGetActiveDrivers = getActiveDrivers as jest.MockedFunction<
+  typeof getActiveDrivers
+>;
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockedGetAccessToken.mockResolvedValue('jwt-abc');
+  mockedGetWallet.mockResolvedValue(WALLET_FIXTURE);
+  mockedGetFleetSummary.mockResolvedValue(FLEET_SUMMARY_FIXTURE);
+  mockedGetWeeklyPerformance.mockResolvedValue(WEEKLY_PERFORMANCE_FIXTURE);
+  mockedGetActiveDrivers.mockResolvedValue(ACTIVE_DRIVERS_FIXTURE);
+});
+
+describe('FleetDashboardPage', () => {
+  it('renders the Fleet Operations heading', async () => {
+    render(await FleetDashboardPage());
+    expect(
+      screen.getByRole('heading', { name: /fleet operations/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the active trucks stat card', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText(/active trucks/i)).toBeInTheDocument();
+    expect(screen.getByText('8')).toBeInTheDocument();
+  });
+
+  it('renders the earnings formatted through formatXaf', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText('1,240,000 XAF')).toBeInTheDocument();
+  });
+
+  it('renders the drivers table with a fixture driver', async () => {
+    render(await FleetDashboardPage());
+    expect(
+      screen.getByRole('heading', { name: 'Active Drivers' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Jean-Paul N.')).toBeInTheDocument();
+  });
+
+  it('renders the performance chart section, not just the cards and table', async () => {
+    // Regression guard: <PerformanceChart /> is rendered unconditionally in
+    // the page, so deleting it changes no branch and coverage stays at
+    // 100% — this must be asserted directly, not inferred.
+    render(await FleetDashboardPage());
+    expect(
+      screen.getByRole('heading', { name: 'Fleet Performance' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Thu')).toBeInTheDocument();
+  });
+
+  it('renders the pending verifications count and its avatar initials', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText(/pending verifications/i)).toBeInTheDocument();
+    expect(screen.getByText('03')).toBeInTheDocument();
+    expect(screen.getByText('JD')).toBeInTheDocument();
+    expect(screen.getByText('SM')).toBeInTheDocument();
+    expect(screen.getByText('AA')).toBeInTheDocument();
+  });
+
+  it('renders the header nav items from the design, with no href since their routes do not exist yet', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Fleet')).toBeInTheDocument();
+    expect(screen.getByText('Reports')).toBeInTheDocument();
+    expect(screen.queryAllByRole('link')).toHaveLength(0);
+  });
+
+  it('renders the admin profile chip', async () => {
+    render(await FleetDashboardPage());
+    expect(screen.getByText('Admin Profile')).toBeInTheDocument();
+    expect(screen.getByText('Logistics Ops')).toBeInTheDocument();
+    expect(screen.getByText('AU')).toBeInTheDocument();
+  });
+
+  it('fetches with the access token from the session', async () => {
+    render(await FleetDashboardPage());
+    expect(mockedGetWallet).toHaveBeenCalledWith('jwt-abc');
+    expect(mockedGetFleetSummary).toHaveBeenCalledWith('jwt-abc');
+    expect(mockedGetWeeklyPerformance).toHaveBeenCalledWith('jwt-abc');
+    expect(mockedGetActiveDrivers).toHaveBeenCalledWith('jwt-abc');
+  });
+
+  it('falls back to an empty token string when the session has none', async () => {
+    mockedGetAccessToken.mockResolvedValue(undefined);
+    render(await FleetDashboardPage());
+    expect(mockedGetWallet).toHaveBeenCalledWith('');
+  });
+});
