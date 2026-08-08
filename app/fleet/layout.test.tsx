@@ -17,6 +17,9 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 jest.mock('@/lib/current-user');
+jest.mock('@/app/(auth)/actions', () => ({
+  signOut: jest.fn(async () => {}),
+}));
 
 const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetCurrentUser = getCurrentUser as jest.MockedFunction<
@@ -66,5 +69,28 @@ describe('FleetLayout route gate', () => {
 
     expect(mockedRedirect).not.toHaveBeenCalled();
     expect(screen.getByText('fleet content')).toBeInTheDocument();
+  });
+
+  // Issue 4: the resolved user must be threaded into the header, exactly
+  // as app/admin/layout.tsx already does for AdminHeader — otherwise the
+  // header can't tell a real signed-in fleet owner apart from the
+  // hardcoded "Admin Profile" placeholder it used to render.
+  it('passes the signed-in fleet owner down to the FleetHeader', async () => {
+    mockedGetCurrentUser.mockResolvedValue(
+      makeUser({ role: 'fleet_owner', full_name: 'Ama Owusu' }),
+    );
+
+    render(await FleetLayout({ children: <div>fleet content</div> }));
+
+    expect(screen.getByText('Ama Owusu')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Fleet Operations' }),
+    ).toBeInTheDocument();
+    // FleetNav also renders sign-out controls (mobile header, desktop
+    // sidebar footer) — this just proves FleetHeader's own control is
+    // among them, not that it's the only one in the tree.
+    expect(
+      screen.getAllByRole('button', { name: /sign out/i }).length,
+    ).toBeGreaterThanOrEqual(1);
   });
 });

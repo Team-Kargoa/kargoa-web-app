@@ -73,12 +73,10 @@ beforeEach(() => {
 });
 
 describe('FleetDashboardPage', () => {
-  it('renders the Fleet Operations heading', async () => {
-    render(await FleetDashboardPage());
-    expect(
-      screen.getByRole('heading', { name: /fleet operations/i }),
-    ).toBeInTheDocument();
-  });
+  // The "Fleet Operations" heading and signed-in identity moved to
+  // FleetHeader, rendered by app/fleet/layout.tsx — see
+  // components/fleet/fleet-header.test.tsx and app/fleet/layout.test.tsx.
+  // This page no longer renders a heading of its own.
 
   it('renders the active trucks stat card', async () => {
     render(await FleetDashboardPage());
@@ -119,19 +117,18 @@ describe('FleetDashboardPage', () => {
     expect(screen.getByText('AA')).toBeInTheDocument();
   });
 
-  it('renders the header nav items from the design, with no href since their routes do not exist yet', async () => {
+  // Issue 4: the page used to render its own second header underneath
+  // FleetNav, with dead "Dashboard / Fleet / Reports" spans and a
+  // hardcoded "AU" / "Admin Profile" / "Logistics Ops" chip shown to a
+  // real signed-in fleet owner. That header (and the real user identity
+  // + sign-out control that replaced it) now lives in app/fleet/layout.tsx
+  // as FleetHeader — see components/fleet/fleet-header.test.tsx and
+  // app/fleet/layout.test.tsx.
+  it('renders no second header of its own — FleetNav and the layout-level FleetHeader are the only chrome', async () => {
     render(await FleetDashboardPage());
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Fleet')).toBeInTheDocument();
-    expect(screen.getByText('Reports')).toBeInTheDocument();
-    expect(screen.queryAllByRole('link')).toHaveLength(0);
-  });
-
-  it('renders the admin profile chip', async () => {
-    render(await FleetDashboardPage());
-    expect(screen.getByText('Admin Profile')).toBeInTheDocument();
-    expect(screen.getByText('Logistics Ops')).toBeInTheDocument();
-    expect(screen.getByText('AU')).toBeInTheDocument();
+    expect(screen.queryByText('Admin Profile')).not.toBeInTheDocument();
+    expect(screen.queryByText('Logistics Ops')).not.toBeInTheDocument();
+    expect(screen.queryAllByRole('banner')).toHaveLength(0);
   });
 
   it('fetches with the access token from the session', async () => {
