@@ -116,7 +116,7 @@ describe('SiteChrome', () => {
   // lose its navbar. /fleetops is a stand-in for that shape today: it
   // starts with /fleet but is not /fleet or nested under it, so it must
   // keep the navbar, matching components/Navbar.tsx's isNavLinkActive rule.
-  it('keeps the navbar on a route that merely starts with a chromeless route\'s name, e.g. /fleetops', () => {
+  it("keeps the navbar on a route that merely starts with a chromeless route's name, e.g. /fleetops", () => {
     mockUsePathname.mockReturnValue('/fleetops');
 
     render(

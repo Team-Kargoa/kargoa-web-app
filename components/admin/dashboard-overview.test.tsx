@@ -171,7 +171,7 @@ describe('DashboardOverview', () => {
     expect(paymentsLinks).toHaveLength(0);
   });
 
-  it('derives the greeting date from the overview\'s as_of timestamp instead of a hardcoded, now-stale date', () => {
+  it("derives the greeting date from the overview's as_of timestamp instead of a hardcoded, now-stale date", () => {
     renderOverview(false);
     // as_of is 2026-08-07T09:00:00Z — a Friday.
     expect(screen.getByText('Friday, August 7, 2026')).toBeInTheDocument();

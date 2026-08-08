@@ -18,8 +18,8 @@ export default function NotFound() {
           Page not found
         </h1>
         <p className="mt-2 max-w-md font-sans text-text-secondary">
-          We couldn’t find the page you’re looking for. It may have moved or
-          the link may be incorrect.
+          We couldn’t find the page you’re looking for. It may have moved or the
+          link may be incorrect.
         </p>
       </div>
       <Link

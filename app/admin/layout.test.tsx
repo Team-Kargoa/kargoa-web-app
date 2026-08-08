@@ -42,9 +42,9 @@ describe('AdminLayout route gate', () => {
   it('redirects an anonymous visitor (no session) to /signin without rendering the console', async () => {
     mockedGetCurrentUser.mockResolvedValue(null);
 
-    await expect(
-      AdminLayout({ children: <div>secret</div> }),
-    ).rejects.toThrow('NEXT_REDIRECT');
+    await expect(AdminLayout({ children: <div>secret</div> })).rejects.toThrow(
+      'NEXT_REDIRECT',
+    );
 
     expect(mockedRedirect).toHaveBeenCalledWith('/signin');
   });
@@ -52,9 +52,9 @@ describe('AdminLayout route gate', () => {
   it('redirects a signed-in fleet_owner to /fleet — a valid token is not enough, the role must be admin', async () => {
     mockedGetCurrentUser.mockResolvedValue(makeUser({ role: 'fleet_owner' }));
 
-    await expect(
-      AdminLayout({ children: <div>secret</div> }),
-    ).rejects.toThrow('NEXT_REDIRECT');
+    await expect(AdminLayout({ children: <div>secret</div> })).rejects.toThrow(
+      'NEXT_REDIRECT',
+    );
 
     expect(mockedRedirect).toHaveBeenCalledWith('/fleet');
   });
