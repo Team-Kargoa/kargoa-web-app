@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
+import { FleetHeader } from '@/components/fleet/fleet-header';
 import { FleetNav } from '@/components/fleet/fleet-nav';
 import { getCurrentUser } from '@/lib/current-user';
 
@@ -22,7 +23,17 @@ export default async function FleetLayout({
   return (
     <div className="min-h-screen bg-background">
       <FleetNav />
-      <div className="md:pl-64">{children}</div>
+      <div className="md:pl-64 flex min-h-screen flex-col">
+        {/* The access token lives in an httpOnly cookie FleetHeader (a
+            Client Component boundary once it needs one) cannot read
+            itself, so this Server Component resolves the signed-in fleet
+            owner and passes it down — same pattern as app/admin/layout.tsx
+            threading user into AdminHeader. Rendered here (not in
+            app/fleet/page.tsx) so every /fleet route gets a real identity
+            and a discoverable sign-out control, not just the dashboard. */}
+        <FleetHeader user={user} />
+        {children}
+      </div>
     </div>
   );
 }
