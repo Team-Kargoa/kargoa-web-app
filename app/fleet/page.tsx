@@ -1,4 +1,5 @@
 import { Truck, Wallet as WalletIcon } from 'lucide-react';
+import { redirect } from 'next/navigation';
 import { getAccessToken } from '@/lib/session';
 import { getWallet } from '@/lib/api/payments';
 import {
@@ -18,7 +19,14 @@ const AVATAR_TONES: StatCardAvatar['tone'][] = [
 ];
 
 export default async function FleetDashboardPage() {
-  const token = (await getAccessToken()) ?? '';
+  // app/fleet/layout.tsx already gates this whole tree on a signed-in
+  // fleet_owner, so this should always resolve — this check is defence in
+  // depth (the same pattern app/admin's pages use), and makes a missing
+  // token structurally impossible to paper over with `?? ''` the way it
+  // silently was before, which turned a 401 into a fixture fallback that
+  // read as a real dashboard to a signed-out visitor.
+  const token = await getAccessToken();
+  if (!token) redirect('/signin');
 
   const [wallet, summary, performance, drivers] = await Promise.all([
     getWallet(token),
