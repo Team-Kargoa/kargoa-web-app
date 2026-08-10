@@ -55,10 +55,20 @@ export function BrandLink({ size = 'md', className }: BrandLinkProps) {
   return (
     <Link
       href="/"
-      className={`flex items-center gap-2 ${className ?? ''}`.trim()}
+      // The two group-data-[state=collapsed]/sidebar-wrapper: classes only
+      // ever match inside components/ui/sidebar.tsx's collapsed rail (the
+      // one place this wordmark would otherwise overflow a 64px-wide
+      // container) — everywhere else BrandLink is used (marketing navbar,
+      // fleet sidebar, auth headers) has no such ancestor, so they're
+      // inert there.
+      className={`flex items-center gap-2 group-data-[state=collapsed]/sidebar-wrapper:justify-center ${className ?? ''}`.trim()}
     >
-      <Truck className={icon} aria-hidden="true" />
-      <span className={text}>KmerCargo</span>
+      <Truck className={`${icon} shrink-0`} aria-hidden="true" />
+      <span
+        className={`${text} group-data-[state=collapsed]/sidebar-wrapper:hidden`}
+      >
+        KmerCargo
+      </span>
     </Link>
   );
 }

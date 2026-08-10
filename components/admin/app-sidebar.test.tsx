@@ -18,16 +18,24 @@ function renderSidebar() {
 }
 
 // The design (admin_fleet_approval_queue/code.html + screen.png) has five
-// nav items, but only three have a real backend-backed screen behind them
-// today (app/admin, app/admin/drivers, app/admin/settings — see task 4.3).
-// Fleet Approvals and Financial Oversight have no backend endpoint
+// nav items, three of which have a real backend-backed screen behind them
+// (app/admin, app/admin/drivers, app/admin/settings — see task 4.3). Fleet
+// Approvals and Financial Oversight have no backend endpoint
 // (getFleetApplications/the payments module both fall back to fixtures), so
 // they render as non-interactive labels rather than links to routes that
 // don't exist — the same precedent already used for "Request Admin Access"
 // on the sign-in page.
+//
+// Bookings and Audit Log are real additions beyond that original five-item
+// mockup (apps.bookings/tracking/ratings and apps.admin_api's audit-logs
+// route are all live and tested — see lib/api/bookings.ts and
+// listAuditLogs in lib/api/admin.ts) — there was no admin UI for either
+// before, not even a fixture placeholder.
 const LINKED_ITEMS = [
   { name: 'Dashboard', href: '/admin' },
   { name: 'Driver Verification', href: '/admin/drivers' },
+  { name: 'Bookings', href: '/admin/bookings' },
+  { name: 'Audit Log', href: '/admin/audit-logs' },
   { name: 'Settings', href: '/admin/settings' },
 ];
 const LABEL_ITEMS = ['Fleet Approvals', 'Financial Oversight'];
@@ -59,13 +67,15 @@ describe('AppSidebar', () => {
     expect(screen.getByText('KmerCargo')).toHaveClass('text-xl');
   });
 
-  it('renders exactly the five navigation items the design specifies, with a visible text label', () => {
+  it('renders the five design items plus the two real additions (Bookings, Audit Log), each with a visible text label', () => {
     renderSidebar();
     const nav = screen.getByRole('navigation');
     expect(nav).toHaveTextContent('Dashboard');
     expect(nav).toHaveTextContent('Fleet Approvals');
     expect(nav).toHaveTextContent('Driver Verification');
+    expect(nav).toHaveTextContent('Bookings');
     expect(nav).toHaveTextContent('Financial Oversight');
+    expect(nav).toHaveTextContent('Audit Log');
     expect(nav).toHaveTextContent('Settings');
   });
 

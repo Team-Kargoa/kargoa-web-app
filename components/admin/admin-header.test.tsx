@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { usePathname } from 'next/navigation';
 import { AdminHeader } from './admin-header';
 import { signOut } from '@/app/(auth)/actions';
@@ -28,10 +29,16 @@ function makeUser(overrides: Partial<UserSummary> = {}): UserSummary {
   };
 }
 
-function renderHeader(user: UserSummary | null = makeUser()) {
+function renderHeader(
+  user: UserSummary | null = makeUser(),
+  pendingDriverApprovals = 0,
+) {
   return render(
     <SidebarProvider>
-      <AdminHeader user={user} />
+      <AdminHeader
+        user={user}
+        pendingDriverApprovals={pendingDriverApprovals}
+      />
     </SidebarProvider>,
   );
 }
@@ -105,5 +112,56 @@ describe('AdminHeader admin identity', () => {
   it('handles a signed-out (null) user without crashing', () => {
     renderHeader(null);
     expect(screen.getByText('Signed out')).toBeInTheDocument();
+  });
+});
+
+// Regression coverage for the hardcoded "4 drivers need approval" /
+// "Two disputes were opened today." notification content: neither had any
+// data behind it. The driver count is now real (passed down from
+// app/admin/layout.tsx's listDriverApplications call); the disputes line
+// has no backend at all (apps.disputes is still an empty stub), so it
+// keeps the same SampleDataBadge honesty marker every other
+// fixture-backed section of this app already uses.
+describe('AdminHeader notifications', () => {
+  beforeEach(() => {
+    mockUsePathname.mockReturnValue('/admin');
+  });
+
+  // Radix's DropdownMenuTrigger opens on pointerdown, not a plain click —
+  // fireEvent.click alone never opens it under jsdom. userEvent.click
+  // dispatches the full realistic pointer/mouse event sequence a real
+  // browser would, which Radix's internal handling actually responds to.
+  async function openNotifications() {
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /notifications/i }));
+  }
+
+  it('shows the real pending-driver-approval count, not a hardcoded number', async () => {
+    renderHeader(makeUser(), 7);
+    await openNotifications();
+    expect(screen.getByText('7 drivers need approval')).toBeInTheDocument();
+  });
+
+  it('uses singular phrasing for exactly one pending approval', async () => {
+    renderHeader(makeUser(), 1);
+    await openNotifications();
+    expect(screen.getByText('1 driver needs approval')).toBeInTheDocument();
+  });
+
+  it('links the pending-approvals notification to the filtered driver queue', async () => {
+    renderHeader(makeUser(), 3);
+    await openNotifications();
+    expect(
+      screen.getByRole('link', { name: /drivers need approval/i }),
+    ).toHaveAttribute('href', '/admin/drivers?status=pending');
+  });
+
+  it('marks the disputes line as sample data — apps.disputes has no backend', async () => {
+    renderHeader(makeUser(), 0);
+    await openNotifications();
+    expect(
+      screen.getByText('Two disputes were opened today.'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('sample-data-badge')).toBeInTheDocument();
   });
 });

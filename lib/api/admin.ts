@@ -73,17 +73,24 @@ export type PlatformConfig = {
   updated_by: string | null;
 };
 
-// GET /admin-api/audit-logs returns { meta, logs }, but the live logs array
-// is currently empty (verified 2026-08-07) — no real entry has been
-// observed to confirm field names. This shape is a placeholder inferred
-// from common audit-log conventions; re-verify once a populated response
-// can be checked, same caveat that applied to DriverApplication before it
-// was confirmed live.
+// GET /admin-api/audit-logs returns { meta, logs }. Field names below are
+// verified directly against apps/admin_api/api/serializers.py's
+// AuditLogOutSerializer (not inferred/guessed like the rest of this file's
+// LIVE-WITH-FALLBACK section) — the live logs array was still empty as of
+// 2026-08-07, but the serializer itself is real and unambiguous.
 export type AuditLogEntry = {
   id: string;
-  actor: string | null;
+  /** The acting admin's phone number, or null if that user was deleted. */
+  admin: string | null;
+  /** e.g. "driver.approve", "config.update". */
   action: string;
-  target: string | null;
+  /** The model name the action touched, e.g. "DriverProfile". */
+  entity_type: string;
+  entity_id: string;
+  /** Field snapshots before/after the change — shape varies by action. */
+  before: Record<string, unknown>;
+  after: Record<string, unknown>;
+  ip_address: string | null;
   created_at: string;
 };
 

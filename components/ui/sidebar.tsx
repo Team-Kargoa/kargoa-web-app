@@ -44,6 +44,7 @@ function SidebarProvider({
     >
       <div
         data-slot="sidebar-wrapper"
+        data-state={open ? 'expanded' : 'collapsed'}
         className={cn(
           'group/sidebar-wrapper flex min-h-svh w-full bg-muted/30',
           className,
