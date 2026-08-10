@@ -1,7 +1,10 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { redirect } from 'next/navigation';
 import AdminLayout from './layout';
 import { getCurrentUser } from '@/lib/current-user';
+import { getAccessToken } from '@/lib/session';
+import { listDriverApplications } from '@/lib/api/admin';
 import type { UserSummary } from '@/lib/api/types';
 
 // Blocking finding 1 (final whole-branch review): app/admin/layout.tsx
@@ -17,11 +20,18 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 jest.mock('@/lib/current-user');
+jest.mock('@/lib/session');
+jest.mock('@/lib/api/admin');
 
 const mockedRedirect = redirect as jest.MockedFunction<typeof redirect>;
 const mockedGetCurrentUser = getCurrentUser as jest.MockedFunction<
   typeof getCurrentUser
 >;
+const mockedGetAccessToken = getAccessToken as jest.MockedFunction<
+  typeof getAccessToken
+>;
+const mockedListDriverApplications =
+  listDriverApplications as jest.MockedFunction<typeof listDriverApplications>;
 
 function makeUser(overrides: Partial<UserSummary> = {}): UserSummary {
   return {
@@ -37,7 +47,14 @@ function makeUser(overrides: Partial<UserSummary> = {}): UserSummary {
 }
 
 describe('AdminLayout route gate', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedGetAccessToken.mockResolvedValue('jwt-abc');
+    mockedListDriverApplications.mockResolvedValue({
+      applications: [],
+      meta: { count: 3, page: 1, page_size: 20, total_pages: 1 },
+    });
+  });
 
   it('redirects an anonymous visitor (no session) to /signin without rendering the console', async () => {
     mockedGetCurrentUser.mockResolvedValue(null);
@@ -66,5 +83,23 @@ describe('AdminLayout route gate', () => {
 
     expect(mockedRedirect).not.toHaveBeenCalled();
     expect(screen.getByText('secret content')).toBeInTheDocument();
+  });
+
+  it("passes the real pending-driver count into the header's notification bell, not a hardcoded number", async () => {
+    mockedGetCurrentUser.mockResolvedValue(makeUser({ role: 'admin' }));
+    mockedListDriverApplications.mockResolvedValue({
+      applications: [],
+      meta: { count: 7, page: 1, page_size: 20, total_pages: 1 },
+    });
+
+    render(await AdminLayout({ children: <div>secret content</div> }));
+
+    expect(mockedListDriverApplications).toHaveBeenCalledWith('jwt-abc', {
+      status: 'pending',
+    });
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /notifications/i }));
+    expect(screen.getByText('7 drivers need approval')).toBeInTheDocument();
   });
 });

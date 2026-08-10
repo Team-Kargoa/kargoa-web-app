@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { SampleDataBadge } from '@/components/sample-data-badge';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import type { UserSummary } from '@/lib/api/types';
 import { formatPhone, getInitials } from '@/lib/format';
@@ -36,6 +37,8 @@ const labels: Record<string, string> = {
   admin: 'Dashboard',
   drivers: 'Drivers',
   settings: 'Platform Settings',
+  bookings: 'Bookings',
+  'audit-logs': 'Audit Log',
 };
 
 export type AdminHeaderProps = {
@@ -48,9 +51,20 @@ export type AdminHeaderProps = {
    * and passes it down. Mirrors components/Navbar.tsx's DashboardLink.
    */
   user: UserSummary | null;
+  /**
+   * Real count from listDriverApplications(token, {status: 'pending'})
+   * .meta.count, resolved in app/admin/layout.tsx alongside `user`. This
+   * used to be a hardcoded "4 drivers need approval" with no data behind
+   * it at all — same class of bug the rest of the app's isSample
+   * discipline exists to prevent (see lib/api/with-fallback.ts).
+   */
+  pendingDriverApprovals: number;
 };
 
-export function AdminHeader({ user }: AdminHeaderProps) {
+export function AdminHeader({
+  user,
+  pendingDriverApprovals,
+}: AdminHeaderProps) {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean).slice(1);
   const pageTitle = labels[segments.at(-1) ?? 'admin'] ?? 'Dashboard';
@@ -122,10 +136,18 @@ export function AdminHeader({ user }: AdminHeaderProps) {
             <DropdownMenuLabel>Notifications</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <div className="space-y-3 p-2 text-sm">
-              <p className="font-medium">4 drivers need approval</p>
-              <p className="text-muted-foreground">
-                Two disputes were opened today.
-              </p>
+              <Link
+                href="/admin/drivers?status=pending"
+                className="block font-medium hover:underline"
+              >
+                {pendingDriverApprovals === 1
+                  ? '1 driver needs approval'
+                  : `${pendingDriverApprovals} drivers need approval`}
+              </Link>
+              <div className="flex flex-wrap items-center gap-1.5 text-muted-foreground">
+                <span>Two disputes were opened today.</span>
+                <SampleDataBadge />
+              </div>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="justify-center text-primary">

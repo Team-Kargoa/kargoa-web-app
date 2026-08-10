@@ -383,6 +383,33 @@ describe('listAuditLogs (LIVE)', () => {
       token: 'jwt-abc',
     });
   });
+
+  it('returns a populated entry with the real AuditLogOutSerializer fields', async () => {
+    // Pins the shape against apps/admin_api/api/serializers.py directly —
+    // the live endpoint had no entries to observe as of 2026-08-07, so
+    // this is what makes the corrected type (admin/entity_type/entity_id/
+    // before/after/ip_address, not the earlier actor/target guess) an
+    // actual regression test rather than just a type-level claim.
+    const entry: AuditLogEntry = {
+      id: 'log-1',
+      admin: '+237670000300',
+      action: 'driver.approve',
+      entity_type: 'DriverProfile',
+      entity_id: 'driver-1',
+      before: { verification_status: 'pending' },
+      after: { verification_status: 'approved' },
+      ip_address: '127.0.0.1',
+      created_at: '2026-08-07T10:00:00Z',
+    };
+    mockedRequest.mockResolvedValue({
+      meta: { count: 1, page: 1, page_size: 20, total_pages: 1 },
+      logs: [entry],
+    });
+
+    const result = await listAuditLogs('jwt-abc');
+
+    expect(result.logs).toEqual([entry]);
+  });
 });
 
 describe('getDocument', () => {

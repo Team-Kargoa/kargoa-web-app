@@ -4,6 +4,8 @@ import { AdminHeader } from '@/components/admin/admin-header';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/admin/app-sidebar';
 import { getCurrentUser } from '@/lib/current-user';
+import { getAccessToken } from '@/lib/session';
+import { listDriverApplications } from '@/lib/api/admin';
 
 export default async function AdminLayout({
   children,
@@ -26,12 +28,22 @@ export default async function AdminLayout({
   if (!user) redirect('/signin');
   if (user.role !== 'admin') redirect('/fleet');
 
+  // Real count for the header's notification bell — this used to be a
+  // hardcoded "4 drivers need approval" with no data behind it at all.
+  // getAccessToken() is cheap (an httpOnly cookie read, no network call),
+  // so a second call here alongside every subpage's own is fine — same
+  // precedent as getCurrentUser's doc comment on this file.
+  const token = await getAccessToken();
+  const { meta } = token
+    ? await listDriverApplications(token, { status: 'pending' })
+    : { meta: { count: 0, page: 1, page_size: 20, total_pages: 0 } };
+
   return (
     <SidebarProvider>
       <AppSidebar />
 
       <SidebarInset>
-        <AdminHeader user={user} />
+        <AdminHeader user={user} pendingDriverApprovals={meta.count} />
         {children}
       </SidebarInset>
     </SidebarProvider>
