@@ -24,7 +24,9 @@ export type PaginationMeta = {
   total_pages: number;
 };
 
-function buildQuery(params: Record<string, string | number | undefined>) {
+function buildQuery(
+  params: Record<string, string | number | boolean | undefined>,
+) {
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined) search.set(key, String(value));
@@ -94,6 +96,88 @@ export type AuditLogEntry = {
   created_at: string;
 };
 
+// --- Additional types for extended admin features ---
+
+export type UserSummary = {
+  id: string;
+  phone_number: string;
+  full_name: string;
+  is_active: boolean;
+  date_joined: string;
+};
+
+export type BookingSummary = {
+  id: string;
+  customer: UserSummary;
+  driver: DriverApplication;
+  status: string;
+  pickup_location: string;
+  dropoff_location: string;
+  fare_fcfa: number;
+  payment_method: 'cash' | 'mtn_momo' | 'orange_money';
+  created_at: string;
+};
+
+export type BookingDetail = BookingSummary & {
+  distance_km: number;
+  duration_minutes: number;
+  base_fare_fcfa: number;
+  per_km_charge_fcfa: number;
+  commission_fcfa: number;
+  driver_earnings_fcfa: number;
+  cancellation_reason?: string;
+  completed_at?: string;
+};
+
+export type FinancialOverview = {
+  total_revenue_fcfa: number;
+  total_commission_fcfa: number;
+  total_cash_trips: number;
+  total_digital_trips: number;
+  outstanding_driver_debts_fcfa: number;
+  pending_withdrawals_fcfa: number;
+  period_from: string;
+  period_to: string;
+};
+
+export type WalletEntry = {
+  driver: DriverApplication;
+  balance_fcfa: number;
+  pending_withdrawal_fcfa: number;
+  last_transaction_at: string;
+};
+
+export type DisputeCategory =
+  'wrong_fare' | 'driver_behavior' | 'damaged_goods' | 'no_show' | 'other';
+
+export type DisputeStatus = 'open' | 'in_review' | 'resolved' | 'closed';
+
+export type DisputeSummary = {
+  id: string;
+  booking: BookingSummary;
+  category: DisputeCategory;
+  status: DisputeStatus;
+  created_at: string;
+  resolved_at?: string;
+};
+
+export type DisputeDetail = DisputeSummary & {
+  customer_description: string;
+  driver_response?: string;
+  resolution_note?: string;
+  resolved_by_admin?: UserSummary;
+};
+
+export type VehicleCategory = {
+  id: string;
+  name: string;
+  description: string;
+  base_fare: number;
+  per_km_rate: number;
+  minimum_fare: number;
+  is_active: boolean;
+};
+
 export function getDriverApplication(
   token: string,
   id: string,
@@ -138,6 +222,19 @@ export function rejectDriver(
   });
 }
 
+export function suspendDriver(
+  token: string,
+  id: string,
+  isActive: boolean,
+  reason: string,
+): Promise<void> {
+  return apiRequest<void>(`/admin-api/drivers/${id}/suspend`, {
+    method: 'POST',
+    body: { is_active: isActive, reason },
+    token,
+  });
+}
+
 export function listPlatformConfigs(token: string): Promise<PlatformConfig[]> {
   return apiRequest<{ configs: PlatformConfig[] }>('/admin-api/configs', {
     token,
@@ -158,9 +255,23 @@ export function updatePlatformConfig(
 
 export function listAuditLogs(
   token: string,
-  options: { page?: number } = {},
+  options: {
+    page?: number;
+    adminId?: string;
+    action?: string;
+    entityType?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  } = {},
 ): Promise<{ logs: AuditLogEntry[]; meta: PaginationMeta }> {
-  const query = buildQuery({ page: options.page });
+  const query = buildQuery({
+    page: options.page,
+    admin_id: options.adminId,
+    action: options.action,
+    entity_type: options.entityType,
+    date_from: options.dateFrom,
+    date_to: options.dateTo,
+  });
   return apiRequest<{ meta: PaginationMeta; logs: AuditLogEntry[] }>(
     `/admin-api/audit-logs${query}`,
     { token },
@@ -283,4 +394,317 @@ export function getTeam(token: string): Promise<Sourced<TeamMember[]>> {
     () => apiRequest<TeamMember[]>('/admin-api/team', { token }),
     TEAM_FIXTURE,
   );
+}
+
+// --- Additional LIVE-WITH-FALLBACK functions: Users, Bookings, Finances, etc. ---
+
+export function listCustomers(
+  token: string,
+  options: { isActive?: boolean; search?: string; page?: number } = {},
+): Promise<Sourced<{ users: UserSummary[]; meta: PaginationMeta }>> {
+  return withFallback(
+    () => {
+      const query = buildQuery({
+        is_active: options.isActive,
+        search: options.search,
+        page: options.page,
+      });
+      return apiRequest<{ users: UserSummary[]; meta: PaginationMeta }>(
+        `/admin-api/users${query}`,
+        { token },
+      );
+    },
+    { users: [], meta: { count: 0, page: 1, page_size: 20, total_pages: 0 } },
+  );
+}
+
+export function getUserDetail(
+  token: string,
+  id: string,
+): Promise<Sourced<UserSummary>> {
+  return withFallback(
+    () => apiRequest<UserSummary>(`/admin-api/users/${id}`, { token }),
+    { id, phone_number: '', full_name: '', is_active: true, date_joined: '' },
+  );
+}
+
+export function toggleUserStatus(
+  token: string,
+  id: string,
+  isActive: boolean,
+  reason: string,
+): Promise<void> {
+  return apiRequest<void>(`/admin-api/users/${id}/status`, {
+    method: 'PATCH',
+    body: { is_active: isActive, reason },
+    token,
+  });
+}
+
+export function listBookings(
+  token: string,
+  options: {
+    status?: string;
+    driverId?: string;
+    customerId?: string;
+    paymentMethod?: 'cash' | 'mtn_momo' | 'orange_money';
+    dateFrom?: string;
+    dateTo?: string;
+    page?: number;
+    pageSize?: number;
+  } = {},
+): Promise<Sourced<{ bookings: BookingSummary[]; meta: PaginationMeta }>> {
+  return withFallback(
+    () => {
+      const query = buildQuery({
+        status: options.status,
+        driver_id: options.driverId,
+        customer_id: options.customerId,
+        payment_method: options.paymentMethod,
+        date_from: options.dateFrom,
+        date_to: options.dateTo,
+        page: options.page,
+        page_size: options.pageSize,
+      });
+      return apiRequest<{ bookings: BookingSummary[]; meta: PaginationMeta }>(
+        `/admin-api/bookings${query}`,
+        { token },
+      );
+    },
+    {
+      bookings: [],
+      meta: { count: 0, page: 1, page_size: 20, total_pages: 0 },
+    },
+  );
+}
+
+export function getBookingDetail(
+  token: string,
+  id: string,
+): Promise<Sourced<BookingDetail>> {
+  return withFallback(
+    () => apiRequest<BookingDetail>(`/admin-api/bookings/${id}`, { token }),
+    {
+      id,
+      customer: {
+        id: '',
+        phone_number: '',
+        full_name: '',
+        is_active: true,
+        date_joined: '',
+      },
+      driver: {
+        id: '',
+        phone_number: '',
+        full_name: '',
+        verification_status: 'pending',
+        rejection_reason: '',
+        submitted_at: '',
+        license_document: '',
+        national_id_document: '',
+        live_selfie: '',
+        plate_number: '',
+        vehicle_category: '',
+        registration_doc: '',
+        vehicle_status: '',
+      },
+      status: 'pending',
+      pickup_location: '',
+      dropoff_location: '',
+      fare_fcfa: 0,
+      payment_method: 'cash',
+      created_at: '',
+      distance_km: 0,
+      duration_minutes: 0,
+      base_fare_fcfa: 0,
+      per_km_charge_fcfa: 0,
+      commission_fcfa: 0,
+      driver_earnings_fcfa: 0,
+    },
+  );
+}
+
+export function getFinancialOverview(
+  token: string,
+  options: { dateFrom?: string; dateTo?: string } = {},
+): Promise<Sourced<FinancialOverview>> {
+  return withFallback(
+    () => {
+      const query = buildQuery({
+        date_from: options.dateFrom,
+        date_to: options.dateTo,
+      });
+      return apiRequest<FinancialOverview>(
+        `/admin-api/finances/overview${query}`,
+        { token },
+      );
+    },
+    {
+      total_revenue_fcfa: 0,
+      total_commission_fcfa: 0,
+      total_cash_trips: 0,
+      total_digital_trips: 0,
+      outstanding_driver_debts_fcfa: 0,
+      pending_withdrawals_fcfa: 0,
+      period_from: new Date().toISOString().split('T')[0],
+      period_to: new Date().toISOString().split('T')[0],
+    },
+  );
+}
+
+export function listDriverWallets(
+  token: string,
+  options: {
+    balanceLt?: number;
+    sort?: 'balance_asc' | 'balance_desc';
+    page?: number;
+  } = {},
+): Promise<Sourced<{ wallets: WalletEntry[]; meta: PaginationMeta }>> {
+  return withFallback(
+    () => {
+      const query = buildQuery({
+        balance_lt: options.balanceLt,
+        sort: options.sort,
+        page: options.page,
+      });
+      return apiRequest<{ wallets: WalletEntry[]; meta: PaginationMeta }>(
+        `/admin-api/finances/wallets${query}`,
+        { token },
+      );
+    },
+    { wallets: [], meta: { count: 0, page: 1, page_size: 20, total_pages: 0 } },
+  );
+}
+
+export function listDisputes(
+  token: string,
+  options: {
+    status?: DisputeStatus;
+    category?: DisputeCategory;
+    page?: number;
+  } = {},
+): Promise<Sourced<{ disputes: DisputeSummary[]; meta: PaginationMeta }>> {
+  return withFallback(
+    () => {
+      const query = buildQuery({
+        status: options.status,
+        category: options.category,
+        page: options.page,
+      });
+      return apiRequest<{ disputes: DisputeSummary[]; meta: PaginationMeta }>(
+        `/admin-api/disputes${query}`,
+        { token },
+      );
+    },
+    {
+      disputes: [],
+      meta: { count: 0, page: 1, page_size: 20, total_pages: 0 },
+    },
+  );
+}
+
+export function getDisputeDetail(
+  token: string,
+  id: string,
+): Promise<Sourced<DisputeDetail>> {
+  return withFallback(
+    () => apiRequest<DisputeDetail>(`/admin-api/disputes/${id}`, { token }),
+    {
+      id,
+      booking: {
+        id: '',
+        customer: {
+          id: '',
+          phone_number: '',
+          full_name: '',
+          is_active: true,
+          date_joined: '',
+        },
+        driver: {
+          id: '',
+          phone_number: '',
+          full_name: '',
+          verification_status: 'pending',
+          rejection_reason: '',
+          submitted_at: '',
+          license_document: '',
+          national_id_document: '',
+          live_selfie: '',
+          plate_number: '',
+          vehicle_category: '',
+          registration_doc: '',
+          vehicle_status: '',
+        },
+        status: 'pending',
+        pickup_location: '',
+        dropoff_location: '',
+        fare_fcfa: 0,
+        payment_method: 'cash',
+        created_at: '',
+      },
+      category: 'other',
+      status: 'open',
+      created_at: '',
+      customer_description: '',
+    },
+  );
+}
+
+export function resolveDispute(
+  token: string,
+  id: string,
+  resolutionNote: string,
+): Promise<void> {
+  return apiRequest<void>(`/admin-api/disputes/${id}/resolve`, {
+    method: 'POST',
+    body: { resolution_note: resolutionNote },
+    token,
+  });
+}
+
+export function listVehicleCategories(
+  token: string,
+): Promise<Sourced<VehicleCategory[]>> {
+  return withFallback(
+    () =>
+      apiRequest<VehicleCategory[]>('/admin-api/vehicle-categories', {
+        token,
+      }),
+    [],
+  );
+}
+
+export function createVehicleCategory(
+  token: string,
+  data: {
+    name: string;
+    description?: string;
+    base_fare: number;
+    per_km_rate: number;
+    minimum_fare: number;
+  },
+): Promise<VehicleCategory> {
+  return apiRequest<VehicleCategory>('/admin-api/vehicle-categories', {
+    method: 'POST',
+    body: data,
+    token,
+  });
+}
+
+export function updateVehicleCategory(
+  token: string,
+  id: string,
+  data: {
+    description?: string;
+    base_fare?: number;
+    per_km_rate?: number;
+    minimum_fare?: number;
+    is_active?: boolean;
+  },
+): Promise<VehicleCategory> {
+  return apiRequest<VehicleCategory>(`/admin-api/vehicle-categories/${id}`, {
+    method: 'PATCH',
+    body: data,
+    token,
+  });
 }
