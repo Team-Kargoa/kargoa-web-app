@@ -58,10 +58,15 @@ describe('AdminAuditLogsPage', () => {
     expect(mockedListAuditLogs).not.toHaveBeenCalled();
   });
 
-  it('fetches logs with the session token and no page filter by default', async () => {
+  it('fetches logs with the session token and no filter by default', async () => {
     render(await AdminAuditLogsPage({ searchParams: searchParams() }));
     expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', {
       page: undefined,
+      adminId: undefined,
+      action: undefined,
+      entityType: undefined,
+      dateFrom: undefined,
+      dateTo: undefined,
     });
   });
 
@@ -69,7 +74,104 @@ describe('AdminAuditLogsPage', () => {
     render(
       await AdminAuditLogsPage({ searchParams: searchParams({ page: '2' }) }),
     );
-    expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', { page: 2 });
+    expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', {
+      page: 2,
+      adminId: undefined,
+      action: undefined,
+      entityType: undefined,
+      dateFrom: undefined,
+      dateTo: undefined,
+    });
+  });
+
+  it('passes the adminId filter through', async () => {
+    render(
+      await AdminAuditLogsPage({
+        searchParams: searchParams({ adminId: 'admin-1' }),
+      }),
+    );
+    expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', {
+      page: undefined,
+      adminId: 'admin-1',
+      action: undefined,
+      entityType: undefined,
+      dateFrom: undefined,
+      dateTo: undefined,
+    });
+  });
+
+  it('passes the action filter through', async () => {
+    render(
+      await AdminAuditLogsPage({
+        searchParams: searchParams({ action: 'driver.approve' }),
+      }),
+    );
+    expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', {
+      page: undefined,
+      adminId: undefined,
+      action: 'driver.approve',
+      entityType: undefined,
+      dateFrom: undefined,
+      dateTo: undefined,
+    });
+  });
+
+  it('passes the entityType filter through', async () => {
+    render(
+      await AdminAuditLogsPage({
+        searchParams: searchParams({ entityType: 'DriverProfile' }),
+      }),
+    );
+    expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', {
+      page: undefined,
+      adminId: undefined,
+      action: undefined,
+      entityType: 'DriverProfile',
+      dateFrom: undefined,
+      dateTo: undefined,
+    });
+  });
+
+  it('passes date range filters through', async () => {
+    render(
+      await AdminAuditLogsPage({
+        searchParams: searchParams({
+          dateFrom: '2026-08-01',
+          dateTo: '2026-08-31',
+        }),
+      }),
+    );
+    expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', {
+      page: undefined,
+      adminId: undefined,
+      action: undefined,
+      entityType: undefined,
+      dateFrom: '2026-08-01',
+      dateTo: '2026-08-31',
+    });
+  });
+
+  it('passes all filters through when provided', async () => {
+    render(
+      await AdminAuditLogsPage({
+        searchParams: searchParams({
+          page: '1',
+          adminId: 'admin-1',
+          action: 'config.update',
+          entityType: 'PlatformConfig',
+          dateFrom: '2026-08-01',
+          dateTo: '2026-08-17',
+        }),
+      }),
+    );
+    expect(mockedListAuditLogs).toHaveBeenCalledWith('jwt-abc', {
+      page: 1,
+      adminId: 'admin-1',
+      action: 'config.update',
+      entityType: 'PlatformConfig',
+      dateFrom: '2026-08-01',
+      dateTo: '2026-08-17',
+    });
   });
 
   it('renders the heading and a row per log entry', async () => {

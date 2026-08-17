@@ -7,14 +7,27 @@ import { AuditLogList } from '@/components/admin/audit-log-list';
 export default async function AdminAuditLogsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    adminId?: string;
+    action?: string;
+    entityType?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  }>;
 }) {
   const token = await getAccessToken();
   if (!token) redirect('/signin');
 
-  const { page } = await searchParams;
+  const { page, adminId, action, entityType, dateFrom, dateTo } =
+    await searchParams;
   const { logs, meta } = await listAuditLogs(token, {
     page: page ? Number(page) : undefined,
+    adminId,
+    action,
+    entityType,
+    dateFrom,
+    dateTo,
   });
 
   return (

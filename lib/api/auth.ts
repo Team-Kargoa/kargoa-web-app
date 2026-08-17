@@ -25,6 +25,7 @@ export function verifyOtp(input: {
   role?: Role;
 }): Promise<TokenPair> {
   const { phoneNumber, code, purpose, role } = input;
+
   return apiRequest<TokenPair>('/auth/otp/verify', {
     method: 'POST',
     body: {
