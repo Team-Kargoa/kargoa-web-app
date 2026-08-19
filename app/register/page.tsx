@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { Truck, ShieldCheck } from 'lucide-react';
 import { RoleCard, type RoleCardProps } from '@/components/marketing/role-card';
-import Footer from '@/components/Footer';
 
 const ROLE_CARDS: RoleCardProps[] = [
   {
@@ -102,7 +101,6 @@ export default function RegisterPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

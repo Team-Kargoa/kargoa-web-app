@@ -56,4 +56,18 @@ describe('landing page', () => {
       screen.queryByRole('link', { name: /network map/i }),
     ).not.toBeInTheDocument();
   });
+
+  it('renders the site footer with its link routing intact', () => {
+    render(<HomePage />);
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Terms of Service' }),
+    ).toHaveAttribute('href', '/terms');
+    expect(
+      screen.getByRole('link', { name: 'Privacy Policy' }),
+    ).toHaveAttribute('href', '/privacy');
+    expect(
+      screen.getByRole('link', { name: 'Contact Support' }),
+    ).toHaveAttribute('href', '/contact');
+  });
 });

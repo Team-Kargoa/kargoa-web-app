@@ -4,7 +4,6 @@ import { useActionState, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
-  UserCircle,
   ArrowRight,
   ShieldCheck,
   Lock,
@@ -16,7 +15,6 @@ import { sendOtp } from '../../actions';
 import { PhoneField } from '@/components/auth/phone-field';
 import { BackToHomeLink } from '@/components/auth/back-to-home-link';
 import { BrandLink } from '@/components/brand-link';
-import Footer from '@/components/Footer';
 
 const ROLE = 'fleet_owner';
 
@@ -94,20 +92,12 @@ export default function FleetRegistrationPage() {
       <header className="w-full sticky top-0 bg-surface z-50">
         <div className="flex items-center justify-between px-4 md:px-8 py-4 max-w-7xl mx-auto">
           <BackToHomeLink />
-          <div className="flex items-center gap-4">
-            <h1>
-              <BrandLink
-                size="lg"
-                className="text-primary hover:opacity-90 transition"
-              />
-            </h1>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-text-secondary hidden md:block">
-                CAMEROON OPS
-              </span>
-              <UserCircle aria-hidden="true" className="h-6 w-6 text-primary" />
-            </div>
-          </div>
+          <h1>
+            <BrandLink
+              size="lg"
+              className="text-primary hover:opacity-90 transition"
+            />
+          </h1>
         </div>
       </header>
 
@@ -248,8 +238,6 @@ export default function FleetRegistrationPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </>
   );
 }

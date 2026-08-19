@@ -120,12 +120,19 @@ describe('FleetRegistrationPage', () => {
     expect(screen.getByText('Compliance Verified')).toBeVisible();
   });
 
-  it('renders its own footer with real link destinations', () => {
+  // The footer now lives only on the landing page — see app/page.tsx and
+  // components/Footer.test.tsx, which own its link routing.
+  it('does not render a footer', () => {
     render(<FleetRegistrationPage />);
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'Terms of Service' }),
-    ).toHaveAttribute('href', '/terms');
+      screen.queryByRole('link', { name: 'Terms of Service' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('no longer shows the CAMEROON OPS label or profile icon', () => {
+    render(<FleetRegistrationPage />);
+    expect(screen.queryByText('CAMEROON OPS')).not.toBeInTheDocument();
   });
 
   it('submits the phone number through sendOtp with purpose=registration', async () => {

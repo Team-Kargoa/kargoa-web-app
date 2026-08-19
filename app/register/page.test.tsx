@@ -40,11 +40,13 @@ describe('partner registration hub', () => {
     expect(screen.getByText('500+')).toBeInTheDocument();
   });
 
-  it('renders its own footer', () => {
+  // The footer now lives only on the landing page — see app/page.tsx and
+  // components/Footer.test.tsx, which own its link routing.
+  it('does not render a footer', () => {
     render(<RegisterPage />);
-    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    expect(screen.queryByRole('contentinfo')).not.toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'Terms of Service' }),
-    ).toHaveAttribute('href', '/terms');
+      screen.queryByRole('link', { name: 'Terms of Service' }),
+    ).not.toBeInTheDocument();
   });
 });
